@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "857013237043",
+    "project_id": "figurinhas-795e2",
+    "storage_bucket": "figurinhas-795e2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857013237043:android:f0cbe318d6ec9f18593a46",
+        "android_client_info": {
+          "package_name": "figurinhas.copa2026"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857013237043-7kad5nfbk819hfgopjp9na00fa53o9jj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAawN_MEqQAUWGgK9e-NP5rOlV-BhH3QIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857013237043-7kad5nfbk819hfgopjp9na00fa53o9jj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

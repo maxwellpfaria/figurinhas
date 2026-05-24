@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Figurinhas Copa 2026",
+    "slug": "figurinha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1565C0"
+      },
+      "package": "com.figurinha.copa2026"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}
