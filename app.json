@@ -12,7 +12,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#1565C0"
       },
-      "package": "com.figurinha.copa2026"
+      "package": "com.figurinha.copa2026",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

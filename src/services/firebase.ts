@@ -5,12 +5,12 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAtCP9wKhty_K92_bGE7cGs3RPONsb6KYk',
-  authDomain: 'figurinhas-795e2.firebaseapp.com',
-  projectId: 'figurinhas-795e2',
-  storageBucket: 'figurinhas-795e2.firebasestorage.app',
-  messagingSenderId: '857013237043',
-  appId: '1:857013237043:web:816b75ce22728051593a46',
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY!,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID!,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID!,
 };
 
 // Custom persistence adapter using AsyncStorage (Firebase v12 compatible)
