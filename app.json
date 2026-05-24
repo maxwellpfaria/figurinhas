@@ -12,12 +12,17 @@
       "adaptiveIcon": {
         "backgroundColor": "#1565C0"
       },
-      "package": "com.figurinha.copa2026",
-      "googleServicesFile": "./google-services.json"
+      "package": "com.figurinha.copa2026"
     },
     "web": {
       "bundler": "metro",
       "output": "single"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dbba3105-e1cd-4067-83be-2aaa5f4e646e"
+      }
+    },
+    "owner": "maxwellfaria"
   }
 }
