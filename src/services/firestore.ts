@@ -58,9 +58,7 @@ export async function createUserProfile(
     displayName,
     inviteCode,
     friends: [],
-    quantities: {},
     createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
   });
 }
 
@@ -80,22 +78,31 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
 
 // ─── Album Quantities ─────────────────────────────────────────────────────────
 
+function albumDoc(uid: string) {
+  return doc(db, 'users', uid, 'album', 'quantities');
+}
+
 export async function loadAlbumQuantities(
   uid: string,
 ): Promise<Record<string, number>> {
-  const snap = await getDoc(doc(db, 'users', uid));
-  if (!snap.exists()) return {};
-  return snap.data().quantities ?? {};
+  const newSnap = await getDoc(albumDoc(uid));
+  if (newSnap.exists()) return newSnap.data().data ?? {};
+
+  // Migração: se ainda há dados no campo antigo do doc do usuário, move para subcollection
+  const userSnap = await getDoc(doc(db, 'users', uid));
+  if (!userSnap.exists()) return {};
+  const legacy = userSnap.data().quantities as Record<string, number> | undefined;
+  if (legacy && Object.keys(legacy).length > 0) {
+    await setDoc(albumDoc(uid), { data: legacy, updatedAt: serverTimestamp() });
+  }
+  return legacy ?? {};
 }
 
 export async function saveAlbumQuantities(
   uid: string,
   quantities: Record<string, number>,
 ): Promise<void> {
-  await updateDoc(doc(db, 'users', uid), {
-    quantities,
-    updatedAt: serverTimestamp(),
-  });
+  await setDoc(albumDoc(uid), { data: quantities, updatedAt: serverTimestamp() });
 }
 
 // ─── Friends ──────────────────────────────────────────────────────────────────
@@ -151,7 +158,7 @@ export async function getFriendsProfiles(
 export async function getFriendQuantities(
   friendUid: string,
 ): Promise<Record<string, number>> {
-  const snap = await getDoc(doc(db, 'users', friendUid));
+  const snap = await getDoc(albumDoc(friendUid));
   if (!snap.exists()) return {};
-  return snap.data().quantities ?? {};
+  return snap.data().data ?? {};
 }

@@ -28,74 +28,87 @@ interface SectionDef {
   specialIndices?: number[];
 }
 
-// Copa do Mundo 2026 — 49 seções: FWC (abertura, 20 especiais) + 48 seleções (20 fig. cada)
-// Sticker #1 de cada seleção = escudo holográfico (isSpecial)
-// Total: 20 + 48×20 = 980 figurinhas | Especiais: 20 (FWC) + 48 (escudos) = 68
+// Copa do Mundo 2026 — ordem do álbum Panini oficial
+// FWC (20) + 48 seleções × 20 + CC (14) = 994 total
+// Especiais: 20 (FWC abertura) + 48 (escudos, fig. 1 de cada seleção) = 68
 const SECTION_DEFS: SectionDef[] = [
-  // ── Abertura (todas holográficas) ────────────────────────────────────────────
+  // ── FWC — Abertura (todas holográficas) ──────────────────────────────────────
   { id: 'fwc', name: 'Copa 2026', flag: '🏆', color: '#D97706', prefix: 'FWC', count: 20, isSpecial: true },
 
-  // ── CONMEBOL (6) — escudo = fig. 1 ──────────────────────────────────────────
-  { id: 'bra', name: 'Brasil',    flag: '🇧🇷', color: '#009C3B', prefix: 'BRA', count: 20, specialIndices: [0] },
-  { id: 'arg', name: 'Argentina', flag: '🇦🇷', color: '#74ACDF', prefix: 'ARG', count: 20, specialIndices: [0] },
-  { id: 'uru', name: 'Uruguai',   flag: '🇺🇾', color: '#5589B2', prefix: 'URU', count: 20, specialIndices: [0] },
-  { id: 'col', name: 'Colômbia',  flag: '🇨🇴', color: '#FCD116', prefix: 'COL', count: 20, specialIndices: [0] },
-  { id: 'ecu', name: 'Equador',   flag: '🇪🇨', color: '#FFD100', prefix: 'ECU', count: 20, specialIndices: [0] },
-  { id: 'ven', name: 'Venezuela', flag: '🇻🇪', color: '#CF142B', prefix: 'VEN', count: 20, specialIndices: [0] },
+  // ── Grupo A ──────────────────────────────────────────────────────────────────
+  { id: 'mex', name: 'México',          flag: '🇲🇽', color: '#006847', prefix: 'MEX', count: 20, specialIndices: [0] },
+  { id: 'rsa', name: 'África do Sul',   flag: '🇿🇦', color: '#007A4D', prefix: 'RSA', count: 20, specialIndices: [0] },
+  { id: 'cor', name: 'Coreia do Sul',   flag: '🇰🇷', color: '#003478', prefix: 'COR', count: 20, specialIndices: [0] },
+  { id: 'tch', name: 'Rep. Tcheca',     flag: '🇨🇿', color: '#D7141A', prefix: 'TCH', count: 20, specialIndices: [0] },
 
-  // ── UEFA (16) ───────────────────────────────────────────────────────────────
-  { id: 'ing', name: 'Inglaterra',    flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: '#012169', prefix: 'ING', count: 20, specialIndices: [0] },
-  { id: 'fra', name: 'França',        flag: '🇫🇷', color: '#003189', prefix: 'FRA', count: 20, specialIndices: [0] },
-  { id: 'ale', name: 'Alemanha',      flag: '🇩🇪', color: '#1A1A1A', prefix: 'ALE', count: 20, specialIndices: [0] },
-  { id: 'esp', name: 'Espanha',       flag: '🇪🇸', color: '#AA151B', prefix: 'ESP', count: 20, specialIndices: [0] },
-  { id: 'por', name: 'Portugal',      flag: '🇵🇹', color: '#006600', prefix: 'POR', count: 20, specialIndices: [0] },
-  { id: 'ned', name: 'Países Baixos', flag: '🇳🇱', color: '#FF4F00', prefix: 'NED', count: 20, specialIndices: [0] },
-  { id: 'ita', name: 'Itália',        flag: '🇮🇹', color: '#003399', prefix: 'ITA', count: 20, specialIndices: [0] },
-  { id: 'aut', name: 'Áustria',       flag: '🇦🇹', color: '#ED2939', prefix: 'AUT', count: 20, specialIndices: [0] },
-  { id: 'sui', name: 'Suíça',         flag: '🇨🇭', color: '#D52B1E', prefix: 'SUI', count: 20, specialIndices: [0] },
-  { id: 'din', name: 'Dinamarca',     flag: '🇩🇰', color: '#C60C30', prefix: 'DIN', count: 20, specialIndices: [0] },
-  { id: 'cro', name: 'Croácia',       flag: '🇭🇷', color: '#CC0000', prefix: 'CRO', count: 20, specialIndices: [0] },
-  { id: 'ser', name: 'Sérvia',        flag: '🇷🇸', color: '#C6363C', prefix: 'SER', count: 20, specialIndices: [0] },
-  { id: 'hun', name: 'Hungria',       flag: '🇭🇺', color: '#436F4D', prefix: 'HUN', count: 20, specialIndices: [0] },
-  { id: 'esc', name: 'Escócia',       flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', color: '#003078', prefix: 'ESC', count: 20, specialIndices: [0] },
-  { id: 'tur', name: 'Turquia',       flag: '🇹🇷', color: '#E30A17', prefix: 'TUR', count: 20, specialIndices: [0] },
-  { id: 'gre', name: 'Grécia',        flag: '🇬🇷', color: '#0D5EAF', prefix: 'GRE', count: 20, specialIndices: [0] },
+  // ── Grupo B ──────────────────────────────────────────────────────────────────
+  { id: 'can', name: 'Canadá',          flag: '🇨🇦', color: '#CC0000', prefix: 'CAN', count: 20, specialIndices: [0] },
+  { id: 'bos', name: 'Bósnia',          flag: '🇧🇦', color: '#002395', prefix: 'BOS', count: 20, specialIndices: [0] },
+  { id: 'qat', name: 'Catar',           flag: '🇶🇦', color: '#8D1B3D', prefix: 'QAT', count: 20, specialIndices: [0] },
+  { id: 'sui', name: 'Suíça',           flag: '🇨🇭', color: '#D52B1E', prefix: 'SUI', count: 20, specialIndices: [0] },
 
-  // ── CONCACAF (6) ────────────────────────────────────────────────────────────
-  { id: 'usa', name: 'Estados Unidos', flag: '🇺🇸', color: '#002868', prefix: 'USA', count: 20, specialIndices: [0] },
-  { id: 'mex', name: 'México',         flag: '🇲🇽', color: '#006847', prefix: 'MEX', count: 20, specialIndices: [0] },
-  { id: 'can', name: 'Canadá',         flag: '🇨🇦', color: '#CC0000', prefix: 'CAN', count: 20, specialIndices: [0] },
-  { id: 'pan', name: 'Panamá',         flag: '🇵🇦', color: '#DA121A', prefix: 'PAN', count: 20, specialIndices: [0] },
-  { id: 'crc', name: 'Costa Rica',     flag: '🇨🇷', color: '#002B7F', prefix: 'CRC', count: 20, specialIndices: [0] },
-  { id: 'jam', name: 'Jamaica',        flag: '🇯🇲', color: '#000000', prefix: 'JAM', count: 20, specialIndices: [0] },
+  // ── Grupo C ──────────────────────────────────────────────────────────────────
+  { id: 'bra', name: 'Brasil',          flag: '🇧🇷', color: '#009C3B', prefix: 'BRA', count: 20, specialIndices: [0] },
+  { id: 'mar', name: 'Marrocos',        flag: '🇲🇦', color: '#C1272D', prefix: 'MAR', count: 20, specialIndices: [0] },
+  { id: 'hai', name: 'Haiti',           flag: '🇭🇹', color: '#00209F', prefix: 'HAI', count: 20, specialIndices: [0] },
+  { id: 'esc', name: 'Escócia',         flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', color: '#003078', prefix: 'ESC', count: 20, specialIndices: [0] },
 
-  // ── CAF — África (9) ────────────────────────────────────────────────────────
-  { id: 'mar', name: 'Marrocos',      flag: '🇲🇦', color: '#C1272D', prefix: 'MAR', count: 20, specialIndices: [0] },
-  { id: 'sen', name: 'Senegal',       flag: '🇸🇳', color: '#00853F', prefix: 'SEN', count: 20, specialIndices: [0] },
-  { id: 'nga', name: 'Nigéria',       flag: '🇳🇬', color: '#008751', prefix: 'NGA', count: 20, specialIndices: [0] },
-  { id: 'egi', name: 'Egito',         flag: '🇪🇬', color: '#CE1126', prefix: 'EGI', count: 20, specialIndices: [0] },
-  { id: 'cam', name: 'Camarões',      flag: '🇨🇲', color: '#007A5E', prefix: 'CAM', count: 20, specialIndices: [0] },
-  { id: 'mli', name: 'Mali',          flag: '🇲🇱', color: '#009A00', prefix: 'MLI', count: 20, specialIndices: [0] },
-  { id: 'rsa', name: 'África do Sul', flag: '🇿🇦', color: '#007A4D', prefix: 'RSA', count: 20, specialIndices: [0] },
-  { id: 'drc', name: 'Congo DR',      flag: '🇨🇩', color: '#007FFF', prefix: 'DRC', count: 20, specialIndices: [0] },
-  { id: 'alg', name: 'Argélia',       flag: '🇩🇿', color: '#006233', prefix: 'ALG', count: 20, specialIndices: [0] },
+  // ── Grupo D ──────────────────────────────────────────────────────────────────
+  { id: 'usa', name: 'Estados Unidos',  flag: '🇺🇸', color: '#002868', prefix: 'USA', count: 20, specialIndices: [0] },
+  { id: 'par', name: 'Paraguai',        flag: '🇵🇾', color: '#D52B1E', prefix: 'PAR', count: 20, specialIndices: [0] },
+  { id: 'aus', name: 'Austrália',       flag: '🇦🇺', color: '#00843D', prefix: 'AUS', count: 20, specialIndices: [0] },
+  { id: 'tur', name: 'Turquia',         flag: '🇹🇷', color: '#E30A17', prefix: 'TUR', count: 20, specialIndices: [0] },
 
-  // ── AFC — Ásia (8) ──────────────────────────────────────────────────────────
-  { id: 'jap', name: 'Japão',          flag: '🇯🇵', color: '#BC002D', prefix: 'JAP', count: 20, specialIndices: [0] },
-  { id: 'cor', name: 'Coreia do Sul',  flag: '🇰🇷', color: '#003478', prefix: 'COR', count: 20, specialIndices: [0] },
-  { id: 'aus', name: 'Austrália',      flag: '🇦🇺', color: '#00843D', prefix: 'AUS', count: 20, specialIndices: [0] },
-  { id: 'ars', name: 'Arábia Saudita', flag: '🇸🇦', color: '#006C35', prefix: 'ARS', count: 20, specialIndices: [0] },
-  { id: 'ira', name: 'Irã',            flag: '🇮🇷', color: '#239F40', prefix: 'IRA', count: 20, specialIndices: [0] },
-  { id: 'irq', name: 'Iraque',         flag: '🇮🇶', color: '#CE1126', prefix: 'IRQ', count: 20, specialIndices: [0] },
-  { id: 'jor', name: 'Jordânia',       flag: '🇯🇴', color: '#007A3D', prefix: 'JOR', count: 20, specialIndices: [0] },
-  { id: 'uzb', name: 'Uzbequistão',    flag: '🇺🇿', color: '#1EB53A', prefix: 'UZB', count: 20, specialIndices: [0] },
+  // ── Grupo E ──────────────────────────────────────────────────────────────────
+  { id: 'ale', name: 'Alemanha',        flag: '🇩🇪', color: '#1A1A1A', prefix: 'ALE', count: 20, specialIndices: [0] },
+  { id: 'cur', name: 'Curaçao',         flag: '🇨🇼', color: '#002B7F', prefix: 'CUR', count: 20, specialIndices: [0] },
+  { id: 'civ', name: 'Costa do Marfim', flag: '🇨🇮', color: '#F77F00', prefix: 'CIV', count: 20, specialIndices: [0] },
+  { id: 'ecu', name: 'Equador',         flag: '🇪🇨', color: '#FFD100', prefix: 'ECU', count: 20, specialIndices: [0] },
 
-  // ── OFC — Oceania (1) ───────────────────────────────────────────────────────
-  { id: 'nzl', name: 'Nova Zelândia', flag: '🇳🇿', color: '#00247D', prefix: 'NZL', count: 20, specialIndices: [0] },
+  // ── Grupo F ──────────────────────────────────────────────────────────────────
+  { id: 'ned', name: 'Países Baixos',   flag: '🇳🇱', color: '#FF4F00', prefix: 'NED', count: 20, specialIndices: [0] },
+  { id: 'jap', name: 'Japão',           flag: '🇯🇵', color: '#BC002D', prefix: 'JAP', count: 20, specialIndices: [0] },
+  { id: 'sue', name: 'Suécia',          flag: '🇸🇪', color: '#006AA7', prefix: 'SUE', count: 20, specialIndices: [0] },
+  { id: 'tun', name: 'Tunísia',         flag: '🇹🇳', color: '#E70013', prefix: 'TUN', count: 20, specialIndices: [0] },
 
-  // ── Playoffs Intercontinentais (2) ──────────────────────────────────────────
-  { id: 'pl1', name: 'Playoff 1', flag: '🏳️', color: '#6B7280', prefix: 'PL1', count: 20, specialIndices: [0] },
-  { id: 'pl2', name: 'Playoff 2', flag: '🏳️', color: '#6B7280', prefix: 'PL2', count: 20, specialIndices: [0] },
+  // ── Grupo G ──────────────────────────────────────────────────────────────────
+  { id: 'bel', name: 'Bélgica',         flag: '🇧🇪', color: '#EF3340', prefix: 'BEL', count: 20, specialIndices: [0] },
+  { id: 'egi', name: 'Egito',           flag: '🇪🇬', color: '#CE1126', prefix: 'EGI', count: 20, specialIndices: [0] },
+  { id: 'ira', name: 'Irã',             flag: '🇮🇷', color: '#239F40', prefix: 'IRA', count: 20, specialIndices: [0] },
+  { id: 'nzl', name: 'Nova Zelândia',   flag: '🇳🇿', color: '#00247D', prefix: 'NZL', count: 20, specialIndices: [0] },
+
+  // ── Grupo H ──────────────────────────────────────────────────────────────────
+  { id: 'esp', name: 'Espanha',         flag: '🇪🇸', color: '#AA151B', prefix: 'ESP', count: 20, specialIndices: [0] },
+  { id: 'cpv', name: 'Cabo Verde',      flag: '🇨🇻', color: '#003893', prefix: 'CPV', count: 20, specialIndices: [0] },
+  { id: 'ars', name: 'Arábia Saudita',  flag: '🇸🇦', color: '#006C35', prefix: 'ARS', count: 20, specialIndices: [0] },
+  { id: 'uru', name: 'Uruguai',         flag: '🇺🇾', color: '#5589B2', prefix: 'URU', count: 20, specialIndices: [0] },
+
+  // ── Grupo I ──────────────────────────────────────────────────────────────────
+  { id: 'fra', name: 'França',          flag: '🇫🇷', color: '#003189', prefix: 'FRA', count: 20, specialIndices: [0] },
+  { id: 'sen', name: 'Senegal',         flag: '🇸🇳', color: '#00853F', prefix: 'SEN', count: 20, specialIndices: [0] },
+  { id: 'irq', name: 'Iraque',          flag: '🇮🇶', color: '#CE1126', prefix: 'IRQ', count: 20, specialIndices: [0] },
+  { id: 'nor', name: 'Noruega',         flag: '🇳🇴', color: '#EF2B2D', prefix: 'NOR', count: 20, specialIndices: [0] },
+
+  // ── Grupo J ──────────────────────────────────────────────────────────────────
+  { id: 'arg', name: 'Argentina',       flag: '🇦🇷', color: '#74ACDF', prefix: 'ARG', count: 20, specialIndices: [0] },
+  { id: 'alg', name: 'Argélia',         flag: '🇩🇿', color: '#006233', prefix: 'ALG', count: 20, specialIndices: [0] },
+  { id: 'aut', name: 'Áustria',         flag: '🇦🇹', color: '#ED2939', prefix: 'AUT', count: 20, specialIndices: [0] },
+  { id: 'jor', name: 'Jordânia',        flag: '🇯🇴', color: '#007A3D', prefix: 'JOR', count: 20, specialIndices: [0] },
+
+  // ── Grupo K ──────────────────────────────────────────────────────────────────
+  { id: 'por', name: 'Portugal',        flag: '🇵🇹', color: '#006600', prefix: 'POR', count: 20, specialIndices: [0] },
+  { id: 'drc', name: 'Congo RD',        flag: '🇨🇩', color: '#007FFF', prefix: 'DRC', count: 20, specialIndices: [0] },
+  { id: 'uzb', name: 'Uzbequistão',     flag: '🇺🇿', color: '#1EB53A', prefix: 'UZB', count: 20, specialIndices: [0] },
+  { id: 'col', name: 'Colômbia',        flag: '🇨🇴', color: '#FCD116', prefix: 'COL', count: 20, specialIndices: [0] },
+
+  // ── Grupo L ──────────────────────────────────────────────────────────────────
+  { id: 'ing', name: 'Inglaterra',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: '#012169', prefix: 'ING', count: 20, specialIndices: [0] },
+  { id: 'cro', name: 'Croácia',         flag: '🇭🇷', color: '#CC0000', prefix: 'CRO', count: 20, specialIndices: [0] },
+  { id: 'gha', name: 'Gana',            flag: '🇬🇭', color: '#006B3F', prefix: 'GHA', count: 20, specialIndices: [0] },
+  { id: 'pan', name: 'Panamá',          flag: '🇵🇦', color: '#DA121A', prefix: 'PAN', count: 20, specialIndices: [0] },
+
+  // ── CC — Coca-Cola ───────────────────────────────────────────────────────────
+  { id: 'cc', name: 'Coca-Cola', flag: '🥤', color: '#F40009', prefix: 'CC', count: 14 },
 ];
 
 export const INITIAL_SECTIONS: Section[] = SECTION_DEFS.map(
@@ -109,14 +122,6 @@ export const INITIAL_SECTIONS: Section[] = SECTION_DEFS.map(
   }),
 );
 
-// Seed de demonstração
-export const SEED_QUANTITIES: Record<string, number> = {
-  bra_1: 1, bra_2: 2, bra_3: 1, bra_5: 3,
-  bra_6: 1, bra_8: 2, bra_9: 1,
-  fwc_1: 1, fwc_3: 2, fwc_5: 1, fwc_7: 3,
-  arg_2: 1, arg_4: 2, arg_6: 1,
-};
-
-// Total: 20 (FWC) + 48 × 20 (seleções) = 980
+// Seções: 50 | Total figurinhas: 20 (FWC) + 48×20 (seleções) + 14 (CC) = 994
 // Especiais: 20 (FWC holográficas) + 48 (escudos) = 68
 export const TOTAL_STICKERS = SECTION_DEFS.reduce((sum, s) => sum + s.count, 0);

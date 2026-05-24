@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { INITIAL_SECTIONS, SEED_QUANTITIES } from '../data/mockData';
+import { INITIAL_SECTIONS } from '../data/mockData';
 import { Section } from '../types';
 import { loadAlbumQuantities, saveAlbumQuantities } from '../services/firestore';
 
 export function useAlbum(userId?: string | null) {
-  const [quantities, setQuantities] = useState<Record<string, number>>(SEED_QUANTITIES);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [syncing, setSyncing] = useState(false);
   const initialized = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -13,13 +13,13 @@ export function useAlbum(userId?: string | null) {
   useEffect(() => {
     if (!userId) {
       initialized.current = false;
-      setQuantities(SEED_QUANTITIES);
+      setQuantities({});
       return;
     }
     setSyncing(true);
     loadAlbumQuantities(userId)
       .then(data => {
-        setQuantities(Object.keys(data).length > 0 ? data : {});
+        setQuantities(data);
         initialized.current = true;
       })
       .catch(console.error)
