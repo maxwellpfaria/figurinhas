@@ -78,6 +78,7 @@ export default function TradeScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <Text style={styles.headerTitle}>Troca via QR Code</Text>
+        <Text style={styles.headerSub}>Troque figurinhas presencialmente com seu amigo</Text>
       </View>
 
       {/* ── Tab switcher ── */}
@@ -294,6 +295,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '800',
     letterSpacing: 0.2,
+  },
+  headerSub: {
+    color: '#94A3B8',
+    fontSize: 13,
+    marginTop: 2,
   },
 
   // ── Tabs ──

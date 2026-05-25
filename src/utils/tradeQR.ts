@@ -122,3 +122,56 @@ export function getAlbumStats(quantities: Record<string, number>) {
   });
   return { missing, extras };
 }
+
+// ─── WhatsApp share text ──────────────────────────────────────────────────────
+
+export function generateShareText(
+  quantities: Record<string, number>,
+  displayName: string,
+): string {
+  const lines: string[] = [];
+  lines.push(`🏆 Álbum Copa 2026 — ${displayName}`);
+  lines.push('');
+
+  // Repetidas
+  const sectionsWithExtras = INITIAL_SECTIONS.filter(s =>
+    s.stickers.some(st => (quantities[st.id] ?? 0) >= 2),
+  );
+  if (sectionsWithExtras.length > 0) {
+    lines.push('📦 *REPETIDAS* (posso trocar):');
+    for (const section of sectionsWithExtras) {
+      const nums = section.stickers
+        .filter(st => (quantities[st.id] ?? 0) >= 2)
+        .map(st => st.number)
+        .join(', ');
+      lines.push(`${section.flag} ${section.name}: ${nums}`);
+    }
+  } else {
+    lines.push('📦 *REPETIDAS*: nenhuma ainda');
+  }
+
+  lines.push('');
+
+  // Faltando
+  const sectionsWithMissing = INITIAL_SECTIONS.filter(s =>
+    s.stickers.some(st => (quantities[st.id] ?? 0) === 0),
+  );
+  if (sectionsWithMissing.length > 0) {
+    lines.push('❌ *FALTANDO*:');
+    for (const section of sectionsWithMissing) {
+      const missing = section.stickers.filter(st => (quantities[st.id] ?? 0) === 0);
+      const label =
+        missing.length === section.stickers.length
+          ? 'todas'
+          : missing.map(st => st.number).join(', ');
+      lines.push(`${section.flag} ${section.name}: ${label}`);
+    }
+  } else {
+    lines.push('✅ Álbum completo!');
+  }
+
+  lines.push('');
+  lines.push('_Compartilhado pelo app Meu Álbum Completo_ 📱');
+
+  return lines.join('\n');
+}

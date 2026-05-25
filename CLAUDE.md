@@ -1,4 +1,4 @@
-# FiguCopa 2026 — Base de Conhecimento
+# Meu Álbum Completo — Base de Conhecimento
 
 Álbum digital das figurinhas da Copa do Mundo FIFA 2026 (Panini). O usuário registra quais figurinhas possui, compara com amigos e identifica possíveis trocas.
 

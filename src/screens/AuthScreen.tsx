@@ -77,7 +77,7 @@ export default function AuthScreen() {
         {/* Logo / branding */}
         <View style={styles.logoArea}>
           <Text style={styles.trophy}>⚽</Text>
-          <Text style={[styles.appName, { color: colors.textPrimary }]}>FiguCopa 2026</Text>
+          <Text style={[styles.appName, { color: colors.textPrimary }]}>Meu Álbum Completo</Text>
           <Text style={[styles.appTagline, { color: colors.textMuted }]}>
             Seu álbum inteligente da Copa
           </Text>
