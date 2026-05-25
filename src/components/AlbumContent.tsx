@@ -6,6 +6,8 @@ import SectionTabs from './SectionTabs';
 import { Section, Sticker } from '../types';
 import { ColorsType } from '../theme';
 
+type StickerRow = { id: string; stickers: Sticker[]; hasFormation: boolean };
+
 interface Props {
   sections: Section[];
   isDark: boolean;
@@ -32,10 +34,37 @@ export default function AlbumContent({
 
   const sectionIds = useMemo(() => sections.map(s => s.id), [sections]);
 
-  const currentStickers = useMemo(
-    () => sections.find(s => s.id === selectedSectionId)?.stickers ?? [],
+  const currentSection = useMemo(
+    () => sections.find(s => s.id === selectedSectionId) ?? null,
     [sections, selectedSectionId],
   );
+
+  const currentStickers = useMemo(
+    () => currentSection?.stickers ?? [],
+    [currentSection],
+  );
+
+  // Group stickers into rows; sticker 13 in team sections spans 2 columns
+  const stickerRows = useMemo<StickerRow[]>(() => {
+    const isTeam = (currentSection?.stickers.length ?? 0) === 20 && !currentSection?.isSpecial;
+    const result: StickerRow[] = [];
+    let i = 0;
+    while (i < currentStickers.length) {
+      const s = currentStickers[i];
+      if (isTeam && s.number === 13) {
+        const row: Sticker[] = [s];
+        if (currentStickers[i + 1]) row.push(currentStickers[i + 1]);
+        if (currentStickers[i + 2]) row.push(currentStickers[i + 2]);
+        result.push({ id: s.id, stickers: row, hasFormation: true });
+        i += 3;
+      } else {
+        const row = currentStickers.slice(i, i + NUM_COLUMNS);
+        result.push({ id: row[0].id, stickers: row, hasFormation: false });
+        i += NUM_COLUMNS;
+      }
+    }
+    return result;
+  }, [currentStickers, currentSection]);
 
   const getSectionProgress = useCallback(
     (sectionId: string) => {
@@ -84,9 +113,8 @@ export default function AlbumContent({
     <GestureDetector gesture={swipeGesture}>
       <View style={styles.root}>
         <FlatList
-          data={currentStickers}
-          keyExtractor={item => item.id}
-          numColumns={NUM_COLUMNS}
+          data={stickerRows}
+          keyExtractor={row => row.id}
           contentContainerStyle={[
             styles.gridContent,
             { backgroundColor: colors.background },
@@ -98,17 +126,23 @@ export default function AlbumContent({
             </>
           }
           removeClippedSubviews
-          initialNumToRender={24}
-          maxToRenderPerBatch={16}
+          initialNumToRender={6}
+          maxToRenderPerBatch={4}
           windowSize={5}
-          renderItem={({ item }) => (
-            <StickerCard
-              sticker={item}
-              isDark={isDark}
-              colors={colors}
-              onPress={readOnly ? noOp : (onPress ?? noOp)}
-              onLongPress={readOnly ? noOp as any : (onLongPress ?? noOp as any)}
-            />
+          renderItem={({ item: row }) => (
+            <View style={styles.row}>
+              {row.stickers.map((sticker, idx) => (
+                <StickerCard
+                  key={sticker.id}
+                  sticker={sticker}
+                  isDark={isDark}
+                  colors={colors}
+                  isWide={row.hasFormation && idx === 0}
+                  onPress={readOnly ? noOp : (onPress ?? noOp)}
+                  onLongPress={readOnly ? noOp as any : (onLongPress ?? noOp as any)}
+                />
+              ))}
+            </View>
           )}
         />
       </View>
@@ -122,5 +156,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 8,
     paddingBottom: 32,
+  },
+  row: {
+    flexDirection: 'row',
   },
 });

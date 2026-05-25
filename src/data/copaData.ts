@@ -38,12 +38,12 @@ const SECTION_DEFS: SectionDef[] = [
   // ── Grupo A ──────────────────────────────────────────────────────────────────
   { id: 'mex', name: 'México',          flag: '🇲🇽', color: '#006847', prefix: 'MEX', count: 20, specialIndices: [0] },
   { id: 'rsa', name: 'África do Sul',   flag: '🇿🇦', color: '#007A4D', prefix: 'RSA', count: 20, specialIndices: [0] },
-  { id: 'cor', name: 'Coreia do Sul',   flag: '🇰🇷', color: '#003478', prefix: 'COR', count: 20, specialIndices: [0] },
-  { id: 'tch', name: 'Rep. Tcheca',     flag: '🇨🇿', color: '#D7141A', prefix: 'TCH', count: 20, specialIndices: [0] },
+  { id: 'cor', name: 'Coreia do Sul',   flag: '🇰🇷', color: '#003478', prefix: 'KOR', count: 20, specialIndices: [0] },
+  { id: 'tch', name: 'Rep. Tcheca',     flag: '🇨🇿', color: '#D7141A', prefix: 'CZE', count: 20, specialIndices: [0] },
 
   // ── Grupo B ──────────────────────────────────────────────────────────────────
   { id: 'can', name: 'Canadá',          flag: '🇨🇦', color: '#CC0000', prefix: 'CAN', count: 20, specialIndices: [0] },
-  { id: 'bos', name: 'Bósnia',          flag: '🇧🇦', color: '#002395', prefix: 'BOS', count: 20, specialIndices: [0] },
+  { id: 'bos', name: 'Bósnia',          flag: '🇧🇦', color: '#002395', prefix: 'BIH', count: 20, specialIndices: [0] },
   { id: 'qat', name: 'Catar',           flag: '🇶🇦', color: '#8D1B3D', prefix: 'QAT', count: 20, specialIndices: [0] },
   { id: 'sui', name: 'Suíça',           flag: '🇨🇭', color: '#D52B1E', prefix: 'SUI', count: 20, specialIndices: [0] },
 
@@ -51,7 +51,7 @@ const SECTION_DEFS: SectionDef[] = [
   { id: 'bra', name: 'Brasil',          flag: '🇧🇷', color: '#009C3B', prefix: 'BRA', count: 20, specialIndices: [0] },
   { id: 'mar', name: 'Marrocos',        flag: '🇲🇦', color: '#C1272D', prefix: 'MAR', count: 20, specialIndices: [0] },
   { id: 'hai', name: 'Haiti',           flag: '🇭🇹', color: '#00209F', prefix: 'HAI', count: 20, specialIndices: [0] },
-  { id: 'esc', name: 'Escócia',         flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', color: '#003078', prefix: 'ESC', count: 20, specialIndices: [0] },
+  { id: 'esc', name: 'Escócia',         flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', color: '#003078', prefix: 'SCO', count: 20, specialIndices: [0] },
 
   // ── Grupo D ──────────────────────────────────────────────────────────────────
   { id: 'usa', name: 'Estados Unidos',  flag: '🇺🇸', color: '#002868', prefix: 'USA', count: 20, specialIndices: [0] },
@@ -60,27 +60,27 @@ const SECTION_DEFS: SectionDef[] = [
   { id: 'tur', name: 'Turquia',         flag: '🇹🇷', color: '#E30A17', prefix: 'TUR', count: 20, specialIndices: [0] },
 
   // ── Grupo E ──────────────────────────────────────────────────────────────────
-  { id: 'ale', name: 'Alemanha',        flag: '🇩🇪', color: '#1A1A1A', prefix: 'ALE', count: 20, specialIndices: [0] },
+  { id: 'ale', name: 'Alemanha',        flag: '🇩🇪', color: '#1A1A1A', prefix: 'GER', count: 20, specialIndices: [0] },
   { id: 'cur', name: 'Curaçao',         flag: '🇨🇼', color: '#002B7F', prefix: 'CUR', count: 20, specialIndices: [0] },
   { id: 'civ', name: 'Costa do Marfim', flag: '🇨🇮', color: '#F77F00', prefix: 'CIV', count: 20, specialIndices: [0] },
   { id: 'ecu', name: 'Equador',         flag: '🇪🇨', color: '#FFD100', prefix: 'ECU', count: 20, specialIndices: [0] },
 
   // ── Grupo F ──────────────────────────────────────────────────────────────────
   { id: 'ned', name: 'Países Baixos',   flag: '🇳🇱', color: '#FF4F00', prefix: 'NED', count: 20, specialIndices: [0] },
-  { id: 'jap', name: 'Japão',           flag: '🇯🇵', color: '#BC002D', prefix: 'JAP', count: 20, specialIndices: [0] },
-  { id: 'sue', name: 'Suécia',          flag: '🇸🇪', color: '#006AA7', prefix: 'SUE', count: 20, specialIndices: [0] },
+  { id: 'jap', name: 'Japão',           flag: '🇯🇵', color: '#BC002D', prefix: 'JPN', count: 20, specialIndices: [0] },
+  { id: 'sue', name: 'Suécia',          flag: '🇸🇪', color: '#006AA7', prefix: 'SWE', count: 20, specialIndices: [0] },
   { id: 'tun', name: 'Tunísia',         flag: '🇹🇳', color: '#E70013', prefix: 'TUN', count: 20, specialIndices: [0] },
 
   // ── Grupo G ──────────────────────────────────────────────────────────────────
   { id: 'bel', name: 'Bélgica',         flag: '🇧🇪', color: '#EF3340', prefix: 'BEL', count: 20, specialIndices: [0] },
-  { id: 'egi', name: 'Egito',           flag: '🇪🇬', color: '#CE1126', prefix: 'EGI', count: 20, specialIndices: [0] },
-  { id: 'ira', name: 'Irã',             flag: '🇮🇷', color: '#239F40', prefix: 'IRA', count: 20, specialIndices: [0] },
+  { id: 'egi', name: 'Egito',           flag: '🇪🇬', color: '#CE1126', prefix: 'EGY', count: 20, specialIndices: [0] },
+  { id: 'ira', name: 'Irã',             flag: '🇮🇷', color: '#239F40', prefix: 'IRN', count: 20, specialIndices: [0] },
   { id: 'nzl', name: 'Nova Zelândia',   flag: '🇳🇿', color: '#00247D', prefix: 'NZL', count: 20, specialIndices: [0] },
 
   // ── Grupo H ──────────────────────────────────────────────────────────────────
   { id: 'esp', name: 'Espanha',         flag: '🇪🇸', color: '#AA151B', prefix: 'ESP', count: 20, specialIndices: [0] },
   { id: 'cpv', name: 'Cabo Verde',      flag: '🇨🇻', color: '#003893', prefix: 'CPV', count: 20, specialIndices: [0] },
-  { id: 'ars', name: 'Arábia Saudita',  flag: '🇸🇦', color: '#006C35', prefix: 'ARS', count: 20, specialIndices: [0] },
+  { id: 'ars', name: 'Arábia Saudita',  flag: '🇸🇦', color: '#006C35', prefix: 'KSA', count: 20, specialIndices: [0] },
   { id: 'uru', name: 'Uruguai',         flag: '🇺🇾', color: '#5589B2', prefix: 'URU', count: 20, specialIndices: [0] },
 
   // ── Grupo I ──────────────────────────────────────────────────────────────────
@@ -97,12 +97,12 @@ const SECTION_DEFS: SectionDef[] = [
 
   // ── Grupo K ──────────────────────────────────────────────────────────────────
   { id: 'por', name: 'Portugal',        flag: '🇵🇹', color: '#006600', prefix: 'POR', count: 20, specialIndices: [0] },
-  { id: 'drc', name: 'Congo RD',        flag: '🇨🇩', color: '#007FFF', prefix: 'DRC', count: 20, specialIndices: [0] },
+  { id: 'drc', name: 'Congo RD',        flag: '🇨🇩', color: '#007FFF', prefix: 'COD', count: 20, specialIndices: [0] },
   { id: 'uzb', name: 'Uzbequistão',     flag: '🇺🇿', color: '#1EB53A', prefix: 'UZB', count: 20, specialIndices: [0] },
   { id: 'col', name: 'Colômbia',        flag: '🇨🇴', color: '#FCD116', prefix: 'COL', count: 20, specialIndices: [0] },
 
   // ── Grupo L ──────────────────────────────────────────────────────────────────
-  { id: 'ing', name: 'Inglaterra',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: '#012169', prefix: 'ING', count: 20, specialIndices: [0] },
+  { id: 'ing', name: 'Inglaterra',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: '#012169', prefix: 'ENG', count: 20, specialIndices: [0] },
   { id: 'cro', name: 'Croácia',         flag: '🇭🇷', color: '#CC0000', prefix: 'CRO', count: 20, specialIndices: [0] },
   { id: 'gha', name: 'Gana',            flag: '🇬🇭', color: '#006B3F', prefix: 'GHA', count: 20, specialIndices: [0] },
   { id: 'pan', name: 'Panamá',          flag: '🇵🇦', color: '#DA121A', prefix: 'PAN', count: 20, specialIndices: [0] },

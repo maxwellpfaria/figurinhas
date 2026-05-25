@@ -22,6 +22,8 @@ export const CARD_WIDTH =
   (SCREEN_WIDTH - H_PADDING * 2 - CARD_GAP * 2 * NUM_COLUMNS) / NUM_COLUMNS;
 export const CARD_HEIGHT = Math.floor(CARD_WIDTH * 1.35); // 3:4 proportion
 export const ROW_HEIGHT = CARD_HEIGHT + CARD_GAP * 2;
+// Formation card (sticker 13) spans 2 column slots including inner gap
+export const WIDE_CARD_WIDTH = CARD_WIDTH * 2 + CARD_GAP * 2;
 
 // Gold gradient colors for legendary owned cards
 const LEGEND_GRADIENT_LIGHT: [string, string, string, string, string] = [
@@ -35,6 +37,7 @@ interface Props {
   sticker: Sticker;
   isDark: boolean;
   colors: ColorsType;
+  isWide?: boolean;
   onPress: (id: string) => void;
   onLongPress: (sticker: Sticker) => void;
 }
@@ -44,12 +47,13 @@ function areEqual(prev: Props, next: Props) {
     prev.sticker.quantity === next.sticker.quantity &&
     prev.sticker.id === next.sticker.id &&
     prev.isDark === next.isDark &&
+    prev.isWide === next.isWide &&
     prev.onPress === next.onPress &&
     prev.onLongPress === next.onLongPress
   );
 }
 
-const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Props) => {
+const StickerCard = memo(({ sticker, isDark, colors, isWide = false, onPress, onLongPress }: Props) => {
   const { id, code, quantity, isSpecial } = sticker;
   const state = getStickerState(quantity);
   const isOwned = state !== 'missing';
@@ -85,6 +89,9 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
 
   const prefix = code.split(' ')[0];
   const num = sticker.number;
+  const wrapperStyle = isWide
+    ? [styles.cardWrapper, { width: WIDE_CARD_WIDTH }]
+    : styles.cardWrapper;
 
   // ── Legendary owned card ──────────────────────────────────────────────────
   if (isSpecialOwned) {
@@ -97,7 +104,7 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
         onLongPress={handleLongPress}
         delayLongPress={400}
         activeOpacity={0.8}
-        style={styles.cardWrapper}
+        style={wrapperStyle}
       >
         <LinearGradient
           colors={gradColors}
@@ -143,7 +150,7 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
         onLongPress={handleLongPress}
         delayLongPress={400}
         activeOpacity={0.6}
-        style={styles.cardWrapper}
+        style={wrapperStyle}
       >
         <View
           style={[
@@ -178,7 +185,7 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
         onLongPress={handleLongPress}
         delayLongPress={400}
         activeOpacity={0.75}
-        style={styles.cardWrapper}
+        style={wrapperStyle}
       >
         <View
           style={[
@@ -202,6 +209,11 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
               </Text>
             </View>
           )}
+          {isWide && (
+            <View style={styles.formationTag}>
+              <Text style={[styles.formationTagText, { color: colors.ownedText }]}>⚽ FORMAÇÃO</Text>
+            </View>
+          )}
           <Text style={[styles.prefix, { color: colors.ownedText, opacity: 0.65 }]}>
             {prefix}
           </Text>
@@ -221,7 +233,7 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
       onLongPress={handleLongPress}
       delayLongPress={400}
       activeOpacity={0.5}
-      style={styles.cardWrapper}
+      style={wrapperStyle}
     >
       <View
         style={[
@@ -234,6 +246,11 @@ const StickerCard = memo(({ sticker, isDark, colors, onPress, onLongPress }: Pro
           },
         ]}
       >
+        {isWide && (
+          <View style={styles.formationTag}>
+            <Text style={[styles.formationTagText, { color: colors.missingText }]}>⚽ FORMAÇÃO</Text>
+          </View>
+        )}
         <Text style={[styles.prefix, { color: colors.missingText, opacity: 0.5 }]}>
           {prefix}
         </Text>
@@ -297,6 +314,18 @@ const styles = StyleSheet.create({
   legendTagText: {
     fontSize: 9,
     fontWeight: '900',
+  },
+
+  formationTag: {
+    position: 'absolute',
+    top: 4,
+    left: 5,
+  },
+  formationTagText: {
+    fontSize: 8,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+    opacity: 0.65,
   },
 
   badge: {
