@@ -26,6 +26,14 @@
       "package": "com.figurinha.copa2026",
       "permissions": ["android.permission.CAMERA"]
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Necessário para escanear o QR Code de troca de figurinhas do seu amigo."
+        }
+      ]
+    ],
     "web": {
       "bundler": "metro",
       "output": "single"
