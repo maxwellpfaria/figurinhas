@@ -21,7 +21,7 @@ export default function AlbumScreen() {
   const { user } = useAuth();
   const { sections, increment, setQuantity, getSectionProgress, totalProgress, syncing } =
     useAlbum(user?.uid);
-  const { colors, isDark, toggleTheme } = useTheme();
+  const { colors, isDark } = useTheme();
   const [editingSticker, setEditingSticker] = useState<Sticker | null>(null);
 
   // Keep liveEditingSticker in sync across sticker list
@@ -46,22 +46,12 @@ export default function AlbumScreen() {
             <Text style={styles.headerTitle}>Meu Álbum</Text>
             <Text style={styles.headerSub}>{ALBUM_CONFIG.name}</Text>
           </View>
-          <View style={styles.headerActions}>
-            {syncing && (
-              <ActivityIndicator
-                size="small"
-                color="rgba(255,255,255,0.6)"
-                style={{ marginRight: 8 }}
-              />
-            )}
-            <TouchableOpacity
-              onPress={toggleTheme}
-              activeOpacity={0.7}
-              style={styles.themeToggle}
-            >
-              <Text style={styles.themeToggleIcon}>{isDark ? '☀️' : '🌙'}</Text>
-            </TouchableOpacity>
-          </View>
+          {syncing && (
+            <ActivityIndicator
+              size="small"
+              color="rgba(255,255,255,0.6)"
+            />
+          )}
         </View>
       </View>
 
@@ -119,20 +109,8 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
-  themeToggle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  themeToggleIcon: { fontSize: 18 },
 
   hintRow: {
     paddingVertical: 6,

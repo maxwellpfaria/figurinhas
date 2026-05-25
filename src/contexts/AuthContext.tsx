@@ -13,7 +13,8 @@ import {
   getUserProfile,
   UserProfile,
 } from '../services/firestore';
-import { signIn, signUp, signOut, resetPassword } from '../services/auth';
+import { signIn, signUp, signOut, resetPassword, updateDisplayName, deleteAccount as authDeleteAccount } from '../services/auth';
+import { updateUserDisplayName, deleteUserData } from '../services/firestore';
 
 interface AuthContextValue {
   user: User | null;
@@ -26,6 +27,8 @@ interface AuthContextValue {
   resetPassword: (email: string) => Promise<void>;
   clearError: () => void;
   refreshProfile: () => Promise<void>;
+  updateName: (name: string) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -39,6 +42,8 @@ const AuthContext = createContext<AuthContextValue>({
   resetPassword: async () => {},
   clearError: () => {},
   refreshProfile: async () => {},
+  updateName: async () => {},
+  deleteAccount: async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -112,6 +117,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) await loadProfile(user.uid);
   }, [user, loadProfile]);
 
+  const handleUpdateName = useCallback(async (name: string) => {
+    if (!user) return;
+    await updateDisplayName(name);
+    await updateUserDisplayName(user.uid, name);
+    await loadProfile(user.uid);
+  }, [user, loadProfile]);
+
+  const handleDeleteAccount = useCallback(async () => {
+    if (!user) return;
+    // Delete Firestore data first while still authenticated
+    await deleteUserData(user.uid);
+    // Then delete the Firebase Auth user (may throw auth/requires-recent-login)
+    await authDeleteAccount();
+  }, [user]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -125,6 +145,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword: handleResetPassword,
         clearError: () => setAuthError(null),
         refreshProfile,
+        updateName: handleUpdateName,
+        deleteAccount: handleDeleteAccount,
       }}
     >
       {children}

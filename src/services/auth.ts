@@ -4,6 +4,7 @@ import {
   signOut as firebaseSignOut,
   sendPasswordResetEmail,
   updateProfile,
+  deleteUser,
 } from 'firebase/auth';
 import { auth } from './firebase';
 import { createUserProfile } from './firestore';
@@ -28,4 +29,14 @@ export async function signOut(): Promise<void> {
 
 export async function resetPassword(email: string): Promise<void> {
   await sendPasswordResetEmail(auth, email);
+}
+
+export async function updateDisplayName(newName: string): Promise<void> {
+  if (!auth.currentUser) throw new Error('Usuário não autenticado.');
+  await updateProfile(auth.currentUser, { displayName: newName });
+}
+
+export async function deleteAccount(): Promise<void> {
+  if (!auth.currentUser) throw new Error('Usuário não autenticado.');
+  await deleteUser(auth.currentUser);
 }

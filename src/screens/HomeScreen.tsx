@@ -57,7 +57,7 @@ function useFriendsProgress(friendUids: string[]) {
 // ─── HomeScreen ───────────────────────────────────────────────────────────────
 
 export default function HomeScreen() {
-  const { colors, isDark, toggleTheme } = useTheme();
+  const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
   const { sections, quantities, totalProgress, syncing } = useAlbum(user?.uid);
   const { friends, loading: friendsLoading } = useFriendsProgress(profile?.friends ?? []);
@@ -109,18 +109,12 @@ export default function HomeScreen() {
             <Text style={styles.greeting}>Olá, {firstName}! 👋</Text>
             <Text style={styles.headerSub}>Copa do Mundo FIFA 2026</Text>
           </View>
-          <View style={styles.headerActions}>
-            {syncing && (
-              <ActivityIndicator
-                size="small"
-                color="rgba(255,255,255,0.55)"
-                style={{ marginRight: 8 }}
-              />
-            )}
-            <TouchableOpacity onPress={toggleTheme} style={styles.themeBtn} activeOpacity={0.7}>
-              <Text style={{ fontSize: 18 }}>{isDark ? '☀️' : '🌙'}</Text>
-            </TouchableOpacity>
-          </View>
+          {syncing && (
+            <ActivityIndicator
+              size="small"
+              color="rgba(255,255,255,0.55)"
+            />
+          )}
         </View>
       </View>
 
@@ -381,20 +375,6 @@ const styles = StyleSheet.create({
     ...Typography.screenSubtitle,
     color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  themeBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   content: {

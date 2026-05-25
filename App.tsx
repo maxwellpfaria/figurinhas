@@ -13,6 +13,7 @@ import AlbumScreen from './src/screens/AlbumScreen';
 import TradeScreen from './src/screens/TradeScreen';
 import ShareScreen from './src/screens/ShareScreen';
 import FriendsScreen from './src/screens/FriendsScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
@@ -110,6 +111,14 @@ function MainTabs() {
           options={{
             tabBarLabel: 'Exportar',
             tabBarIcon: ({ focused, color }) => <TabIcon icon="share-social" active={focused} color={color} />,
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            tabBarLabel: 'Perfil',
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="person-circle" active={focused} color={color} />,
           }}
         />
       </Tab.Navigator>

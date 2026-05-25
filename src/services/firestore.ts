@@ -3,6 +3,8 @@ import {
   getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
+  writeBatch,
   query,
   collection,
   where,
@@ -153,6 +155,17 @@ export async function getFriendsProfiles(
         createdAt: d.createdAt?.toDate() ?? null,
       };
     });
+}
+
+export async function updateUserDisplayName(uid: string, displayName: string): Promise<void> {
+  await updateDoc(doc(db, 'users', uid), { displayName });
+}
+
+export async function deleteUserData(uid: string): Promise<void> {
+  const batch = writeBatch(db);
+  batch.delete(albumDoc(uid));
+  batch.delete(doc(db, 'users', uid));
+  await batch.commit();
 }
 
 export async function getFriendQuantities(
