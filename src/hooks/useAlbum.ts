@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { INITIAL_SECTIONS } from '../data/mockData';
 import { Section } from '../types';
 import { loadAlbumQuantities, saveAlbumQuantities } from '../services/firestore';
@@ -8,11 +9,19 @@ export function useAlbum(userId?: string | null) {
   const [syncing, setSyncing] = useState(false);
   const initialized = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>();
+  // Refs so AppState/unmount callbacks always see the latest values without stale closures
+  const latestQuantities = useRef<Record<string, number>>({});
+  const latestUserId = useRef<string | null | undefined>(userId);
+  const hasPendingSave = useRef(false);
 
-  // Load from Firestore when user authenticates
+  useEffect(() => { latestQuantities.current = quantities; }, [quantities]);
+  useEffect(() => { latestUserId.current = userId; }, [userId]);
+
+  // ── Load from Firestore when user authenticates ────────────────────────────
   useEffect(() => {
     if (!userId) {
       initialized.current = false;
+      hasPendingSave.current = false;
       setQuantities({});
       return;
     }
@@ -26,17 +35,55 @@ export function useAlbum(userId?: string | null) {
       .finally(() => setSyncing(false));
   }, [userId]);
 
-  // Debounced save to Firestore (1.5 s after last change)
+  // ── Flush helper: saves immediately and clears pending flag ───────────────
+  const flushSave = useCallback(() => {
+    const uid = latestUserId.current;
+    if (!uid || !initialized.current || !hasPendingSave.current) return;
+    clearTimeout(saveTimer.current);
+    hasPendingSave.current = false;
+    setSyncing(true);
+    saveAlbumQuantities(uid, latestQuantities.current)
+      .catch(console.error)
+      .finally(() => setSyncing(false));
+  }, []);
+
+  // ── Debounced save — 1.5 s after last change ──────────────────────────────
   useEffect(() => {
     if (!userId || !initialized.current) return;
+    hasPendingSave.current = true;
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
-      saveAlbumQuantities(userId, quantities).catch(console.error);
+      hasPendingSave.current = false;
+      setSyncing(true);
+      saveAlbumQuantities(userId, quantities)
+        .catch(console.error)
+        .finally(() => setSyncing(false));
     }, 1500);
-    return () => clearTimeout(saveTimer.current);
+    // Do NOT cancel the timer on cleanup: flush instead
+    return () => {
+      // Only cancel if the effect is re-running (new quantities arrived); a
+      // fresh timer will be started right after. Actual unmount flush is
+      // handled by the AppState listener + the unmount effect below.
+      clearTimeout(saveTimer.current);
+    };
   }, [quantities, userId]);
 
-  // Merge quantities into sections
+  // ── Flush when app goes to background (covers "close app" scenario) ────────
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', nextState => {
+      if (nextState === 'background' || nextState === 'inactive') {
+        flushSave();
+      }
+    });
+    return () => sub.remove();
+  }, [flushSave]);
+
+  // ── Flush on unmount (e.g. logout clears userId) ──────────────────────────
+  useEffect(() => {
+    return () => { flushSave(); };
+  }, [flushSave]);
+
+  // ── Merge quantities into sections ────────────────────────────────────────
   const sections = useMemo<Section[]>(
     () =>
       INITIAL_SECTIONS.map(section => ({

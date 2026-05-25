@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import StickerCard, { NUM_COLUMNS, ROW_HEIGHT } from './StickerCard';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import StickerCard, { NUM_COLUMNS } from './StickerCard';
 import SectionTabs from './SectionTabs';
 import { Section, Sticker } from '../types';
 import { ColorsType } from '../theme';
@@ -29,6 +30,8 @@ export default function AlbumContent({
     sections[0]?.id ?? '',
   );
 
+  const sectionIds = useMemo(() => sections.map(s => s.id), [sections]);
+
   const currentStickers = useMemo(
     () => sections.find(s => s.id === selectedSectionId)?.stickers ?? [],
     [sections, selectedSectionId],
@@ -48,6 +51,24 @@ export default function AlbumContent({
 
   const noOp = useCallback(() => {}, []);
 
+  // ── Horizontal swipe to navigate between sections ─────────────────────────
+  // activeOffsetX activates only on clear horizontal movement;
+  // failOffsetY cancels if vertical scroll starts first.
+  const swipeGesture = Gesture.Pan()
+    .runOnJS(true)
+    .activeOffsetX([-35, 35])
+    .failOffsetY([-12, 12])
+    .onEnd(event => {
+      const { translationX } = event;
+      if (Math.abs(translationX) < 50) return;
+      const idx = sectionIds.indexOf(selectedSectionId);
+      if (translationX < 0 && idx < sectionIds.length - 1) {
+        setSelectedSectionId(sectionIds[idx + 1]);
+      } else if (translationX > 0 && idx > 0) {
+        setSelectedSectionId(sectionIds[idx - 1]);
+      }
+    });
+
   const tabsHeader = (
     <SectionTabs
       sections={sections}
@@ -60,36 +81,38 @@ export default function AlbumContent({
   );
 
   return (
-    <View style={styles.root}>
-      <FlatList
-        data={currentStickers}
-        keyExtractor={item => item.id}
-        numColumns={NUM_COLUMNS}
-        contentContainerStyle={[
-          styles.gridContent,
-          { backgroundColor: colors.background },
-        ]}
-        ListHeaderComponent={
-          <>
-            {ListHeaderComponent}
-            {tabsHeader}
-          </>
-        }
-        removeClippedSubviews
-        initialNumToRender={24}
-        maxToRenderPerBatch={16}
-        windowSize={5}
-        renderItem={({ item }) => (
-          <StickerCard
-            sticker={item}
-            isDark={isDark}
-            colors={colors}
-            onPress={readOnly ? noOp : (onPress ?? noOp)}
-            onLongPress={readOnly ? noOp as any : (onLongPress ?? noOp as any)}
-          />
-        )}
-      />
-    </View>
+    <GestureDetector gesture={swipeGesture}>
+      <View style={styles.root}>
+        <FlatList
+          data={currentStickers}
+          keyExtractor={item => item.id}
+          numColumns={NUM_COLUMNS}
+          contentContainerStyle={[
+            styles.gridContent,
+            { backgroundColor: colors.background },
+          ]}
+          ListHeaderComponent={
+            <>
+              {ListHeaderComponent}
+              {tabsHeader}
+            </>
+          }
+          removeClippedSubviews
+          initialNumToRender={24}
+          maxToRenderPerBatch={16}
+          windowSize={5}
+          renderItem={({ item }) => (
+            <StickerCard
+              sticker={item}
+              isDark={isDark}
+              colors={colors}
+              onPress={readOnly ? noOp : (onPress ?? noOp)}
+              onLongPress={readOnly ? noOp as any : (onLongPress ?? noOp as any)}
+            />
+          )}
+        />
+      </View>
+    </GestureDetector>
   );
 }
 
