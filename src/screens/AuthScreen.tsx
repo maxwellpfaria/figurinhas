@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 
 type Mode = 'login' | 'register' | 'reset';
 
@@ -221,12 +221,10 @@ const styles = StyleSheet.create({
   },
   trophy: { fontSize: 56, marginBottom: Spacing.sm },
   appName: {
-    fontSize: 26,
-    fontWeight: '900',
-    letterSpacing: 0.3,
+    ...Typography.appName,
   },
   appTagline: {
-    fontSize: 13,
+    ...Typography.appTagline,
     marginTop: 4,
   },
 
@@ -239,8 +237,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   cardTitle: {
-    fontSize: 20,
-    fontWeight: '800',
+    ...Typography.screenTitle,
     marginBottom: Spacing.md,
   },
 
@@ -269,17 +266,15 @@ const styles = StyleSheet.create({
 
   field: { marginBottom: Spacing.sm + 4 },
   label: {
-    fontSize: 12,
-    fontWeight: '700',
+    ...Typography.inputLabel,
     marginBottom: 6,
-    letterSpacing: 0.3,
   },
   input: {
+    ...Typography.inputText,
     borderWidth: 1,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 4,
-    fontSize: 15,
   },
 
   submitBtn: {
@@ -289,9 +284,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   submitText: {
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 0.3,
+    ...Typography.buttonPrimary,
   },
 
   links: {
@@ -300,8 +293,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   link: {
-    fontSize: 13,
-    fontWeight: '500',
+    ...Typography.link,
     textAlign: 'center',
   },
   divider: {

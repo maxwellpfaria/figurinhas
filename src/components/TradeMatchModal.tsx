@@ -7,7 +7,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { ColorsType, Spacing, Radius } from '../theme';
+import { ColorsType, Spacing, Radius, Typography } from '../theme';
 import { TradeMatch, StickerInfo } from '../utils/tradeQR';
 
 interface Props {
@@ -179,12 +179,11 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '800',
+    ...Typography.cardTitle,
     marginBottom: 2,
   },
   subtitle: {
-    fontSize: 13,
+    ...Typography.body,
   },
   closeBtn: {
     width: 32,
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
   },
   sectionTitle: {
-    fontSize: 15,
+    ...Typography.bodyLarge,
     fontWeight: '700',
     flex: 1,
   },
@@ -228,9 +227,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
   },
   countText: {
+    ...Typography.chip,
     color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
   },
   chips: {
     flexDirection: 'row',
@@ -271,14 +269,12 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   emptyStateTitle: {
-    fontSize: 17,
-    fontWeight: '700',
+    ...Typography.cardTitle,
     marginBottom: Spacing.sm,
   },
   emptyStateText: {
-    fontSize: 14,
+    ...Typography.bodyLarge,
     textAlign: 'center',
-    lineHeight: 20,
   },
   doneBtn: {
     marginTop: Spacing.md,
@@ -287,8 +283,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   doneBtnText: {
+    ...Typography.buttonPrimary,
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '800',
   },
 });

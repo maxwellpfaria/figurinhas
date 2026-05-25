@@ -15,7 +15,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbum } from '../hooks/useAlbum';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 import {
   encodeQRPayload,
   decodeQRPayload,
@@ -291,14 +291,12 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.md,
   },
   headerTitle: {
+    ...Typography.screenTitle,
     color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '800',
-    letterSpacing: 0.2,
   },
   headerSub: {
-    color: '#94A3B8',
-    fontSize: 13,
+    ...Typography.screenSubtitle,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
   },
 
@@ -343,12 +341,11 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   qrName: {
-    fontSize: 17,
-    fontWeight: '800',
+    ...Typography.cardTitle,
     marginBottom: 4,
   },
   qrSub: {
-    fontSize: 13,
+    ...Typography.body,
     textAlign: 'center',
   },
   statsRow: {
@@ -365,14 +362,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   statValue: {
-    fontSize: 26,
-    fontWeight: '900',
+    ...Typography.statLarge,
   },
   statLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    ...Typography.statLabel,
   },
   infoBox: {
     width: '100%',
@@ -380,8 +373,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
   },
   infoText: {
-    fontSize: 13,
-    lineHeight: 19,
+    ...Typography.body,
     textAlign: 'center',
   },
 
@@ -397,15 +389,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   permTitle: {
-    fontSize: 20,
-    fontWeight: '800',
+    ...Typography.screenTitle,
     marginBottom: Spacing.sm,
     textAlign: 'center',
   },
   permSub: {
-    fontSize: 14,
+    ...Typography.bodyLarge,
     textAlign: 'center',
-    lineHeight: 20,
     marginBottom: Spacing.lg,
   },
   permBtn: {
@@ -414,9 +404,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
   },
   permBtnText: {
+    ...Typography.buttonPrimary,
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '800',
   },
 
   // ── Camera ──

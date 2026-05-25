@@ -13,7 +13,7 @@ import {
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbum } from '../hooks/useAlbum';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 import { INITIAL_SECTIONS, TOTAL_STICKERS } from '../data/mockData';
 import { getFriendsProfiles, getFriendQuantities, UserProfile } from '../services/firestore';
 import { getAlbumStats } from '../utils/tradeQR';
@@ -374,14 +374,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   greeting: {
-    fontSize: 20,
-    fontWeight: '900',
+    ...Typography.screenTitle,
     color: '#FFFFFF',
-    letterSpacing: 0.2,
   },
   headerSub: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.55)',
+    ...Typography.screenSubtitle,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
   },
   headerActions: {
@@ -412,9 +410,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xs,
   },
   cardLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
+    ...Typography.sectionLabel,
     marginBottom: 4,
   },
 
@@ -476,15 +472,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statValue: {
-    fontSize: 18,
-    fontWeight: '900',
+    ...Typography.statMedium,
   },
   statLabel: {
-    fontSize: 9,
-    fontWeight: '600',
+    ...Typography.statLabel,
     color: '#94A3B8',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
     marginTop: 2,
   },
   statDivider: {
@@ -494,9 +486,7 @@ const styles = StyleSheet.create({
 
   // Section label
   sectionLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
+    ...Typography.sectionLabel,
     paddingHorizontal: 4,
     marginTop: Spacing.sm,
     marginBottom: Spacing.xs,
@@ -528,17 +518,15 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sectionName: {
-    fontSize: 14,
-    fontWeight: '700',
+    ...Typography.name,
     flex: 1,
   },
   sectionPct: {
-    fontSize: 14,
-    fontWeight: '800',
+    ...Typography.pctLabel,
     marginLeft: 8,
   },
   sectionFraction: {
-    fontSize: 10,
+    ...Typography.bodySmall,
     marginTop: 3,
   },
 
@@ -580,17 +568,15 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   friendName: {
-    fontSize: 14,
-    fontWeight: '700',
+    ...Typography.name,
     flex: 1,
   },
   friendPct: {
-    fontSize: 14,
-    fontWeight: '800',
+    ...Typography.pctLabel,
     marginLeft: 8,
   },
   friendFraction: {
-    fontSize: 10,
+    ...Typography.bodySmall,
     marginTop: 3,
   },
 
@@ -605,8 +591,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xs,
   },
   emptyTitle: {
-    fontSize: 15,
-    fontWeight: '800',
+    ...Typography.cardTitle,
   },
   emptyDesc: {
     fontSize: 13,

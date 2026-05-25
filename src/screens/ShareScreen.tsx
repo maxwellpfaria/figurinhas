@@ -14,7 +14,7 @@ import {
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbum } from '../hooks/useAlbum';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 import { generateShareText, getAlbumStats } from '../utils/tradeQR';
 
 export default function ShareScreen() {
@@ -75,7 +75,7 @@ export default function ShareScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <Text style={styles.headerTitle}>Compartilhar Lista</Text>
-        <Text style={[styles.headerSub, { color: '#94A3B8' }]}>
+        <Text style={styles.headerSub}>
           Envie suas repetidas e o que falta para um amigo
         </Text>
       </View>
@@ -194,13 +194,12 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.md,
   },
   headerTitle: {
+    ...Typography.screenTitle,
     color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '800',
-    letterSpacing: 0.2,
   },
   headerSub: {
-    fontSize: 13,
+    ...Typography.screenSubtitle,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
   },
 
@@ -223,14 +222,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   statValue: {
-    fontSize: 26,
-    fontWeight: '900',
+    ...Typography.statLarge,
   },
   statLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    ...Typography.statLabel,
   },
 
   // ── Preview ──
@@ -241,9 +236,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
   },
   previewLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.8,
+    ...Typography.sectionLabel,
     marginBottom: Spacing.sm,
   },
   previewScroll: {
@@ -270,9 +263,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   whatsappText: {
+    ...Typography.buttonPrimary,
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '800',
   },
 
   // ── Secondary buttons ──
@@ -302,8 +294,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
   },
   infoText: {
-    fontSize: 13,
-    lineHeight: 19,
+    ...Typography.body,
     textAlign: 'center',
   },
 });

@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 import {
   UserProfile,
   findUserByInviteCode,
@@ -380,13 +380,11 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.md + 2,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
+    ...Typography.screenTitle,
     color: '#FFFFFF',
-    letterSpacing: 0.3,
   },
   headerSub: {
-    fontSize: 11,
+    ...Typography.screenSubtitle,
     color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
   },
@@ -403,13 +401,12 @@ const styles = StyleSheet.create({
   backIcon: { fontSize: 22, color: '#FFFFFF' },
   friendHeaderInfo: { flex: 1 },
   friendHeaderName: {
-    fontSize: 16,
-    fontWeight: '800',
+    ...Typography.cardTitle,
     color: '#FFFFFF',
   },
   friendHeaderSub: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.65)',
+    ...Typography.screenSubtitle,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 1,
   },
 
@@ -425,10 +422,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
   },
   cardLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
+    ...Typography.sectionLabel,
     marginBottom: Spacing.sm,
   },
 
@@ -488,9 +482,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
+    ...Typography.sectionLabel,
     paddingHorizontal: 4,
     marginTop: Spacing.xs,
   },
@@ -504,14 +496,12 @@ const styles = StyleSheet.create({
   },
   emptyEmoji: { fontSize: 40, marginBottom: Spacing.sm },
   emptyTitle: {
-    fontSize: 16,
-    fontWeight: '800',
+    ...Typography.cardTitle,
     marginBottom: Spacing.xs,
   },
   emptyDesc: {
-    fontSize: 13,
+    ...Typography.body,
     textAlign: 'center',
-    lineHeight: 18,
   },
 
   // Friend card
@@ -536,11 +526,10 @@ const styles = StyleSheet.create({
   },
   friendInfo: { flex: 1 },
   friendName: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...Typography.name,
   },
   friendCode: {
-    fontSize: 11,
+    ...Typography.bodySmall,
     marginTop: 2,
   },
   viewAlbum: {

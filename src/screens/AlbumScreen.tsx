@@ -14,7 +14,7 @@ import { useAlbum } from '../hooks/useAlbum';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
-import { Spacing } from '../theme';
+import { Spacing, Typography } from '../theme';
 import { ALBUM_CONFIG } from '../data/copaData';
 
 export default function AlbumScreen() {
@@ -110,13 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '900',
+    ...Typography.screenTitle,
     color: '#FFFFFF',
-    letterSpacing: 0.3,
   },
   headerSub: {
-    fontSize: 11,
+    ...Typography.screenSubtitle,
     color: 'rgba(255,255,255,0.6)',
     marginTop: 1,
   },

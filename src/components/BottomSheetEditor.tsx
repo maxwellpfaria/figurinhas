@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { Sticker } from '../types';
-import { Spacing, Radius } from '../theme';
+import { Spacing, Radius, Typography } from '../theme';
 import { useTheme } from '../theme/ThemeContext';
 
 const SHEET_HEIGHT = 300;
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   statusLabel: {
-    fontSize: 13,
+    ...Typography.body,
     marginTop: 2,
   },
   specialBadge: {
@@ -284,8 +284,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   doneBtnText: {
-    fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: 0.3,
+    ...Typography.buttonPrimary,
   },
 });

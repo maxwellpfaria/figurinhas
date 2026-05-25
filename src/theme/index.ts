@@ -117,3 +117,61 @@ export const Radius = {
   xl: 24,
   full: 999,
 };
+
+// ── Typography scale ──────────────────────────────────────────────────────────
+// fontSize / fontWeight / letterSpacing only. Color and margin live in each
+// component so the theme stays layout-agnostic.
+export const Typography = {
+  // Screen headers (white text on dark header bar)
+  screenTitle:    { fontSize: 20, fontWeight: '800' as const, letterSpacing: 0.2 },
+  screenSubtitle: { fontSize: 12, fontWeight: '400' as const },
+
+  // Section eyebrow labels – always ALL CAPS via textTransform
+  sectionLabel: {
+    fontSize: 10,
+    fontWeight: '800' as const,
+    letterSpacing: 1.0,
+    textTransform: 'uppercase' as const,
+  },
+
+  // Card / modal headings
+  cardTitle: { fontSize: 17, fontWeight: '800' as const },
+
+  // Body copy
+  bodyLarge: { fontSize: 15, fontWeight: '400' as const, lineHeight: 22 },
+  body:       { fontSize: 13, fontWeight: '400' as const, lineHeight: 20 },
+  bodySmall:  { fontSize: 11, fontWeight: '400' as const },
+
+  // Input fields
+  inputLabel: { fontSize: 12, fontWeight: '700' as const, letterSpacing: 0.3 },
+  inputText:  { fontSize: 15, fontWeight: '400' as const },
+
+  // Names (people, sections)
+  name: { fontSize: 14, fontWeight: '700' as const },
+
+  // Numeric stat displays
+  statHero:   { fontSize: 52, fontWeight: '900' as const, lineHeight: 58 },
+  statLarge:  { fontSize: 26, fontWeight: '900' as const },
+  statMedium: { fontSize: 18, fontWeight: '900' as const },
+  statLabel:  {
+    fontSize: 11,
+    fontWeight: '600' as const,
+    textTransform: 'uppercase' as const,
+    letterSpacing: 0.5,
+  },
+
+  // Percentage labels next to names
+  pctLabel: { fontSize: 14, fontWeight: '800' as const },
+
+  // Actions
+  buttonPrimary:   { fontSize: 16, fontWeight: '800' as const, letterSpacing: 0.2 },
+  buttonSecondary: { fontSize: 14, fontWeight: '700' as const },
+  link:            { fontSize: 13, fontWeight: '600' as const },
+
+  // Chips (codes, badges)
+  chip: { fontSize: 12, fontWeight: '700' as const },
+
+  // Auth branding
+  appName:    { fontSize: 26, fontWeight: '900' as const, letterSpacing: 0.3 },
+  appTagline: { fontSize: 13, fontWeight: '400' as const },
+};
