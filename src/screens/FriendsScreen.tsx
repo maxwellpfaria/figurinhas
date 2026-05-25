@@ -23,7 +23,7 @@ import {
   getFriendQuantities,
 } from '../services/firestore';
 import { INITIAL_SECTIONS } from '../data/mockData';
-import { useAlbum } from '../hooks/useAlbum';
+import { useAlbumContext } from '../contexts/AlbumContext';
 import AlbumContent from '../components/AlbumContent';
 import { Section } from '../types';
 
@@ -176,7 +176,7 @@ export default function FriendsScreen() {
   const [friends, setFriends] = useState<UserProfile[]>([]);
   const [listLoading, setListLoading] = useState(true);
   const [viewingFriend, setViewingFriend] = useState<UserProfile | null>(null);
-  const { quantities: myQty } = useAlbum(user?.uid);
+  const { quantities: myQty } = useAlbumContext();
 
   useEffect(() => {
     if (!profile) return;

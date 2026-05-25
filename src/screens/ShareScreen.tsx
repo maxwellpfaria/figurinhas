@@ -13,14 +13,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useAlbum } from '../hooks/useAlbum';
+import { useAlbumContext } from '../contexts/AlbumContext';
 import { Spacing, Radius, Typography } from '../theme';
 import { generateShareText, getAlbumStats } from '../utils/tradeQR';
 
 export default function ShareScreen() {
   const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
-  const { quantities } = useAlbum(user?.uid);
+  const { quantities } = useAlbumContext();
 
   const displayName = profile?.displayName || user?.displayName || 'Anônimo';
   const stats = getAlbumStats(quantities);

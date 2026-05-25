@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AlbumContent from '../components/AlbumContent';
 import BottomSheetEditor from '../components/BottomSheetEditor';
-import { useAlbum } from '../hooks/useAlbum';
+import { useAlbumContext } from '../contexts/AlbumContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
@@ -20,7 +20,7 @@ import { ALBUM_CONFIG } from '../data/copaData';
 export default function AlbumScreen() {
   const { user } = useAuth();
   const { sections, increment, setQuantity, getSectionProgress, totalProgress, syncing } =
-    useAlbum(user?.uid);
+    useAlbumContext();
   const { colors, isDark } = useTheme();
   const [editingSticker, setEditingSticker] = useState<Sticker | null>(null);
 

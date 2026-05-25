@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useAlbum } from '../hooks/useAlbum';
+import { useAlbumContext } from '../contexts/AlbumContext';
 import { Spacing, Radius, Typography } from '../theme';
 import { INITIAL_SECTIONS, TOTAL_STICKERS } from '../data/mockData';
 import { getFriendsProfiles, getFriendQuantities, UserProfile } from '../services/firestore';
@@ -58,7 +58,7 @@ function useFriendsProgress(friendUids: string[]) {
 export default function HomeScreen() {
   const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
-  const { sections, quantities, totalProgress, syncing } = useAlbum(user?.uid);
+  const { sections, quantities, totalProgress, syncing } = useAlbumContext();
   const { friends, loading: friendsLoading } = useFriendsProgress(profile?.friends ?? []);
 
   const firstName = (profile?.displayName || user?.displayName || '').split(' ')[0] || 'você';

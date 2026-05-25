@@ -14,7 +14,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useAlbum } from '../hooks/useAlbum';
+import { useAlbumContext } from '../contexts/AlbumContext';
 import { Spacing, Radius, Typography } from '../theme';
 import {
   encodeQRPayload,
@@ -30,7 +30,7 @@ type Tab = 'generate' | 'scan';
 export default function TradeScreen() {
   const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
-  const { quantities } = useAlbum(user?.uid);
+  const { quantities } = useAlbumContext();
 
   const [activeTab, setActiveTab] = useState<Tab>('generate');
   const [scanned, setScanned] = useState(false);

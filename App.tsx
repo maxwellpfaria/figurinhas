@@ -18,6 +18,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { AlbumProvider } from './src/contexts/AlbumContext';
 
 // ── Error boundary — prevents blank screen on unhandled render errors ─────────
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -53,6 +54,7 @@ function MainTabs() {
   const { colors } = useTheme();
 
   return (
+    <AlbumProvider>
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
@@ -124,6 +126,7 @@ function MainTabs() {
         />
       </Tab.Navigator>
     </NavigationContainer>
+    </AlbumProvider>
   );
 }
 
