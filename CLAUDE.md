@@ -1,6 +1,6 @@
 # Meu Álbum Completo — Base de Conhecimento
 
-Álbum digital das figurinhas da Copa do Mundo FIFA 2026 (Panini). O usuário registra quais figurinhas possui, compara com amigos e identifica possíveis trocas.
+Álbum digital das figurinhas da Copa do Mundo 2026. O usuário registra quais figurinhas possui, compara com amigos e identifica possíveis trocas.
 
 ## Stack
 
@@ -88,7 +88,7 @@ figurinhas/
 - **994 figurinhas** no total: 20 (FWC) + 48 seleções × 20 + 14 (CC Coca-Cola)
 - **68 especiais**: 20 FWC (todas holográficas) + 48 escudos (figurinha 1 de cada seleção)
 - **50 seções**: 1 FWC + 48 seleções + 1 CC
-- Ordem segue o álbum Panini oficial: FWC → Grupos A ao L → CC
+- Ordem segue o álbum oficial: FWC → Grupos A ao L → CC
 
 ### Grupos Copa 2026
 

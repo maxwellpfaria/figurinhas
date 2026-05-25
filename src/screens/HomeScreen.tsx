@@ -107,7 +107,7 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.greeting}>Olá, {firstName}! 👋</Text>
-            <Text style={styles.headerSub}>Copa do Mundo FIFA 2026</Text>
+            <Text style={styles.headerSub}>Copa do Mundo 2026</Text>
           </View>
           {syncing && (
             <ActivityIndicator

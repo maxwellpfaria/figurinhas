@@ -22,98 +22,216 @@ import { Spacing, Radius, Typography, ColorsType } from '../theme';
 // ── Static content ─────────────────────────────────────────────────────────────
 
 const PRIVACY_CONTENT = `POLÍTICA DE PRIVACIDADE
-Última atualização: maio de 2026
+Última atualização: 25 de maio de 2026
 
-1. CONTROLADOR DE DADOS
+Esta Política de Privacidade foi elaborada em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD – Lei nº 13.709/2018), o Marco Civil da Internet (Lei nº 12.965/2014) e demais normas aplicáveis.
 
-O Meu Álbum Completo é desenvolvido e operado de forma independente. Para dúvidas ou solicitações relacionadas a esta política, entre em contato pelo e-mail: contato@meualbumdacopa.com.br
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-2. QUAIS DADOS COLETAMOS
+1. IDENTIFICAÇÃO DO CONTROLADOR
 
-• Dados de identificação: nome e endereço de e-mail fornecidos no cadastro
-• Dados de uso: quantidade de cada figurinha registrada no aplicativo
-• Dados de relacionamento: identificadores dos usuários adicionados como amigos
-• Código de convite: gerado automaticamente para conectar usuários
+Controlador: Meu Álbum Completo (aplicativo independente)
+Encarregado de Dados (DPO): [canal de contato disponível na seção 13]
 
-3. BASE LEGAL (LGPD – Art. 7º da Lei 13.709/2018)
+O controlador é responsável pelas decisões referentes ao tratamento dos seus dados pessoais.
 
-O tratamento dos seus dados é realizado com base nas seguintes hipóteses legais:
-• Execução de contrato (Art. 7º, V): para manter sua conta ativa e sincronizar seu álbum
-• Legítimo interesse (Art. 7º, IX): para melhorar a experiência de uso e prevenir fraudes
-• Consentimento (Art. 7º, I): para funcionalidades opcionais de compartilhamento
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. DADOS PESSOAIS COLETADOS
+
+Coletamos somente os dados estritamente necessários para o funcionamento do aplicativo:
+
+2.1 Dados fornecidos pelo usuário:
+• Nome de exibição (apelido ou nome real, conforme sua escolha)
+• Endereço de e-mail
+• Senha (armazenada com hash seguro pelo Firebase Authentication — nunca em texto puro)
+
+2.2 Dados gerados automaticamente pelo uso:
+• Código de convite (gerado pelo sistema no cadastro)
+• Quantidade de cada item registrado no álbum
+• Identificadores dos amigos adicionados voluntariamente
+
+2.3 Dados que NÃO coletamos:
+• Dados de localização geográfica
+• Dados financeiros ou de pagamento
+• Dados biométricos
+• Identificadores de dispositivo (IMEI, IDFA, GAID)
+• Histórico de navegação externo ao aplicativo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. BASE LEGAL PARA O TRATAMENTO (LGPD, Art. 7º)
+
+Cada operação de tratamento de dados é fundamentada em uma hipótese legal específica:
+
+3.1 Execução de contrato (Art. 7º, V):
+• Criar e manter sua conta de usuário ativa
+• Sincronizar o álbum entre dispositivos
+• Processar a adição e gestão de amigos
+
+3.2 Legítimo interesse (Art. 7º, IX):
+• Garantir a segurança e integridade do sistema
+• Prevenir uso fraudulento ou abusivo do aplicativo
+• Aprimorar a experiência de uso com base em métricas agregadas e anônimas
+
+3.3 Consentimento (Art. 7º, I):
+• Funcionalidades de compartilhamento do álbum com terceiros externos
+• Recebimento de comunicações sobre novidades do aplicativo (quando aplicável)
+
+Você pode revogar seu consentimento a qualquer momento sem prejuízo às demais hipóteses legais.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 4. FINALIDADE DO TRATAMENTO
 
-Seus dados são utilizados exclusivamente para:
-• Autenticação e manutenção da sua conta
-• Sincronização do álbum entre dispositivos
-• Exibição do seu progresso e comparação com amigos adicionados
-• Geração de sugestões de trocas de figurinhas
+Seus dados pessoais são tratados exclusivamente para:
+• Autenticar seu acesso ao aplicativo com segurança
+• Sincronizar e manter seu álbum entre dispositivos
+• Exibir seu progresso de coleção para amigos que você adicionou
+• Gerar sugestões de trocas entre usuários conectados
+• Permitir compartilhamento externo de resumos do álbum (WhatsApp, etc.)
+• Garantir a segurança e prevenir acessos não autorizados
+
+Seus dados NÃO são utilizados para:
+• Publicidade comportamental ou segmentada
+• Venda ou cessão a terceiros com fins comerciais
+• Criação de perfis para fins alheios ao aplicativo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 5. COMPARTILHAMENTO DE DADOS
 
-Não vendemos, alugamos ou compartilhamos seus dados com terceiros para fins comerciais ou publicitários. Seu nome e progresso ficam visíveis somente para amigos que você mesmo adicionou. Compartilhamos dados apenas com:
+Não vendemos, alugamos, cedemos ou compartilhamos seus dados pessoais com terceiros para fins comerciais ou publicitários.
 
-• Firebase (Google LLC): plataforma de autenticação e armazenamento de dados
+Seu nome e progresso do álbum são visíveis SOMENTE para amigos que você mesmo adicionou no aplicativo, mediante uso do código de convite.
 
-Para mais informações, consulte a Política de Privacidade do Firebase em firebase.google.com/support/privacy.
+Compartilhamos dados apenas com os seguintes prestadores de serviço essenciais (operadores), nos limites do necessário:
 
-6. ARMAZENAMENTO E SEGURANÇA
+• Google LLC – Firebase Authentication e Firestore:
+  Plataforma de autenticação e banco de dados em nuvem.
+  Política de privacidade: firebase.google.com/support/privacy
 
-Todos os dados são armazenados no Firebase (Google Cloud Platform), com:
-• Criptografia em trânsito (TLS/HTTPS)
-• Criptografia em repouso
-• Controles de acesso por autenticação Firebase
+Esses prestadores são contratualmente obrigados a tratar os dados com segurança, em conformidade com a LGPD e o GDPR (Regulamento Europeu de Proteção de Dados).
 
-7. TRANSFERÊNCIA INTERNACIONAL DE DADOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Os dados podem ser armazenados em servidores localizados fora do Brasil, conforme a infraestrutura do Google Cloud. O Google adota mecanismos adequados de proteção, como cláusulas contratuais padrão (SCCs).
+6. TRANSFERÊNCIA INTERNACIONAL DE DADOS
 
-8. RETENÇÃO DE DADOS
+Os dados podem ser armazenados e processados em servidores localizados fora do Brasil, em infraestrutura do Google Cloud Platform (EUA e outras regiões).
 
-Seus dados são mantidos enquanto sua conta estiver ativa. Ao excluir sua conta, todos os dados pessoais são removidos permanentemente de nossos sistemas.
+O Google adota mecanismos adequados de proteção para transferências internacionais, incluindo:
+• Cláusulas Contratuais Padrão (Standard Contractual Clauses – SCCs) aprovadas pela União Europeia
+• Certificações de conformidade com frameworks de privacidade internacionais
 
-9. SEUS DIREITOS (LGPD – Art. 18)
+Essas garantias satisfazem os requisitos do Art. 33 da LGPD para transferência internacional de dados pessoais.
 
-Como titular dos dados, você tem direito a:
-• Confirmar a existência do tratamento
-• Acessar seus dados pessoais
-• Corrigir dados incompletos, inexatos ou desatualizados (Perfil › Alterar nome)
-• Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários
-• Portabilidade dos dados a outro fornecedor de serviço
-• Eliminar dados tratados com base em consentimento
-• Obter informações sobre compartilhamento com terceiros
-• Revogar o consentimento a qualquer momento
-• Excluir sua conta e todos os dados (Perfil › Excluir conta)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Para exercer qualquer um desses direitos, entre em contato: contato@meualbumdacopa.com.br
+7. SEGURANÇA DOS DADOS
 
-10. ARMAZENAMENTO LOCAL
+Adotamos medidas técnicas e organizacionais adequadas para proteger seus dados contra acesso não autorizado, perda, alteração ou destruição:
 
-Utilizamos armazenamento local (AsyncStorage) apenas para manter a sessão ativa e melhorar a performance do aplicativo, sem fins de rastreamento ou publicidade.
+• Criptografia em trânsito: comunicações protegidas por TLS 1.2/1.3 (HTTPS)
+• Criptografia em repouso: dados armazenados com criptografia AES-256 pelo Google Cloud
+• Autenticação segura: senhas protegidas com hash criptográfico pelo Firebase Authentication
+• Controle de acesso: cada usuário acessa apenas seus próprios dados e os de amigos explicitamente adicionados
+• Regras de segurança Firestore: validação de acesso no nível do banco de dados
+
+Em caso de incidente de segurança que possa afetar seus dados, notificaremos você e a ANPD (Autoridade Nacional de Proteção de Dados) nos prazos estabelecidos pela LGPD.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. RETENÇÃO E EXCLUSÃO DE DADOS
+
+Seus dados são mantidos enquanto sua conta estiver ativa e pelo período necessário para cumprir as finalidades descritas nesta política.
+
+Ao excluir sua conta (Perfil › Excluir conta):
+• Seus dados pessoais são removidos permanentemente do banco de dados
+• Sua conta de autenticação é encerrada
+• Os dados de amigos que possuem referência ao seu perfil são anonimizados
+• A exclusão é irreversível e ocorre imediatamente
+
+Após a exclusão, não é possível recuperar seus dados ou álbum.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. SEUS DIREITOS COMO TITULAR (LGPD, Art. 18)
+
+A LGPD garante a você os seguintes direitos, que podem ser exercidos a qualquer momento:
+
+I.   Confirmação da existência de tratamento
+II.  Acesso aos seus dados pessoais
+III. Correção de dados incompletos, inexatos ou desatualizados
+     → Disponível em: Perfil › Alterar nome
+IV.  Anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desconformidade
+V.   Portabilidade dos dados a outro fornecedor de serviço (mediante requisição formal)
+VI.  Eliminação dos dados tratados com base em consentimento
+VII. Informação sobre entidades com as quais seus dados são compartilhados
+VIII.Informação sobre a possibilidade de não fornecer consentimento e suas consequências
+IX.  Revogação do consentimento
+X.   Peticionar à ANPD (Autoridade Nacional de Proteção de Dados)
+     → Site: www.gov.br/anpd
+
+Para exercer qualquer desses direitos, utilize o canal de contato indicado na seção 13.
+
+Responderemos no prazo máximo de 15 dias corridos, conforme o Art. 19 da LGPD.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. ARMAZENAMENTO LOCAL (AsyncStorage)
+
+Utilizamos armazenamento local no dispositivo (AsyncStorage) exclusivamente para:
+• Manter a sessão autenticada entre usos do aplicativo
+• Melhorar a performance com cache temporário de dados do álbum
+
+Não utilizamos cookies, rastreadores, pixels de monitoramento ou qualquer tecnologia de rastreamento comportamental.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 11. MENORES DE IDADE
 
-O aplicativo não é direcionado a menores de 13 anos. Não coletamos intencionalmente dados de crianças. Caso identifiquemos tal situação, os dados serão removidos imediatamente.
+O aplicativo não é direcionado a crianças menores de 13 anos. Não coletamos intencionalmente dados de crianças sem o consentimento expresso dos pais ou responsáveis legais.
+
+Caso identifiquemos que dados de menores de 13 anos foram coletados sem autorização adequada, os dados serão removidos imediatamente, conforme o Art. 14 da LGPD.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 12. ALTERAÇÕES NESTA POLÍTICA
 
-Esta política pode ser atualizada a qualquer momento. Em caso de mudanças relevantes, você será notificado por meio de aviso no aplicativo. O uso continuado após a notificação implica aceite das novas condições.
+Esta política pode ser atualizada periodicamente para refletir mudanças no aplicativo, na legislação ou nas práticas de privacidade.
+
+Em caso de mudanças relevantes que afetem seus direitos:
+• Você será notificado por aviso destacado no aplicativo
+• A data de "última atualização" no topo deste documento será atualizada
+• O uso continuado do aplicativo após a notificação implica aceite das novas condições
+
+Recomendamos revisar esta política periodicamente.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 13. CONTATO E ENCARREGADO DE DADOS (DPO)
 
-Para exercer seus direitos, esclarecer dúvidas ou realizar solicitações relacionadas à proteção de dados:
+⚠ Canal de contato em configuração.
 
-contato@meualbumdacopa.com.br`;
+A LGPD (Art. 41, §1) exige a divulgação do meio de contato do Encarregado de Dados. Esta informação será disponibilizada nesta seção antes da publicação oficial do aplicativo.
+
+Para peticionar à Autoridade Nacional de Proteção de Dados (ANPD):
+www.gov.br/anpd`;
 
 const TERMS_CONTENT = `TERMOS DE USO
-Última atualização: maio de 2026
+Última atualização: 25 de maio de 2026
 
 Bem-vindo ao Meu Álbum Completo. Ao utilizar nosso aplicativo, você concorda com estes Termos de Uso. Leia-os com atenção antes de criar sua conta.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 1. SOBRE O APLICATIVO
 
-O Meu Álbum Completo é um aplicativo independente para gerenciar coleções de figurinhas da Copa do Mundo FIFA 2026. Este aplicativo não possui vínculo, patrocínio, endosso ou qualquer relação oficial com a FIFA, Panini Group ou qualquer organização relacionada ao torneio ou às figurinhas.
+O Meu Álbum Completo é um aplicativo independente para gerenciar coleções digitais de figurinhas. O aplicativo permite ao usuário registrar itens de sua coleção, comparar com amigos e identificar possíveis trocas.
+
+Este aplicativo não possui vínculo, patrocínio, endosso ou qualquer relação com organizações esportivas, fabricantes de produtos colecionáveis, detentores de direitos sobre competições esportivas ou quaisquer outras entidades cujas marcas, imagens ou conteúdos possam estar associados ao universo de colecionáveis.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 2. ACEITAÇÃO DOS TERMOS
 
@@ -122,6 +240,8 @@ Ao criar uma conta ou utilizar o aplicativo, você declara:
 • Ter lido, compreendido e concordado com estes Termos de Uso
 • Ter lido e concordado com nossa Política de Privacidade
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 3. CADASTRO E CONTA
 
 • Você é responsável por manter a confidencialidade de suas credenciais de acesso
@@ -129,13 +249,17 @@ Ao criar uma conta ou utilizar o aplicativo, você declara:
 • Você deve fornecer informações verdadeiras e mantê-las atualizadas
 • Você é integralmente responsável por todas as atividades realizadas em sua conta
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 4. USO PERMITIDO
 
 Você pode utilizar o aplicativo para:
-• Registrar e acompanhar suas figurinhas pessoais da Copa do Mundo FIFA 2026
+• Registrar e acompanhar os itens da sua coleção pessoal de figurinhas
 • Conectar-se com amigos para comparar coleções e identificar possíveis trocas
 • Compartilhar informações sobre seu álbum por meios externos (WhatsApp, etc.)
 • Utilizar o leitor de QR Code para identificar trocas presenciais
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 5. CONDUTA DO USUÁRIO
 
@@ -146,9 +270,15 @@ Você pode utilizar o aplicativo para:
 • Realizar engenharia reversa do código-fonte do aplicativo
 • Criar perfis falsos ou se passar por outra pessoa
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 6. PROPRIEDADE INTELECTUAL
 
-O código-fonte, design, identidade visual e demais elementos do Meu Álbum Completo são propriedade exclusiva de seus desenvolvedores, protegidos pela legislação de direitos autorais (Lei 9.610/98). As marcas FIFA®, Copa do Mundo® e Panini® pertencem aos seus respectivos titulares, sem qualquer relação com este aplicativo.
+O código-fonte, design, identidade visual, nome "Meu Álbum Completo" e demais elementos originais do aplicativo são propriedade exclusiva de seus desenvolvedores, protegidos pela legislação de direitos autorais (Lei nº 9.610/1998).
+
+O aplicativo não reivindica direitos sobre marcas, logotipos, imagens ou nomes de terceiros. Quaisquer referências a produtos, organizações ou eventos têm caráter meramente descritivo e não implicam associação, patrocínio ou endosso por parte de seus titulares.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 7. DISPONIBILIDADE DO SERVIÇO
 
@@ -157,7 +287,9 @@ O aplicativo é fornecido "no estado em que se encontra" (as is), sem garantia d
 • Atualizar, modificar ou remover funcionalidades
 • Descontinuar o serviço mediante aviso prévio razoável
 
-Não nos responsabilizamos por interrupções decorrentes de falhas de infraestrutura de terceiros, como o Firebase (Google).
+Não nos responsabilizamos por interrupções decorrentes de falhas de infraestrutura de terceiros (provedores de nuvem, serviços de autenticação, etc.).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 8. LIMITAÇÃO DE RESPONSABILIDADE
 
@@ -166,28 +298,36 @@ Na máxima extensão permitida pela legislação brasileira, não nos responsabi
 • Danos indiretos, incidentais ou consequentes
 • Perdas decorrentes do uso indevido do aplicativo por terceiros com suas credenciais
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 9. CANCELAMENTO E EXCLUSÃO DE CONTA
 
 Você pode excluir sua conta a qualquer momento pelo menu Perfil › Excluir conta. A exclusão é irreversível e remove permanentemente todos os seus dados do nosso sistema. Também podemos suspender ou encerrar contas que violem estes termos, sem aviso prévio.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 10. MODIFICAÇÕES NOS TERMOS
 
 Estes termos podem ser atualizados a qualquer momento. Notificaremos você por meio de aviso no aplicativo em caso de mudanças significativas. O uso continuado após a notificação implica aceite das novas condições.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 11. LEI APLICÁVEL E FORO
 
 Estes termos são regidos pela legislação brasileira, em especial:
-• Código de Defesa do Consumidor (Lei 8.078/90)
-• Marco Civil da Internet (Lei 12.965/14)
-• Lei Geral de Proteção de Dados – LGPD (Lei 13.709/18)
+• Código de Defesa do Consumidor (Lei nº 8.078/1990)
+• Marco Civil da Internet (Lei nº 12.965/2014)
+• Lei Geral de Proteção de Dados – LGPD (Lei nº 13.709/2018)
 
 Eventuais disputas serão submetidas ao foro da comarca do domicílio do usuário.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 12. CONTATO
 
-Para dúvidas, sugestões ou reclamações sobre estes termos:
+⚠ Canal de contato em configuração.
 
-contato@meualbumdacopa.com.br`;
+Para dúvidas, sugestões ou reclamações sobre estes termos, utilize o canal de contato que será disponibilizado nesta seção antes da publicação oficial do aplicativo.`;
 
 // ── Policy sub-view ───────────────────────────────────────────────────────────
 
@@ -205,11 +345,11 @@ function PolicyView({
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
-      <View style={[styles.header, { backgroundColor: colors.header }]}>
+      <View style={[styles.header, styles.headerRow, { backgroundColor: colors.header }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} hitSlop={HIT_SLOP}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Text style={[styles.headerTitle, { flex: 1, textAlign: 'center' }]}>{title}</Text>
         <View style={{ width: 40 }} />
       </View>
       <ScrollView
@@ -477,7 +617,37 @@ export default function ProfileScreen() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
 
-  // ── Sub-views ──────────────────────────────────────────────────────────────
+  // ── Handlers (must be declared before any early returns to obey Rules of Hooks) ──
+
+  const handleConfirmDelete = useCallback(async () => {
+    setDeleting(true);
+    setShowDeleteModal(false);
+    try {
+      await deleteAccount();
+    } catch (e: unknown) {
+      setDeleting(false);
+      const code = (e as { code?: string })?.code ?? '';
+      if (code === 'auth/requires-recent-login') {
+        setShowDeleteModal(false);
+        setTimeout(() => {
+          setShowDeleteModal(true);
+        }, 300);
+      }
+    }
+  }, [deleteAccount]);
+
+  const handleConfirmSignOut = useCallback(async () => {
+    setShowSignOutModal(false);
+    await signOut();
+  }, [signOut]);
+
+  // ── Derived values ─────────────────────────────────────────────────────────
+
+  const displayName = profile?.displayName || user?.displayName || 'Usuário';
+  const email = user?.email ?? '';
+  const initials = displayName.charAt(0).toUpperCase();
+
+  // ── Sub-views (early returns must come after all hooks) ────────────────────
 
   if (policyPage === 'privacy') {
     return (
@@ -499,34 +669,6 @@ export default function ProfileScreen() {
       />
     );
   }
-
-  // ── Handlers ───────────────────────────────────────────────────────────────
-
-  const displayName = profile?.displayName || user?.displayName || 'Usuário';
-  const email = user?.email ?? '';
-  const initials = displayName.charAt(0).toUpperCase();
-
-  const handleConfirmDelete = useCallback(async () => {
-    setDeleting(true);
-    setShowDeleteModal(false);
-    try {
-      await deleteAccount();
-    } catch (e: unknown) {
-      setDeleting(false);
-      const code = (e as { code?: string })?.code ?? '';
-      if (code === 'auth/requires-recent-login') {
-        setShowDeleteModal(false);
-        setTimeout(() => {
-          setShowDeleteModal(true); // won't show error, handled below
-        }, 300);
-      }
-    }
-  }, [deleteAccount]);
-
-  const handleConfirmSignOut = useCallback(async () => {
-    setShowSignOutModal(false);
-    await signOut();
-  }, [signOut]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -701,6 +843,10 @@ const styles = StyleSheet.create({
   },
 
   // ── Back button (policy views) ──
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   backBtn: {
     padding: 4,
     width: 40,

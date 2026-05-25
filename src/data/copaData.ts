@@ -28,7 +28,7 @@ interface SectionDef {
   specialIndices?: number[];
 }
 
-// Copa do Mundo 2026 — ordem do álbum Panini oficial
+// Copa do Mundo 2026 — ordem do álbum oficial
 // FWC (20) + 48 seleções × 20 + CC (14) = 994 total
 // Especiais: 20 (FWC abertura) + 48 (escudos, fig. 1 de cada seleção) = 68
 const SECTION_DEFS: SectionDef[] = [
@@ -127,6 +127,6 @@ export const INITIAL_SECTIONS: Section[] = SECTION_DEFS.map(
 export const TOTAL_STICKERS = SECTION_DEFS.reduce((sum, s) => sum + s.count, 0);
 
 export const ALBUM_CONFIG = {
-  name: 'Copa do Mundo FIFA 2026',
-  subtitle: 'Panini · 994 figurinhas',
+  name: 'Copa do Mundo 2026',
+  subtitle: '994 figurinhas',
 };
