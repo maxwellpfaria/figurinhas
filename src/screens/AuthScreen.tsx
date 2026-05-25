@@ -13,6 +13,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Spacing, Radius, Typography } from '../theme';
+import AppLogo from '../components/AppLogo';
 
 type Mode = 'login' | 'register' | 'reset';
 
@@ -76,7 +77,7 @@ export default function AuthScreen() {
       >
         {/* Logo / branding */}
         <View style={styles.logoArea}>
-          <Text style={styles.trophy}>⚽</Text>
+          <AppLogo size={110} />
           <Text style={[styles.appName, { color: colors.textPrimary }]}>Meu Álbum Completo</Text>
           <Text style={[styles.appTagline, { color: colors.textMuted }]}>
             Seu álbum inteligente da Copa
@@ -219,7 +220,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xl,
   },
-  trophy: { fontSize: 56, marginBottom: Spacing.sm },
   appName: {
     ...Typography.appName,
   },

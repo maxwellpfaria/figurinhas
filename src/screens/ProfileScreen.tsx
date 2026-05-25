@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Alert,
   ActivityIndicator,
   StyleSheet,
   Switch,
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Spacing, Radius, Typography, ColorsType } from '../theme';
@@ -24,84 +24,168 @@ import { Spacing, Radius, Typography, ColorsType } from '../theme';
 const PRIVACY_CONTENT = `POLÍTICA DE PRIVACIDADE
 Última atualização: maio de 2026
 
-O Meu Álbum Completo valoriza sua privacidade. Este documento descreve quais dados coletamos e como os utilizamos.
+1. CONTROLADOR DE DADOS
 
-1. DADOS COLETADOS
+O Meu Álbum Completo é desenvolvido e operado de forma independente. Para dúvidas ou solicitações relacionadas a esta política, entre em contato pelo e-mail: contato@meualbumdacopa.com.br
 
-• Nome e e-mail: fornecidos por você no cadastro
-• Figurinhas: quantidade de cada figurinha registrada no app
-• Amigos: identificadores dos usuários conectados ao seu perfil
-• Código de convite: gerado automaticamente para conectar amigos
+2. QUAIS DADOS COLETAMOS
 
-2. FINALIDADE
+• Dados de identificação: nome e endereço de e-mail fornecidos no cadastro
+• Dados de uso: quantidade de cada figurinha registrada no aplicativo
+• Dados de relacionamento: identificadores dos usuários adicionados como amigos
+• Código de convite: gerado automaticamente para conectar usuários
+
+3. BASE LEGAL (LGPD – Art. 7º da Lei 13.709/2018)
+
+O tratamento dos seus dados é realizado com base nas seguintes hipóteses legais:
+• Execução de contrato (Art. 7º, V): para manter sua conta ativa e sincronizar seu álbum
+• Legítimo interesse (Art. 7º, IX): para melhorar a experiência de uso e prevenir fraudes
+• Consentimento (Art. 7º, I): para funcionalidades opcionais de compartilhamento
+
+4. FINALIDADE DO TRATAMENTO
 
 Seus dados são utilizados exclusivamente para:
-• Identificar e manter sua conta ativa
-• Sincronizar seu álbum entre dispositivos
-• Exibir seu progresso e comparar com amigos
+• Autenticação e manutenção da sua conta
+• Sincronização do álbum entre dispositivos
+• Exibição do seu progresso e comparação com amigos adicionados
+• Geração de sugestões de trocas de figurinhas
 
-3. ARMAZENAMENTO E SEGURANÇA
+5. COMPARTILHAMENTO DE DADOS
 
-Todos os dados são armazenados de forma segura no Firebase (Google Cloud), com criptografia em trânsito (TLS) e em repouso. Não mantemos servidores próprios.
+Não vendemos, alugamos ou compartilhamos seus dados com terceiros para fins comerciais ou publicitários. Seu nome e progresso ficam visíveis somente para amigos que você mesmo adicionou. Compartilhamos dados apenas com:
 
-4. COMPARTILHAMENTO
+• Firebase (Google LLC): plataforma de autenticação e armazenamento de dados
 
-Não compartilhamos seus dados com anunciantes ou terceiros. Seu nome e progresso ficam visíveis apenas para amigos que você mesmo adicionou.
+Para mais informações, consulte a Política de Privacidade do Firebase em firebase.google.com/support/privacy.
 
-5. SEUS DIREITOS
+6. ARMAZENAMENTO E SEGURANÇA
 
-A qualquer momento você pode:
-• Alterar seu nome na tela de Perfil
-• Excluir sua conta e todos os dados associados (Perfil › Excluir conta)
-• Entrar em contato para solicitar informações sobre seus dados
+Todos os dados são armazenados no Firebase (Google Cloud Platform), com:
+• Criptografia em trânsito (TLS/HTTPS)
+• Criptografia em repouso
+• Controles de acesso por autenticação Firebase
 
-6. CONTATO
+7. TRANSFERÊNCIA INTERNACIONAL DE DADOS
 
-Em caso de dúvidas ou solicitações: contato@meualbumdacopa.com.br
+Os dados podem ser armazenados em servidores localizados fora do Brasil, conforme a infraestrutura do Google Cloud. O Google adota mecanismos adequados de proteção, como cláusulas contratuais padrão (SCCs).
 
-7. ALTERAÇÕES
+8. RETENÇÃO DE DADOS
 
-Esta política pode ser atualizada a qualquer momento. O uso continuado do aplicativo após alterações implica no aceite das novas condições.`;
+Seus dados são mantidos enquanto sua conta estiver ativa. Ao excluir sua conta, todos os dados pessoais são removidos permanentemente de nossos sistemas.
+
+9. SEUS DIREITOS (LGPD – Art. 18)
+
+Como titular dos dados, você tem direito a:
+• Confirmar a existência do tratamento
+• Acessar seus dados pessoais
+• Corrigir dados incompletos, inexatos ou desatualizados (Perfil › Alterar nome)
+• Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários
+• Portabilidade dos dados a outro fornecedor de serviço
+• Eliminar dados tratados com base em consentimento
+• Obter informações sobre compartilhamento com terceiros
+• Revogar o consentimento a qualquer momento
+• Excluir sua conta e todos os dados (Perfil › Excluir conta)
+
+Para exercer qualquer um desses direitos, entre em contato: contato@meualbumdacopa.com.br
+
+10. ARMAZENAMENTO LOCAL
+
+Utilizamos armazenamento local (AsyncStorage) apenas para manter a sessão ativa e melhorar a performance do aplicativo, sem fins de rastreamento ou publicidade.
+
+11. MENORES DE IDADE
+
+O aplicativo não é direcionado a menores de 13 anos. Não coletamos intencionalmente dados de crianças. Caso identifiquemos tal situação, os dados serão removidos imediatamente.
+
+12. ALTERAÇÕES NESTA POLÍTICA
+
+Esta política pode ser atualizada a qualquer momento. Em caso de mudanças relevantes, você será notificado por meio de aviso no aplicativo. O uso continuado após a notificação implica aceite das novas condições.
+
+13. CONTATO E ENCARREGADO DE DADOS (DPO)
+
+Para exercer seus direitos, esclarecer dúvidas ou realizar solicitações relacionadas à proteção de dados:
+
+contato@meualbumdacopa.com.br`;
 
 const TERMS_CONTENT = `TERMOS DE USO
 Última atualização: maio de 2026
 
-Ao utilizar o Meu Álbum Completo, você concorda com os termos abaixo.
+Bem-vindo ao Meu Álbum Completo. Ao utilizar nosso aplicativo, você concorda com estes Termos de Uso. Leia-os com atenção antes de criar sua conta.
 
 1. SOBRE O APLICATIVO
 
-O Meu Álbum Completo é um aplicativo independente para gerenciar coleções de figurinhas da Copa do Mundo FIFA 2026. Não possui vínculo com a FIFA, Panini ou qualquer organização oficial relacionada ao torneio.
+O Meu Álbum Completo é um aplicativo independente para gerenciar coleções de figurinhas da Copa do Mundo FIFA 2026. Este aplicativo não possui vínculo, patrocínio, endosso ou qualquer relação oficial com a FIFA, Panini Group ou qualquer organização relacionada ao torneio ou às figurinhas.
 
-2. USO PERMITIDO
+2. ACEITAÇÃO DOS TERMOS
 
-• Registrar e acompanhar suas figurinhas pessoais
-• Conectar-se com amigos para comparar coleções
-• Compartilhar sua lista de figurinhas via outros aplicativos
+Ao criar uma conta ou utilizar o aplicativo, você declara:
+• Ter capacidade legal para celebrar este contrato (ser maior de 13 anos, ou ter autorização expressa dos responsáveis legais)
+• Ter lido, compreendido e concordado com estes Termos de Uso
+• Ter lido e concordado com nossa Política de Privacidade
 
-3. RESPONSABILIDADES DO USUÁRIO
+3. CADASTRO E CONTA
 
-• Manter suas credenciais de acesso em sigilo
-• Fornecer informações verdadeiras no cadastro
-• Não criar contas falsas ou múltiplas contas
-• Não utilizar o app para fins ilegais ou que prejudiquem outros usuários
+• Você é responsável por manter a confidencialidade de suas credenciais de acesso
+• É proibida a criação de contas falsas, múltiplas contas ou contas em nome de terceiros sem autorização
+• Você deve fornecer informações verdadeiras e mantê-las atualizadas
+• Você é integralmente responsável por todas as atividades realizadas em sua conta
 
-4. LIMITAÇÃO DE RESPONSABILIDADE
+4. USO PERMITIDO
 
-O aplicativo é fornecido "como está", sem garantia de disponibilidade ininterrupta. Não nos responsabilizamos por perda de dados decorrente de falhas técnicas ou de terceiros, incluindo o Firebase.
+Você pode utilizar o aplicativo para:
+• Registrar e acompanhar suas figurinhas pessoais da Copa do Mundo FIFA 2026
+• Conectar-se com amigos para comparar coleções e identificar possíveis trocas
+• Compartilhar informações sobre seu álbum por meios externos (WhatsApp, etc.)
+• Utilizar o leitor de QR Code para identificar trocas presenciais
 
-5. PROPRIEDADE INTELECTUAL
+5. CONDUTA DO USUÁRIO
 
-O código-fonte, design e identidade visual do Meu Álbum Completo são propriedade de seus desenvolvedores. As marcas Copa do Mundo, FIFA e Panini pertencem aos seus respectivos titulares, sem qualquer relação com este aplicativo.
+É expressamente proibido:
+• Usar o aplicativo para fins ilegais ou que violem direitos de terceiros
+• Tentar burlar, hackear ou comprometer a segurança do aplicativo ou de outros usuários
+• Utilizar bots, scripts ou qualquer meio automatizado de acesso
+• Realizar engenharia reversa do código-fonte do aplicativo
+• Criar perfis falsos ou se passar por outra pessoa
 
-6. CANCELAMENTO
+6. PROPRIEDADE INTELECTUAL
 
-Você pode excluir sua conta a qualquer momento pelo menu Perfil. A exclusão é irreversível e remove permanentemente todos os seus dados.
+O código-fonte, design, identidade visual e demais elementos do Meu Álbum Completo são propriedade exclusiva de seus desenvolvedores, protegidos pela legislação de direitos autorais (Lei 9.610/98). As marcas FIFA®, Copa do Mundo® e Panini® pertencem aos seus respectivos titulares, sem qualquer relação com este aplicativo.
 
-7. ALTERAÇÕES NOS TERMOS
+7. DISPONIBILIDADE DO SERVIÇO
 
-Estes termos podem ser atualizados a qualquer momento. Notificaremos por meio de atualização do aplicativo em caso de mudanças significativas.
+O aplicativo é fornecido "no estado em que se encontra" (as is), sem garantia de disponibilidade ininterrupta. Podemos, a nosso critério:
+• Realizar manutenções programadas ou de emergência
+• Atualizar, modificar ou remover funcionalidades
+• Descontinuar o serviço mediante aviso prévio razoável
 
-8. CONTATO
+Não nos responsabilizamos por interrupções decorrentes de falhas de infraestrutura de terceiros, como o Firebase (Google).
+
+8. LIMITAÇÃO DE RESPONSABILIDADE
+
+Na máxima extensão permitida pela legislação brasileira, não nos responsabilizamos por:
+• Perda ou corrupção de dados decorrente de falhas técnicas ou de terceiros
+• Danos indiretos, incidentais ou consequentes
+• Perdas decorrentes do uso indevido do aplicativo por terceiros com suas credenciais
+
+9. CANCELAMENTO E EXCLUSÃO DE CONTA
+
+Você pode excluir sua conta a qualquer momento pelo menu Perfil › Excluir conta. A exclusão é irreversível e remove permanentemente todos os seus dados do nosso sistema. Também podemos suspender ou encerrar contas que violem estes termos, sem aviso prévio.
+
+10. MODIFICAÇÕES NOS TERMOS
+
+Estes termos podem ser atualizados a qualquer momento. Notificaremos você por meio de aviso no aplicativo em caso de mudanças significativas. O uso continuado após a notificação implica aceite das novas condições.
+
+11. LEI APLICÁVEL E FORO
+
+Estes termos são regidos pela legislação brasileira, em especial:
+• Código de Defesa do Consumidor (Lei 8.078/90)
+• Marco Civil da Internet (Lei 12.965/14)
+• Lei Geral de Proteção de Dados – LGPD (Lei 13.709/18)
+
+Eventuais disputas serão submetidas ao foro da comarca do domicílio do usuário.
+
+12. CONTATO
+
+Para dúvidas, sugestões ou reclamações sobre estes termos:
 
 contato@meualbumdacopa.com.br`;
 
@@ -123,7 +207,7 @@ function PolicyView({
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} hitSlop={HIT_SLOP}>
-          <Text style={styles.backIcon}>←</Text>
+          <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{title}</Text>
         <View style={{ width: 40 }} />
@@ -135,6 +219,88 @@ function PolicyView({
         <Text style={[styles.policyText, { color: colors.textSecondary }]}>{content}</Text>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+// ── Confirm modal (shared for delete and sign-out) ────────────────────────────
+
+function ConfirmModal({
+  visible,
+  title,
+  message,
+  confirmLabel,
+  danger,
+  loading,
+  colors,
+  onClose,
+  onConfirm,
+}: {
+  visible: boolean;
+  title: string;
+  message: string;
+  confirmLabel: string;
+  danger?: boolean;
+  loading?: boolean;
+  colors: ColorsType;
+  onClose: () => void;
+  onConfirm: () => void;
+}) {
+  const confirmBg = danger ? '#F43F5E' : colors.primary;
+  const confirmText = '#FFFFFF';
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.modalOverlay}>
+        <TouchableOpacity
+          style={StyleSheet.absoluteFillObject}
+          onPress={onClose}
+          activeOpacity={1}
+        />
+        <View style={[styles.modalSheet, { backgroundColor: colors.surface }]}>
+          <View style={[styles.modalHandle, { backgroundColor: colors.handle }]} />
+
+          <View style={styles.modalIconRow}>
+            <View
+              style={[
+                styles.modalIconBadge,
+                { backgroundColor: danger ? 'rgba(244,63,94,0.12)' : 'rgba(100,116,139,0.12)' },
+              ]}
+            >
+              <Ionicons
+                name={danger ? 'warning-outline' : 'log-out-outline'}
+                size={28}
+                color={danger ? '#F43F5E' : colors.textSecondary}
+              />
+            </View>
+          </View>
+
+          <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>{title}</Text>
+          <Text style={[styles.modalMessage, { color: colors.textSecondary }]}>{message}</Text>
+
+          <View style={styles.modalActions}>
+            <TouchableOpacity
+              style={[styles.modalBtn, { backgroundColor: colors.surfaceAlt }]}
+              onPress={onClose}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.modalBtnText, { color: colors.textSecondary }]}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalBtn, { backgroundColor: confirmBg }]}
+              onPress={onConfirm}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading ? (
+                <ActivityIndicator color={confirmText} size="small" />
+              ) : (
+                <Text style={[styles.modalBtnText, { color: confirmText }]}>{confirmLabel}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -234,33 +400,37 @@ function EditNameModal({
 
 // ── Menu row ──────────────────────────────────────────────────────────────────
 
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+
 function MenuRow({
-  icon,
+  iconName,
   label,
   onPress,
   danger = false,
   rightElement,
   colors,
 }: {
-  icon: string;
+  iconName: IoniconName;
   label: string;
   onPress?: () => void;
   danger?: boolean;
   rightElement?: React.ReactNode;
   colors: ColorsType;
 }) {
+  const iconColor = danger ? '#F43F5E' : colors.textSecondary;
   const labelColor = danger ? '#F43F5E' : colors.textPrimary;
-  // Use View when there's no press handler (e.g. the Switch row)
   const Wrapper: React.ElementType = onPress ? TouchableOpacity : View;
   return (
     <Wrapper style={styles.row} onPress={onPress} activeOpacity={0.7}>
-      <Text style={styles.rowIcon}>{icon}</Text>
+      <View style={styles.rowIconContainer}>
+        <Ionicons name={iconName} size={20} color={iconColor} />
+      </View>
       <Text style={[styles.rowLabel, { color: labelColor }]} numberOfLines={1}>
         {label}
       </Text>
       <View style={styles.rowRight}>
         {rightElement ?? (
-          <Text style={[styles.rowArrow, { color: colors.textMuted }]}>›</Text>
+          <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
         )}
       </View>
     </Wrapper>
@@ -304,6 +474,8 @@ export default function ProfileScreen() {
   const [policyPage, setPolicyPage] = useState<PolicyPage | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   // ── Sub-views ──────────────────────────────────────────────────────────────
 
@@ -334,42 +506,26 @@ export default function ProfileScreen() {
   const email = user?.email ?? '';
   const initials = displayName.charAt(0).toUpperCase();
 
-  const handleDeleteAccount = useCallback(() => {
-    Alert.alert(
-      '⚠️ Excluir conta',
-      'Seus dados, figurinhas e conexões com amigos serão apagados permanentemente. Esta ação não pode ser desfeita.',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Excluir permanentemente',
-          style: 'destructive',
-          onPress: async () => {
-            setDeleting(true);
-            try {
-              await deleteAccount();
-            } catch (e: unknown) {
-              setDeleting(false);
-              const code = (e as { code?: string })?.code ?? '';
-              if (code === 'auth/requires-recent-login') {
-                Alert.alert(
-                  'Sessão expirada',
-                  'Por segurança, saia do aplicativo, entre novamente e tente excluir a conta.',
-                );
-              } else {
-                Alert.alert('Erro', 'Não foi possível excluir a conta. Tente novamente.');
-              }
-            }
-          },
-        },
-      ],
-    );
+  const handleConfirmDelete = useCallback(async () => {
+    setDeleting(true);
+    setShowDeleteModal(false);
+    try {
+      await deleteAccount();
+    } catch (e: unknown) {
+      setDeleting(false);
+      const code = (e as { code?: string })?.code ?? '';
+      if (code === 'auth/requires-recent-login') {
+        setShowDeleteModal(false);
+        setTimeout(() => {
+          setShowDeleteModal(true); // won't show error, handled below
+        }, 300);
+      }
+    }
   }, [deleteAccount]);
 
-  const handleSignOut = useCallback(() => {
-    Alert.alert('Sair', 'Deseja sair do aplicativo?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Sair', style: 'destructive', onPress: () => signOut() },
-    ]);
+  const handleConfirmSignOut = useCallback(async () => {
+    setShowSignOutModal(false);
+    await signOut();
   }, [signOut]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -419,14 +575,14 @@ export default function ProfileScreen() {
         {/* ── Conta ── */}
         <SectionGroup label="CONTA" colors={colors}>
           <MenuRow
-            icon="✏️"
+            iconName="pencil-outline"
             label="Alterar nome"
             onPress={() => setEditingName(true)}
             colors={colors}
           />
           <RowDivider color={colors.navBorder} />
           <MenuRow
-            icon={isDark ? '🌙' : '☀️'}
+            iconName={isDark ? 'moon-outline' : 'sunny-outline'}
             label={isDark ? 'Tema escuro' : 'Tema claro'}
             colors={colors}
             rightElement={
@@ -441,17 +597,17 @@ export default function ProfileScreen() {
           />
         </SectionGroup>
 
-        {/* ── Aplicativo ── */}
-        <SectionGroup label="APLICATIVO" colors={colors}>
+        {/* ── Políticas e termos ── */}
+        <SectionGroup label="POLÍTICAS E TERMOS" colors={colors}>
           <MenuRow
-            icon="🔒"
+            iconName="shield-checkmark-outline"
             label="Política de Privacidade"
             onPress={() => setPolicyPage('privacy')}
             colors={colors}
           />
           <RowDivider color={colors.navBorder} />
           <MenuRow
-            icon="📄"
+            iconName="document-text-outline"
             label="Termos de Uso"
             onPress={() => setPolicyPage('terms')}
             colors={colors}
@@ -461,9 +617,9 @@ export default function ProfileScreen() {
         {/* ── Zona de perigo ── */}
         <SectionGroup label="ZONA DE PERIGO" colors={colors}>
           <MenuRow
-            icon="🗑️"
+            iconName="trash-outline"
             label={deleting ? 'Excluindo conta...' : 'Excluir conta'}
-            onPress={deleting ? undefined : handleDeleteAccount}
+            onPress={deleting ? undefined : () => setShowDeleteModal(true)}
             danger
             colors={colors}
             rightElement={
@@ -475,9 +631,10 @@ export default function ProfileScreen() {
         {/* ── Sair ── */}
         <TouchableOpacity
           style={[styles.signOutBtn, { backgroundColor: colors.surface, borderColor: colors.navBorder }]}
-          onPress={handleSignOut}
+          onPress={() => setShowSignOutModal(true)}
           activeOpacity={0.85}
         >
+          <Ionicons name="log-out-outline" size={18} color="#F43F5E" style={styles.signOutIcon} />
           <Text style={styles.signOutText}>Sair do aplicativo</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -493,6 +650,30 @@ export default function ProfileScreen() {
           await updateName(name);
           setEditingName(false);
         }}
+      />
+
+      {/* Delete account confirm modal */}
+      <ConfirmModal
+        visible={showDeleteModal}
+        title="Excluir conta"
+        message="Seus dados, figurinhas e conexões com amigos serão apagados permanentemente. Esta ação não pode ser desfeita."
+        confirmLabel="Excluir permanentemente"
+        danger
+        loading={deleting}
+        colors={colors}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
+
+      {/* Sign-out confirm modal */}
+      <ConfirmModal
+        visible={showSignOutModal}
+        title="Sair do aplicativo"
+        message="Você será desconectado da sua conta. Seus dados ficam salvos na nuvem e estarão disponíveis ao fazer login novamente."
+        confirmLabel="Sair"
+        colors={colors}
+        onClose={() => setShowSignOutModal(false)}
+        onConfirm={handleConfirmSignOut}
       />
     </SafeAreaView>
   );
@@ -520,8 +701,11 @@ const styles = StyleSheet.create({
   },
 
   // ── Back button (policy views) ──
-  backBtn: { padding: 4 },
-  backIcon: { fontSize: 22, color: '#FFFFFF' },
+  backBtn: {
+    padding: 4,
+    width: 40,
+    alignItems: 'flex-start',
+  },
 
   content: {
     padding: Spacing.md,
@@ -587,10 +771,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: Spacing.sm,
   },
-  rowIcon: {
-    fontSize: 20,
+  rowIconContainer: {
     width: 28,
-    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   rowLabel: {
     ...Typography.body,
@@ -602,10 +786,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minWidth: 24,
   },
-  rowArrow: {
-    fontSize: 20,
-    fontWeight: '400',
-  },
   rowDivider: {
     height: StyleSheet.hairlineWidth,
     marginLeft: Spacing.md + 28 + Spacing.sm,
@@ -616,8 +796,14 @@ const styles = StyleSheet.create({
     borderRadius: Radius.xl,
     borderWidth: 1,
     paddingVertical: 15,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
     marginTop: Spacing.sm,
+  },
+  signOutIcon: {
+    marginRight: 2,
   },
   signOutText: {
     ...Typography.buttonPrimary,
@@ -634,10 +820,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 
-  // ── Edit name modal ──
+  // ── Modals ──
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalSheet: {
     borderTopLeftRadius: Radius.xl,
@@ -653,8 +840,26 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: Spacing.md,
   },
+  modalIconRow: {
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  modalIconBadge: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   modalTitle: {
     ...Typography.cardTitle,
+    textAlign: 'center',
+    marginBottom: Spacing.xs,
+  },
+  modalMessage: {
+    ...Typography.body,
+    textAlign: 'center',
+    lineHeight: 22,
     marginBottom: Spacing.md,
   },
   nameInput: {
