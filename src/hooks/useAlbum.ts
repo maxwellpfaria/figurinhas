@@ -29,10 +29,14 @@ export function useAlbum(userId?: string | null) {
     loadAlbumQuantities(userId)
       .then(data => {
         setQuantities(data);
-        initialized.current = true;
       })
       .catch(console.error)
-      .finally(() => setSyncing(false));
+      .finally(() => {
+        // Set initialized regardless of load success/failure so that
+        // user taps are always persisted even if the initial read failed.
+        initialized.current = true;
+        setSyncing(false);
+      });
   }, [userId]);
 
   // ── Flush helper: saves immediately and clears pending flag ───────────────
