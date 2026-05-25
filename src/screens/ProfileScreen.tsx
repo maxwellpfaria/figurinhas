@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   TouchableOpacity,
   Modal,
@@ -14,6 +13,7 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
@@ -829,7 +829,7 @@ const styles = StyleSheet.create({
   // ── Header ──
   header: {
     paddingHorizontal: Spacing.md,
-    paddingTop: Platform.OS === 'android' ? Spacing.lg : Spacing.md,
+    paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
   },
   headerTitle: {

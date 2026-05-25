@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AlbumContent from '../components/AlbumContent';
 import BottomSheetEditor from '../components/BottomSheetEditor';
 import { useAlbum } from '../hooks/useAlbum';
