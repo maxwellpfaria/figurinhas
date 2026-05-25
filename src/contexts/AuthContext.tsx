@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { auth } from '../services/firebase';
+import { auth, firebaseInitError } from '../services/firebase';
 import {
   getUserProfile,
   UserProfile,
@@ -47,6 +47,9 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Se o Firebase não inicializou, lança para o ErrorBoundary mostrar o erro na tela
+  if (firebaseInitError) throw firebaseInitError;
+
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);

@@ -40,16 +40,25 @@ const rnPersistence = {
   _removeListener(_key: string, _listener: (...args: unknown[]) => unknown): void {},
 };
 
-const isNew = getApps().length === 0;
-const app = isNew ? initializeApp(firebaseConfig) : getApp();
+let _auth: ReturnType<typeof initializeAuth> | ReturnType<typeof getAuth>;
+let _db: ReturnType<typeof getFirestore>;
+let _initError: Error | null = null;
 
-// On web use Firebase's built-in browserLocalPersistence (IndexedDB).
-// On native use the custom AsyncStorage adapter (Firebase v12 removed getReactNativePersistence).
-const persistence = Platform.OS === 'web' ? browserLocalPersistence : rnPersistence;
+try {
+  const isNew = getApps().length === 0;
+  const app = isNew ? initializeApp(firebaseConfig) : getApp();
+  const persistence = Platform.OS === 'web' ? browserLocalPersistence : rnPersistence;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _auth = isNew ? initializeAuth(app, { persistence: persistence as any }) : getAuth(app);
+  _db = getFirestore(app);
+} catch (e) {
+  _initError = e instanceof Error ? e : new Error(String(e));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _auth = null as any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _db = null as any;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const auth = isNew
-  ? initializeAuth(app, { persistence: persistence as any })
-  : getAuth(app);
-
-export const db = getFirestore(app);
+export const auth = _auth!;
+export const db = _db!;
+export const firebaseInitError = _initError;
