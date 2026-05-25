@@ -15,10 +15,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
 import { Spacing } from '../theme';
+import { ALBUM_CONFIG } from '../data/copaData';
 import { useState } from 'react';
 
 export default function AlbumScreen() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const firstName = (profile?.displayName || user?.displayName || '').split(' ')[0] || 'você';
   const { sections, increment, setQuantity, getSectionProgress, totalProgress, syncing } =
     useAlbum(user?.uid);
   const { colors, isDark, toggleTheme } = useTheme();
@@ -48,8 +50,8 @@ export default function AlbumScreen() {
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.headerTitle}>⚽ FiguCopa 2026</Text>
-            <Text style={styles.headerSub}>Álbum da Copa do Mundo</Text>
+            <Text style={styles.headerTitle}>Olá, {firstName}!</Text>
+            <Text style={styles.headerSub}>{ALBUM_CONFIG.name}</Text>
           </View>
           <View style={styles.headerActions}>
             {syncing && (

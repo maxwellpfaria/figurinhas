@@ -125,3 +125,8 @@ export const INITIAL_SECTIONS: Section[] = SECTION_DEFS.map(
 // Seções: 50 | Total figurinhas: 20 (FWC) + 48×20 (seleções) + 14 (CC) = 994
 // Especiais: 20 (FWC holográficas) + 48 (escudos) = 68
 export const TOTAL_STICKERS = SECTION_DEFS.reduce((sum, s) => sum + s.count, 0);
+
+export const ALBUM_CONFIG = {
+  name: 'Copa do Mundo FIFA 2026',
+  subtitle: 'Panini · 994 figurinhas',
+};

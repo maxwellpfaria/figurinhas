@@ -5,7 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Image, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import AlbumScreen from './src/screens/AlbumScreen';
 import TradeScreen from './src/screens/TradeScreen';
@@ -39,12 +40,10 @@ const errStyles = StyleSheet.create({
 
 const Tab = createBottomTabNavigator();
 
-function TabIcon({ emoji, active }: { emoji: string; active: boolean }) {
-  return (
-    <View style={{ alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, opacity: active ? 1 : 0.45 }}>{emoji}</Text>
-    </View>
-  );
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
+
+function TabIcon({ icon, active, color }: { icon: IoniconsName; active: boolean; color: string }) {
+  return <Ionicons name={active ? icon : (`${icon}-outline` as IoniconsName)} size={24} color={color} />;
 }
 
 function MainTabs() {
@@ -77,7 +76,7 @@ function MainTabs() {
           component={AlbumScreen}
           options={{
             tabBarLabel: 'Meu Álbum',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="📚" active={focused} />,
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="albums" active={focused} color={color} />,
           }}
         />
         <Tab.Screen
@@ -85,7 +84,7 @@ function MainTabs() {
           component={FriendsScreen}
           options={{
             tabBarLabel: 'Amigos',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="👥" active={focused} />,
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="people" active={focused} color={color} />,
           }}
         />
         <Tab.Screen
@@ -93,7 +92,7 @@ function MainTabs() {
           component={TradeScreen}
           options={{
             tabBarLabel: 'Troca QR',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="📱" active={focused} />,
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="qr-code" active={focused} color={color} />,
           }}
         />
         <Tab.Screen
@@ -101,7 +100,7 @@ function MainTabs() {
           component={ShareScreen}
           options={{
             tabBarLabel: 'Exportar',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="🔗" active={focused} />,
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="share-social" active={focused} color={color} />,
           }}
         />
       </Tab.Navigator>
@@ -111,13 +110,16 @@ function MainTabs() {
 
 function AppGate() {
   const { user, loading } = useAuth();
-  const { colors } = useTheme();
 
   if (loading) {
     return (
-      <View style={[styles.splash, { backgroundColor: colors.header }]}>
-        <Text style={styles.splashEmoji}>⚽</Text>
-        <ActivityIndicator color="#10B981" size="large" style={{ marginTop: 16 }} />
+      <View style={styles.splash}>
+        <Image
+          source={require('./assets/splash.png')}
+          style={StyleSheet.absoluteFillObject}
+          resizeMode="cover"
+        />
+        <ActivityIndicator color="#10B981" size="large" style={styles.splashSpinner} />
       </View>
     );
   }
@@ -147,10 +149,11 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   splash: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F1F5F9',
   },
-  splashEmoji: {
-    fontSize: 64,
+  splashSpinner: {
+    position: 'absolute',
+    bottom: 80,
+    alignSelf: 'center',
   },
 });
