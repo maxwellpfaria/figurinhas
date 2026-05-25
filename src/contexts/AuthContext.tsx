@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { auth } from '../services/firebase';
 import {
   getUserProfile,
@@ -73,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setAuthError(null);
       await signIn(email, password);
-    } catch (e: any) {
-      setAuthError(friendlyError(e.code));
+    } catch (e: unknown) {
+      setAuthError(friendlyError(e instanceof FirebaseError ? e.code : ''));
       throw e;
     }
   }, []);
@@ -101,8 +102,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setAuthError(null);
       await resetPassword(email);
-    } catch (e: any) {
-      setAuthError(friendlyError(e.code));
+    } catch (e: unknown) {
+      setAuthError(friendlyError(e instanceof FirebaseError ? e.code : ''));
       throw e;
     }
   }, []);

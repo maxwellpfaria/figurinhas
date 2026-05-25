@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,8 @@ export default function ShareScreen() {
   );
 
   const [copied, setCopied] = useState(false);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(copiedTimer.current), []);
 
   const openWhatsApp = useCallback(async () => {
     const encoded = encodeURIComponent(shareText);
@@ -58,7 +60,8 @@ export default function ShareScreen() {
         Clipboard.setString(shareText);
       }
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      clearTimeout(copiedTimer.current);
+      copiedTimer.current = setTimeout(() => setCopied(false), 2000);
     } catch {}
   }, [shareText]);
 

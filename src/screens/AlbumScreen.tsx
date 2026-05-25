@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,11 +16,9 @@ import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
 import { Spacing } from '../theme';
 import { ALBUM_CONFIG } from '../data/copaData';
-import { useState } from 'react';
 
 export default function AlbumScreen() {
-  const { user, profile } = useAuth();
-  const firstName = (profile?.displayName || user?.displayName || '').split(' ')[0] || 'você';
+  const { user } = useAuth();
   const { sections, increment, setQuantity, getSectionProgress, totalProgress, syncing } =
     useAlbum(user?.uid);
   const { colors, isDark, toggleTheme } = useTheme();
@@ -37,11 +35,6 @@ export default function AlbumScreen() {
   const handleLongPress = useCallback((s: Sticker) => setEditingSticker(s), []);
   const handleCloseSheet = useCallback(() => setEditingSticker(null), []);
 
-  const overallPct =
-    totalProgress.total > 0
-      ? Math.round((totalProgress.owned / totalProgress.total) * 100)
-      : 0;
-
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
@@ -50,7 +43,7 @@ export default function AlbumScreen() {
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.headerTitle}>Olá, {firstName}!</Text>
+            <Text style={styles.headerTitle}>Meu Álbum</Text>
             <Text style={styles.headerSub}>{ALBUM_CONFIG.name}</Text>
           </View>
           <View style={styles.headerActions}>
@@ -69,39 +62,6 @@ export default function AlbumScreen() {
               <Text style={styles.themeToggleIcon}>{isDark ? '☀️' : '🌙'}</Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        {/* Stats row */}
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{totalProgress.owned}</Text>
-            <Text style={styles.statLabel}>coletadas</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{totalProgress.total - totalProgress.owned}</Text>
-            <Text style={styles.statLabel}>faltando</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: colors.gold }]}>{overallPct}%</Text>
-            <Text style={styles.statLabel}>completo</Text>
-          </View>
-        </View>
-
-        {/* Progress bar */}
-        <View style={styles.progressRow}>
-          <View style={[styles.progressTrack, { backgroundColor: colors.progressTrack }]}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: `${overallPct}%` as any, backgroundColor: colors.progressFill },
-              ]}
-            />
-          </View>
-          <Text style={[styles.progressLabel, { color: colors.progressFill }]}>
-            {totalProgress.owned}/{totalProgress.total}
-          </Text>
         </View>
       </View>
 
@@ -148,7 +108,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.md,
   },
   headerTitle: {
     fontSize: 20,
@@ -176,54 +135,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   themeToggleIcon: { fontSize: 18 },
-
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.sm + 2,
-  },
-  statItem: { flex: 1, alignItems: 'center' },
-  statValue: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    lineHeight: 24,
-  },
-  statLabel: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.55)',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginTop: 1,
-  },
-  statDivider: {
-    width: 1,
-    height: 28,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-  },
-
-  progressRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  progressTrack: {
-    flex: 1,
-    height: 5,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  progressLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    minWidth: 52,
-    textAlign: 'right',
-  },
 
   hintRow: {
     paddingVertical: 6,

@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import HomeScreen from './src/screens/HomeScreen';
 import AlbumScreen from './src/screens/AlbumScreen';
 import TradeScreen from './src/screens/TradeScreen';
 import ShareScreen from './src/screens/ShareScreen';
@@ -71,6 +72,14 @@ function MainTabs() {
           },
         }}
       >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarLabel: 'Início',
+            tabBarIcon: ({ focused, color }) => <TabIcon icon="home" active={focused} color={color} />,
+          }}
+        />
         <Tab.Screen
           name="Album"
           component={AlbumScreen}

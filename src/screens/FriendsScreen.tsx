@@ -23,6 +23,7 @@ import {
   getFriendQuantities,
 } from '../services/firestore';
 import { INITIAL_SECTIONS } from '../data/mockData';
+import { useAlbum } from '../hooks/useAlbum';
 import AlbumContent from '../components/AlbumContent';
 import { Section } from '../types';
 
@@ -175,7 +176,7 @@ export default function FriendsScreen() {
   const [friends, setFriends] = useState<UserProfile[]>([]);
   const [listLoading, setListLoading] = useState(true);
   const [viewingFriend, setViewingFriend] = useState<UserProfile | null>(null);
-  const [myQty, setMyQty] = useState<Record<string, number>>({});
+  const { quantities: myQty } = useAlbum(user?.uid);
 
   useEffect(() => {
     if (!profile) return;
@@ -240,12 +241,6 @@ export default function FriendsScreen() {
       />
     );
   }
-
-  const completionPct = (f: UserProfile, qty: Record<string, number>) => {
-    const total = INITIAL_SECTIONS.reduce((s, sec) => s + sec.stickers.length, 0);
-    const owned = Object.values(qty).filter(q => q > 0).length;
-    return total > 0 ? Math.round((owned / total) * 100) : 0;
-  };
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
@@ -346,10 +341,7 @@ export default function FriendsScreen() {
             <TouchableOpacity
               key={friend.uid}
               style={[styles.friendCard, { backgroundColor: colors.surface, borderColor: colors.navBorder }]}
-              onPress={() => {
-                setMyQty({}); // will be loaded by FriendAlbumView
-                setViewingFriend(friend);
-              }}
+              onPress={() => setViewingFriend(friend)}
               activeOpacity={0.75}
             >
               <View style={[styles.friendAvatar, { backgroundColor: colors.primary }]}>
