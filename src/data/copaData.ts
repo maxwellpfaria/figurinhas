@@ -130,3 +130,27 @@ export const ALBUM_CONFIG = {
   name: 'Copa do Mundo 2026',
   subtitle: '994 figurinhas',
 };
+
+// ── Grupos da Copa 2026 ──────────────────────────────────────────────────────
+export interface GroupDef {
+  id: string;
+  label: string;
+  sectionIds: string[];
+}
+
+export const GROUPS: GroupDef[] = [
+  { id: 'fwc', label: 'FWC', sectionIds: ['fwc'] },
+  { id: 'a',   label: 'A',   sectionIds: ['mex', 'rsa', 'cor', 'tch'] },
+  { id: 'b',   label: 'B',   sectionIds: ['can', 'bos', 'qat', 'sui'] },
+  { id: 'c',   label: 'C',   sectionIds: ['bra', 'mar', 'hai', 'esc'] },
+  { id: 'd',   label: 'D',   sectionIds: ['usa', 'par', 'aus', 'tur'] },
+  { id: 'e',   label: 'E',   sectionIds: ['ale', 'cur', 'civ', 'ecu'] },
+  { id: 'f',   label: 'F',   sectionIds: ['ned', 'jap', 'sue', 'tun'] },
+  { id: 'g',   label: 'G',   sectionIds: ['bel', 'egi', 'ira', 'nzl'] },
+  { id: 'h',   label: 'H',   sectionIds: ['esp', 'cpv', 'ars', 'uru'] },
+  { id: 'i',   label: 'I',   sectionIds: ['fra', 'sen', 'irq', 'nor'] },
+  { id: 'j',   label: 'J',   sectionIds: ['arg', 'alg', 'aut', 'jor'] },
+  { id: 'k',   label: 'K',   sectionIds: ['por', 'drc', 'uzb', 'col'] },
+  { id: 'l',   label: 'L',   sectionIds: ['ing', 'cro', 'gha', 'pan'] },
+  { id: 'cc',  label: 'CC',  sectionIds: ['cc'] },
+];

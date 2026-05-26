@@ -329,6 +329,51 @@ Eventuais disputas serão submetidas ao foro da comarca do domicílio do usuári
 
 Para dúvidas, sugestões ou reclamações sobre estes termos, utilize o canal de contato que será disponibilizado nesta seção antes da publicação oficial do aplicativo.`;
 
+// ── FAQ data ──────────────────────────────────────────────────────────────────
+
+const FAQ_ITEMS = [
+  {
+    id: '1',
+    q: 'Como adicionar uma figurinha?',
+    a: 'Toque 1× no card da figurinha. Cada toque adiciona 1 cópia. O progresso é salvo automaticamente na nuvem.',
+  },
+  {
+    id: '2',
+    q: 'Como editar ou remover uma figurinha?',
+    a: 'Pressione e segure o card por cerca de 0,4 segundos para abrir o editor de quantidade. Lá você define o número exato de cópias ou pode zerar.',
+  },
+  {
+    id: '3',
+    q: 'Como navegar entre as seleções?',
+    a: 'Use as abas de grupo (FWC, A–L, CC) para saltar direto ao grupo. Dentro do grupo, toque na aba da seleção ou deslize horizontalmente. O swipe também avança entre grupos automaticamente.',
+  },
+  {
+    id: '4',
+    q: 'O que são figurinhas especiais?',
+    a: 'São as 20 figurinhas holográficas da seção FWC e os 48 escudos (figurinha nº 1 de cada seleção). Total: 68 figurinhas especiais no álbum.',
+  },
+  {
+    id: '5',
+    q: 'Como funciona a contagem de repetidas?',
+    a: 'Conta o total de cópias extras. Exemplo: 3 cópias da mesma figurinha = 2 repetidas. Figurinhas com muitas cópias são somadas corretamente.',
+  },
+  {
+    id: '6',
+    q: 'Como adicionar amigos?',
+    a: 'Na aba Amigos, informe o código de convite do seu amigo. O seu próprio código está aqui na tela de Perfil, abaixo do seu nome.',
+  },
+  {
+    id: '7',
+    q: 'O álbum é salvo automaticamente?',
+    a: 'Sim. As alterações são sincronizadas com a nuvem automaticamente alguns segundos após cada mudança. Um indicador aparece no cabeçalho enquanto o salvamento ocorre.',
+  },
+  {
+    id: '8',
+    q: 'Como funciona a troca via QR Code?',
+    a: 'Na aba Troca, gere o seu QR Code e peça ao amigo para escanear com o app. O aplicativo calcula automaticamente quais figurinhas vocês podem trocar entre si.',
+  },
+];
+
 // ── Policy sub-view ───────────────────────────────────────────────────────────
 
 function PolicyView({
@@ -538,6 +583,44 @@ function EditNameModal({
   );
 }
 
+// ── FAQ item ──────────────────────────────────────────────────────────────────
+
+function FaqItem({
+  q,
+  a,
+  isLast,
+  colors,
+}: {
+  q: string;
+  a: string;
+  isLast: boolean;
+  colors: ColorsType;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View>
+      <TouchableOpacity
+        style={styles.faqRow}
+        onPress={() => setOpen(o => !o)}
+        activeOpacity={0.7}
+      >
+        <Text style={[styles.faqQ, { color: colors.textPrimary }]}>{q}</Text>
+        <Ionicons
+          name={open ? 'chevron-up' : 'chevron-down'}
+          size={16}
+          color={colors.textMuted}
+        />
+      </TouchableOpacity>
+      {open && (
+        <Text style={[styles.faqA, { color: colors.textSecondary }]}>{a}</Text>
+      )}
+      {!isLast && (
+        <View style={[styles.rowDivider, { backgroundColor: colors.navBorder }]} />
+      )}
+    </View>
+  );
+}
+
 // ── Menu row ──────────────────────────────────────────────────────────────────
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -739,6 +822,19 @@ export default function ProfileScreen() {
           />
         </SectionGroup>
 
+        {/* ── Perguntas frequentes ── */}
+        <SectionGroup label="PERGUNTAS FREQUENTES" colors={colors}>
+          {FAQ_ITEMS.map((item, i) => (
+            <FaqItem
+              key={item.id}
+              q={item.q}
+              a={item.a}
+              isLast={i === FAQ_ITEMS.length - 1}
+              colors={colors}
+            />
+          ))}
+        </SectionGroup>
+
         {/* ── Políticas e termos ── */}
         <SectionGroup label="POLÍTICAS E TERMOS" colors={colors}>
           <MenuRow
@@ -935,6 +1031,26 @@ const styles = StyleSheet.create({
   rowDivider: {
     height: StyleSheet.hairlineWidth,
     marginLeft: Spacing.md + 28 + Spacing.sm,
+  },
+
+  // ── FAQ ──
+  faqRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 14,
+    gap: Spacing.sm,
+  },
+  faqQ: {
+    ...Typography.body,
+    flex: 1,
+    fontWeight: '500',
+  },
+  faqA: {
+    ...Typography.body,
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+    lineHeight: 20,
   },
 
   // ── Sign out button ──

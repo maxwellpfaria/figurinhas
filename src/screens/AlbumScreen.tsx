@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,9 @@ import {
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AlbumContent from '../components/AlbumContent';
 import BottomSheetEditor from '../components/BottomSheetEditor';
@@ -16,6 +18,8 @@ import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
 import { Spacing, Typography } from '../theme';
 import { ALBUM_CONFIG } from '../data/copaData';
+
+const TUTORIAL_KEY = '@album_tutorial_seen';
 
 export default function AlbumScreen() {
   const { user } = useAuth();
@@ -34,6 +38,29 @@ export default function AlbumScreen() {
   const handlePress = useCallback((id: string) => increment(id), [increment]);
   const handleLongPress = useCallback((s: Sticker) => setEditingSticker(s), []);
   const handleCloseSheet = useCallback(() => setEditingSticker(null), []);
+
+  // ── One-time tutorial ────────────────────────────────────────────────────────
+  const [showTutorial, setShowTutorial] = useState(false);
+  const tutorialAnim = useRef(new Animated.Value(0)).current;
+
+  const dismissTutorial = useCallback(() => {
+    Animated.timing(tutorialAnim, { toValue: 0, duration: 250, useNativeDriver: true }).start(() => {
+      setShowTutorial(false);
+      AsyncStorage.setItem(TUTORIAL_KEY, '1');
+    });
+  }, [tutorialAnim]);
+
+  useEffect(() => {
+    let tid: ReturnType<typeof setTimeout>;
+    AsyncStorage.getItem(TUTORIAL_KEY).then(v => {
+      if (!v) {
+        setShowTutorial(true);
+        Animated.timing(tutorialAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+        tid = setTimeout(dismissTutorial, 7000);
+      }
+    });
+    return () => clearTimeout(tid);
+  }, [dismissTutorial, tutorialAnim]);
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
@@ -55,17 +82,35 @@ export default function AlbumScreen() {
         </View>
       </View>
 
-      {/* ── Hint ── */}
-      <View
-        style={[
-          styles.hintRow,
-          { backgroundColor: colors.surface, borderBottomColor: colors.navBorder },
-        ]}
-      >
-        <Text style={[styles.hintText, { color: colors.textMuted }]}>
-          👆 Toque para adicionar · Segure para editar quantidade
-        </Text>
-      </View>
+      {/* ── One-time tutorial (shown only on first access) ── */}
+      {showTutorial && (
+        <Animated.View
+          style={[
+            styles.tutorial,
+            {
+              opacity: tutorialAnim,
+              backgroundColor: colors.surface,
+              borderBottomColor: colors.navBorder,
+            },
+          ]}
+        >
+          <Text style={styles.tutorialIcon}>💡</Text>
+          <View style={styles.tutorialBody}>
+            <Text style={[styles.tutorialTitle, { color: colors.textPrimary }]}>
+              Como usar o álbum
+            </Text>
+            <Text style={[styles.tutorialDesc, { color: colors.textMuted }]}>
+              Toque 1× para adicionar · Segure para editar quantidade
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={dismissTutorial}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Text style={[styles.tutorialClose, { color: colors.textMuted }]}>✕</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
 
       {/* ── Album grid (tabs + stickers) ── */}
       <AlbumContent
@@ -112,14 +157,32 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 
-  hintRow: {
-    paddingVertical: 6,
-    paddingHorizontal: Spacing.md,
-    borderBottomWidth: 1,
+  tutorial: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    gap: Spacing.sm,
   },
-  hintText: {
-    fontSize: 10,
+  tutorialIcon: {
+    fontSize: 22,
+  },
+  tutorialBody: {
+    flex: 1,
+  },
+  tutorialTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  tutorialDesc: {
+    fontSize: 11,
     fontWeight: '500',
+  },
+  tutorialClose: {
+    fontSize: 16,
+    fontWeight: '700',
+    paddingHorizontal: 4,
   },
 });
