@@ -53,6 +53,19 @@ function useFriendsProgress(friendUids: string[]) {
   return { friends, loading };
 }
 
+// ─── Color helper ─────────────────────────────────────────────────────────────
+
+function readableColor(hex: string, isDark: boolean): string {
+  if (!isDark || !/^#[0-9A-Fa-f]{6}$/.test(hex)) return hex;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  if (luminance >= 0.35) return hex;
+  const blend = (c: number) => Math.round(c + (255 - c) * 0.55);
+  return `#${[blend(r), blend(g), blend(b)].map(v => v.toString(16).padStart(2, '0')).join('')}`;
+}
+
 // ─── HomeScreen ───────────────────────────────────────────────────────────────
 
 export default function HomeScreen() {
@@ -186,7 +199,7 @@ export default function HomeScreen() {
                         >
                           {sec.name}
                         </Text>
-                        <Text style={[styles.sectionPct, { color: sec.color }]}>
+                        <Text style={[styles.sectionPct, { color: readableColor(sec.color, isDark) }]}>
                           {sec.pct}%
                         </Text>
                       </View>
@@ -196,7 +209,7 @@ export default function HomeScreen() {
                         <View
                           style={[
                             styles.miniFill,
-                            { width: `${sec.pct}%` as any, backgroundColor: sec.color },
+                            { width: `${sec.pct}%` as any, backgroundColor: readableColor(sec.color, isDark) },
                           ]}
                         />
                       </View>

@@ -118,7 +118,7 @@ export function getAlbumStats(quantities: Record<string, number>) {
   ALL_IDS.forEach(id => {
     const q = quantities[id] ?? 0;
     if (q === 0) missing++;
-    else if (q >= 2) extras++;
+    else if (q >= 2) extras += q - 1;
   });
   return { missing, extras };
 }
