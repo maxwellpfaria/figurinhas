@@ -40,6 +40,8 @@ interface Props {
   sort: SortMode;
   onSortChange: (mode: SortMode) => void;
   onSelectSection: (sectionId: string) => void;
+  /** Optional element rendered above the team list (inside the scroll area) */
+  ListHeaderComponent?: React.ReactElement | null;
 }
 
 export default function AlbumIndex({
@@ -49,6 +51,7 @@ export default function AlbumIndex({
   sort,
   onSortChange,
   onSelectSection,
+  ListHeaderComponent,
 }: Props) {
   const [search, setSearch] = useState('');
 
@@ -316,6 +319,7 @@ export default function AlbumIndex({
         renderItem={renderItem}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.list}
+        ListHeaderComponent={ListHeaderComponent ?? undefined}
         ItemSeparatorComponent={() => (
           <View
             style={{

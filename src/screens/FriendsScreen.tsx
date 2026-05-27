@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Platform,
   ScrollView,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
@@ -23,9 +25,12 @@ import {
 } from '../services/firestore';
 import { INITIAL_SECTIONS } from '../data/mockData';
 import { useAlbumContext } from '../contexts/AlbumContext';
-import AlbumContent from '../components/AlbumContent';
-import { Section } from '../types';
+import AlbumIndex, { SortMode } from '../components/AlbumIndex';
+import TeamDetail from '../components/TeamDetail';
+import { Section, Sticker } from '../types';
 import AppDialog from '../components/AppDialog';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 // ─── Trade Suggestion Header ──────────────────────────────────────────────────
 
@@ -95,11 +100,19 @@ interface FriendAlbumViewProps {
   onBack: () => void;
 }
 
+type FriendView = 'index' | 'team';
+
 function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
   const { colors, isDark } = useTheme();
   const [friendSections, setFriendSections] = useState<Section[]>(INITIAL_SECTIONS);
   const [friendQty, setFriendQty] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+
+  // ── View state (mirrors AlbumScreen) ─────────────────────────────────────
+  const [view, setView] = useState<FriendView>('index');
+  const [sectionIndex, setSectionIndex] = useState(0);
+  const [sort, setSort] = useState<SortMode>('album');
+  const slideX = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     getFriendQuantities(friend.uid)
@@ -119,27 +132,75 @@ function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
       .finally(() => setLoading(false));
   }, [friend.uid]);
 
+  // ── Navigation helpers ────────────────────────────────────────────────────
+  const goToTeam = useCallback(
+    (sectionId: string) => {
+      const idx = friendSections.findIndex(s => s.id === sectionId);
+      if (idx < 0) return;
+      setSectionIndex(idx);
+      slideX.setValue(SCREEN_WIDTH * 0.35);
+      setView('team');
+      Animated.spring(slideX, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 22,
+        stiffness: 220,
+        overshootClamping: true,
+      }).start();
+    },
+    [friendSections, slideX],
+  );
+
+  const goBackToIndex = useCallback(() => {
+    Animated.timing(slideX, {
+      toValue: SCREEN_WIDTH * 0.35,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setView('index');
+      slideX.setValue(0);
+    });
+  }, [slideX]);
+
+  // Read-only: sticker interactions are no-ops
+  const noop = useCallback((_: Sticker) => {}, []);
+
+  // ── Header data ───────────────────────────────────────────────────────────
   const owned = Object.values(friendQty).filter(q => q > 0).length;
   const total = INITIAL_SECTIONS.reduce((s, sec) => s + sec.stickers.length, 0);
   const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
 
+  const currentSection = view === 'team' ? (friendSections[sectionIndex] ?? null) : null;
+  const teamOwned = currentSection ? currentSection.stickers.filter(s => s.quantity > 0).length : 0;
+  const teamTotal = currentSection?.stickers.length ?? 0;
+
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
-      {/* Header */}
+      {/* ── Header ── */}
       <View style={[styles.friendHeader, { backgroundColor: colors.header }]}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity
+          onPress={view === 'team' ? goBackToIndex : onBack}
+          style={styles.backBtn}
+          hitSlop={{ top: 14, bottom: 14, left: 4, right: 12 }}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.backIcon, { color: colors.primary }]}>‹</Text>
         </TouchableOpacity>
         <View style={styles.friendHeaderInfo}>
           <Text style={styles.friendHeaderName} numberOfLines={1}>
-            📖 {friend.displayName}
+            {view === 'team' && currentSection
+              ? `${currentSection.flag}  ${currentSection.name}`
+              : `📖 ${friend.displayName}`}
           </Text>
           <Text style={styles.friendHeaderSub}>
-            {pct}% completo · {owned}/{total}
+            {view === 'team' && currentSection
+              ? `${teamOwned}/${teamTotal} figurinhas`
+              : `${pct}% completo · ${owned}/${total}`}
           </Text>
         </View>
       </View>
 
+      {/* ── Content ── */}
       {loading ? (
         <View style={styles.center}>
           <ActivityIndicator color={colors.primary} size="large" />
@@ -147,12 +208,14 @@ function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
             Carregando álbum...
           </Text>
         </View>
-      ) : (
-        <AlbumContent
+      ) : view === 'index' ? (
+        <AlbumIndex
           sections={friendSections}
-          isDark={isDark}
           colors={colors}
-          readOnly
+          isDark={isDark}
+          sort={sort}
+          onSortChange={setSort}
+          onSelectSection={goToTeam}
           ListHeaderComponent={
             <TradeSuggestions
               myQty={myQty}
@@ -161,6 +224,20 @@ function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
             />
           }
         />
+      ) : (
+        <Animated.View
+          style={[styles.detail, { transform: [{ translateX: slideX }] }]}
+        >
+          <TeamDetail
+            sections={friendSections}
+            sectionIndex={sectionIndex}
+            isDark={isDark}
+            colors={colors}
+            onSectionChange={setSectionIndex}
+            onStickerPress={noop}
+            onStickerLongPress={noop}
+          />
+        </Animated.View>
       )}
     </SafeAreaView>
   );
@@ -405,9 +482,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm + 4,
     gap: Spacing.sm,
   },
-  backBtn: { padding: 4 },
-  backIcon: { fontSize: 22, color: '#FFFFFF' },
-  friendHeaderInfo: { flex: 1 },
+  backBtn: { paddingRight: 4, flexShrink: 0 },
+  backIcon: { fontSize: 32, fontWeight: '300', lineHeight: 36 },
+  friendHeaderInfo: { flex: 1, minWidth: 0 },
   friendHeaderName: {
     ...Typography.cardTitle,
     color: '#FFFFFF',
@@ -417,6 +494,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.6)',
     marginTop: 1,
   },
+  detail: { flex: 1 },
 
   scrollContent: {
     padding: Spacing.md,
