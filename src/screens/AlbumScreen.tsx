@@ -1,130 +1,150 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   StatusBar,
-  TouchableOpacity,
-  ActivityIndicator,
   Animated,
+  Dimensions,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AlbumContent from '../components/AlbumContent';
+import AlbumIndex from '../components/AlbumIndex';
+import TeamDetail from '../components/TeamDetail';
 import BottomSheetEditor from '../components/BottomSheetEditor';
 import { useAlbumContext } from '../contexts/AlbumContext';
-import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
-import { Spacing, Typography } from '../theme';
-import { ALBUM_CONFIG } from '../data/copaData';
 
-const TUTORIAL_KEY = '@album_tutorial_seen';
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+type AlbumView = 'index' | 'team';
 
 export default function AlbumScreen() {
-  const { user } = useAuth();
-  const { sections, increment, setQuantity, getSectionProgress, totalProgress, syncing } =
-    useAlbumContext();
+  const { sections, increment, setQuantity, syncing } = useAlbumContext();
   const { colors, isDark } = useTheme();
+
+  // ── View state ────────────────────────────────────────────────────────────
+  const [view, setView] = useState<AlbumView>('index');
+  const [sectionIndex, setSectionIndex] = useState(0);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  // ── Bottom sheet editor ───────────────────────────────────────────────────
   const [editingSticker, setEditingSticker] = useState<Sticker | null>(null);
 
-  // Keep liveEditingSticker in sync across sticker list
+  // Keep liveEditingSticker in sync across sticker list re-renders
   const liveEditingSticker = editingSticker
-    ? sections
-        .flatMap(s => s.stickers)
-        .find(s => s.id === editingSticker.id) ?? editingSticker
+    ? sections.flatMap(s => s.stickers).find(s => s.id === editingSticker.id) ??
+      editingSticker
     : null;
 
-  const handlePress = useCallback((id: string) => increment(id), [increment]);
-  const handleLongPress = useCallback((s: Sticker) => setEditingSticker(s), []);
-  const handleCloseSheet = useCallback(() => setEditingSticker(null), []);
+  // ── Slide animation (Index ↔ TeamDetail) ─────────────────────────────────
+  const slideX = useRef(new Animated.Value(0)).current;
 
-  // ── One-time tutorial ────────────────────────────────────────────────────────
-  const [showTutorial, setShowTutorial] = useState(false);
-  const tutorialAnim = useRef(new Animated.Value(0)).current;
+  const goToTeam = useCallback(
+    (sectionId: string, _stickerNumber?: number) => {
+      const idx = sections.findIndex(s => s.id === sectionId);
+      if (idx < 0) return;
+      setSectionIndex(idx);
+      // Slide in from the right
+      slideX.setValue(SCREEN_WIDTH * 0.35);
+      setView('team');
+      Animated.spring(slideX, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 22,
+        stiffness: 220,
+        overshootClamping: true,
+      }).start();
+    },
+    [sections, slideX],
+  );
 
-  const dismissTutorial = useCallback(() => {
-    Animated.timing(tutorialAnim, { toValue: 0, duration: 250, useNativeDriver: true }).start(() => {
-      setShowTutorial(false);
-      AsyncStorage.setItem(TUTORIAL_KEY, '1');
+  const goBack = useCallback(() => {
+    Animated.timing(slideX, {
+      toValue: SCREEN_WIDTH * 0.35,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setView('index');
+      setIsEditMode(false);
+      slideX.setValue(0);
     });
-  }, [tutorialAnim]);
+  }, [slideX]);
 
-  useEffect(() => {
-    let tid: ReturnType<typeof setTimeout>;
-    AsyncStorage.getItem(TUTORIAL_KEY).then(v => {
-      if (!v) {
-        setShowTutorial(true);
-        Animated.timing(tutorialAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
-        tid = setTimeout(dismissTutorial, 7000);
+  // ── Sticker interactions ──────────────────────────────────────────────────
+
+  /**
+   * Contextual press handler:
+   *  - Edit mode  → toggle owned / missing (batch mark)
+   *  - Missing    → add 1 immediately
+   *  - Owned      → open BottomSheetEditor so the user can remove or adjust
+   */
+  const handleStickerPress = useCallback(
+    (sticker: Sticker) => {
+      if (isEditMode) {
+        setQuantity(sticker.id, sticker.quantity > 0 ? 0 : 1);
+        return;
       }
-    });
-    return () => clearTimeout(tid);
-  }, [dismissTutorial, tutorialAnim]);
+      if (sticker.quantity === 0) {
+        increment(sticker.id);
+      } else {
+        setEditingSticker(sticker);
+      }
+    },
+    [isEditMode, increment, setQuantity],
+  );
 
+  /** Long press always opens the full editor (useful outside edit mode too) */
+  const handleStickerLongPress = useCallback((sticker: Sticker) => {
+    setEditingSticker(sticker);
+  }, []);
+
+  const handleCloseEditor = useCallback(() => setEditingSticker(null), []);
+
+  const handleToggleEditMode = useCallback(
+    () => setIsEditMode(v => !v),
+    [],
+  );
+
+  // ── render ────────────────────────────────────────────────────────────────
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.root, { backgroundColor: colors.background }]}
+    >
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
 
-      {/* ── Header ── */}
-      <View style={[styles.header, { backgroundColor: colors.header }]}>
-        <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.headerTitle}>Meu Álbum</Text>
-            <Text style={styles.headerSub}>{ALBUM_CONFIG.name}</Text>
-          </View>
-          {syncing && (
-            <ActivityIndicator
-              size="small"
-              color="rgba(255,255,255,0.6)"
-            />
-          )}
-        </View>
-      </View>
-
-      {/* ── One-time tutorial (shown only on first access) ── */}
-      {showTutorial && (
+      {view === 'index' ? (
+        // ── Team index ──────────────────────────────────────────────────────
+        <AlbumIndex
+          sections={sections}
+          colors={colors}
+          isDark={isDark}
+          syncing={syncing}
+          onSelectSection={goToTeam}
+        />
+      ) : (
+        // ── Team detail (slides in from right) ──────────────────────────────
         <Animated.View
-          style={[
-            styles.tutorial,
-            {
-              opacity: tutorialAnim,
-              backgroundColor: colors.surface,
-              borderBottomColor: colors.navBorder,
-            },
-          ]}
+          style={[styles.detail, { transform: [{ translateX: slideX }] }]}
         >
-          <Text style={styles.tutorialIcon}>💡</Text>
-          <View style={styles.tutorialBody}>
-            <Text style={[styles.tutorialTitle, { color: colors.textPrimary }]}>
-              Como usar o álbum
-            </Text>
-            <Text style={[styles.tutorialDesc, { color: colors.textMuted }]}>
-              Toque 1× para adicionar · Segure para editar quantidade
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={dismissTutorial}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-          >
-            <Text style={[styles.tutorialClose, { color: colors.textMuted }]}>✕</Text>
-          </TouchableOpacity>
+          <TeamDetail
+            sections={sections}
+            sectionIndex={sectionIndex}
+            isDark={isDark}
+            colors={colors}
+            isEditMode={isEditMode}
+            onToggleEditMode={handleToggleEditMode}
+            onBack={goBack}
+            onSectionChange={setSectionIndex}
+            onStickerPress={handleStickerPress}
+            onStickerLongPress={handleStickerLongPress}
+          />
         </Animated.View>
       )}
 
-      {/* ── Album grid (tabs + stickers) ── */}
-      <AlbumContent
-        sections={sections}
-        isDark={isDark}
-        colors={colors}
-        onPress={handlePress}
-        onLongPress={handleLongPress}
-      />
-
-      {/* ── Bottom sheet ── */}
+      {/* ── Quantity editor bottom sheet ── */}
       <BottomSheetEditor
         sticker={liveEditingSticker}
-        onClose={handleCloseSheet}
+        onClose={handleCloseEditor}
         onQuantityChange={setQuantity}
       />
     </SafeAreaView>
@@ -133,56 +153,5 @@ export default function AlbumScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-
-  header: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.md,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    ...Typography.screenTitle,
-    color: '#FFFFFF',
-  },
-  headerSub: {
-    ...Typography.screenSubtitle,
-    color: 'rgba(255,255,255,0.6)',
-    marginTop: 1,
-  },
-  headerActions: {
-    alignItems: 'flex-end',
-  },
-
-  tutorial: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    gap: Spacing.sm,
-  },
-  tutorialIcon: {
-    fontSize: 22,
-  },
-  tutorialBody: {
-    flex: 1,
-  },
-  tutorialTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  tutorialDesc: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  tutorialClose: {
-    fontSize: 16,
-    fontWeight: '700',
-    paddingHorizontal: 4,
-  },
+  detail: { flex: 1 },
 });

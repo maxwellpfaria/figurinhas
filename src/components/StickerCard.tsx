@@ -38,7 +38,13 @@ interface Props {
   isDark: boolean;
   colors: ColorsType;
   isWide?: boolean;
-  onPress: (id: string) => void;
+  /**
+   * When true the card shows a toggle indicator and a single tap
+   * marks/unmarks the sticker (batch edit mode).
+   */
+  isEditMode?: boolean;
+  /** Receives the full Sticker so the handler can check quantity contextually */
+  onPress: (sticker: Sticker) => void;
   onLongPress: (sticker: Sticker) => void;
 }
 
@@ -48,220 +54,307 @@ function areEqual(prev: Props, next: Props) {
     prev.sticker.id === next.sticker.id &&
     prev.isDark === next.isDark &&
     prev.isWide === next.isWide &&
+    prev.isEditMode === next.isEditMode &&
     prev.onPress === next.onPress &&
     prev.onLongPress === next.onLongPress
   );
 }
 
-const StickerCard = memo(({ sticker, isDark, colors, isWide = false, onPress, onLongPress }: Props) => {
-  const { id, code, quantity, isSpecial } = sticker;
-  const state = getStickerState(quantity);
-  const isOwned = state !== 'missing';
-  const isRepeated = state === 'repeated';
-  const isSpecialOwned = !!isSpecial && isOwned;
+const StickerCard = memo(
+  ({
+    sticker,
+    isDark,
+    colors,
+    isWide = false,
+    isEditMode = false,
+    onPress,
+    onLongPress,
+  }: Props) => {
+    const { id, code, quantity, isSpecial } = sticker;
+    const state = getStickerState(quantity);
+    const isOwned = state !== 'missing';
+    const isRepeated = state === 'repeated';
+    const isSpecialOwned = !!isSpecial && isOwned;
 
-  const handlePress = useCallback(() => onPress(id), [onPress, id]);
-  const handleLongPress = useCallback(() => onLongPress(sticker), [onLongPress, sticker]);
-
-  // Shimmer sweep animation for legendary owned cards
-  const shimmerX = useRef(new Animated.Value(-CARD_WIDTH)).current;
-  useEffect(() => {
-    if (!isSpecialOwned) return;
-    shimmerX.setValue(-CARD_WIDTH);
-    const anim = Animated.loop(
-      Animated.sequence([
-        Animated.timing(shimmerX, {
-          toValue: CARD_WIDTH * 1.5,
-          duration: 1800,
-          useNativeDriver: true,
-        }),
-        Animated.delay(1200),
-        Animated.timing(shimmerX, {
-          toValue: -CARD_WIDTH,
-          duration: 0,
-          useNativeDriver: true,
-        }),
-      ]),
+    const handlePress = useCallback(() => onPress(sticker), [onPress, sticker]);
+    const handleLongPress = useCallback(
+      () => onLongPress(sticker),
+      [onLongPress, sticker],
     );
-    anim.start();
-    return () => anim.stop();
-  }, [isSpecialOwned]);
 
-  const prefix = code.split(' ')[0];
-  const num = sticker.number;
-  const wrapperStyle = isWide
-    ? [styles.cardWrapper, { width: WIDE_CARD_WIDTH }]
-    : styles.cardWrapper;
+    // Shimmer sweep animation for legendary owned cards
+    const shimmerX = useRef(new Animated.Value(-CARD_WIDTH)).current;
+    useEffect(() => {
+      if (!isSpecialOwned) return;
+      shimmerX.setValue(-CARD_WIDTH);
+      const anim = Animated.loop(
+        Animated.sequence([
+          Animated.timing(shimmerX, {
+            toValue: CARD_WIDTH * 1.5,
+            duration: 1800,
+            useNativeDriver: true,
+          }),
+          Animated.delay(1200),
+          Animated.timing(shimmerX, {
+            toValue: -CARD_WIDTH,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      anim.start();
+      return () => anim.stop();
+    }, [isSpecialOwned, shimmerX]);
 
-  // ── Legendary owned card ──────────────────────────────────────────────────
-  if (isSpecialOwned) {
-    const gradColors = isDark ? LEGEND_GRADIENT_DARK : LEGEND_GRADIENT_LIGHT;
-    const textColor = isDark ? '#FEF3C7' : '#78350F';
+    const prefix = code.split(' ')[0];
+    const num = sticker.number;
+    const wrapperStyle = isWide
+      ? [styles.cardWrapper, { width: WIDE_CARD_WIDTH }]
+      : styles.cardWrapper;
 
-    return (
-      <TouchableOpacity
-        onPress={handlePress}
-        onLongPress={handleLongPress}
-        delayLongPress={400}
-        activeOpacity={0.8}
-        style={wrapperStyle}
+    // ── Edit mode toggle indicator ────────────────────────────────────────────
+    const editIndicator = isEditMode ? (
+      <View
+        style={[
+          styles.editDot,
+          {
+            backgroundColor: isOwned ? colors.primary : 'transparent',
+            borderColor: isOwned ? colors.primary : colors.textMuted,
+          },
+        ]}
       >
-        <LinearGradient
-          colors={gradColors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.card, styles.cardSpecial]}
+        {isOwned && (
+          <Text style={styles.editDotCheck}>✓</Text>
+        )}
+      </View>
+    ) : null;
+
+    // ── Legendary owned card ──────────────────────────────────────────────────
+    if (isSpecialOwned) {
+      const gradColors = isDark ? LEGEND_GRADIENT_DARK : LEGEND_GRADIENT_LIGHT;
+      const textColor = isDark ? '#FEF3C7' : '#78350F';
+
+      return (
+        <TouchableOpacity
+          onPress={handlePress}
+          onLongPress={handleLongPress}
+          delayLongPress={400}
+          activeOpacity={0.8}
+          style={wrapperStyle}
         >
-          {/* Shimmer sweep */}
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.shimmer, { transform: [{ translateX: shimmerX }] }]}
-          />
+          <LinearGradient
+            colors={gradColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.card, styles.cardSpecial]}
+          >
+            {/* Shimmer sweep */}
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.shimmer, { transform: [{ translateX: shimmerX }] }]}
+            />
 
-          {/* Repeated badge */}
-          {isRepeated && (
-            <View style={[styles.badge, { backgroundColor: colors.badge }]}>
-              <Text style={[styles.badgeText, { color: colors.badgeText }]}>
-                +{quantity - 1}
-              </Text>
-            </View>
-          )}
+            {/* Repeated badge */}
+            {isRepeated && (
+              <View style={[styles.badge, { backgroundColor: colors.badge }]}>
+                <Text style={[styles.badgeText, { color: colors.badgeText }]}>
+                  +{quantity - 1}
+                </Text>
+              </View>
+            )}
 
-          {/* LENDÁRIA tag */}
-          <View style={styles.legendTag}>
-            <Text style={[styles.legendTagText, { color: textColor }]}>★</Text>
+            {/* Edit indicator */}
+            {editIndicator}
+
+            {/* LENDÁRIA tag (hidden in edit mode to avoid clutter) */}
+            {!isEditMode && (
+              <View style={styles.legendTag}>
+                <Text style={[styles.legendTagText, { color: textColor }]}>★</Text>
+              </View>
+            )}
+
+            <Text style={[styles.prefix, { color: textColor, opacity: 0.7 }]}>
+              {prefix}
+            </Text>
+            <Text style={[styles.number, { color: textColor }]}>{num}</Text>
+            <Text
+              style={[styles.statusLabel, { color: textColor, opacity: 0.8 }]}
+            >
+              {isEditMode ? '' : 'LENDÁRIA'}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      );
+    }
+
+    // ── Legendary missing card ────────────────────────────────────────────────
+    if (isSpecial && !isOwned) {
+      return (
+        <TouchableOpacity
+          onPress={handlePress}
+          onLongPress={handleLongPress}
+          delayLongPress={400}
+          activeOpacity={0.6}
+          style={wrapperStyle}
+        >
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.specialMissingBg,
+                borderColor: colors.specialMissingBorder,
+                borderWidth: 1.5,
+                borderStyle: 'dashed',
+              },
+            ]}
+          >
+            {editIndicator}
+            <Text
+              style={[
+                styles.prefix,
+                { color: colors.specialMissingText, opacity: 0.6 },
+              ]}
+            >
+              {prefix}
+            </Text>
+            <Text
+              style={[
+                styles.number,
+                { color: colors.specialMissingText, opacity: 0.5 },
+              ]}
+            >
+              {num}
+            </Text>
+            <Text
+              style={[
+                styles.statusLabel,
+                { color: colors.specialMissingText, opacity: 0.6 },
+              ]}
+            >
+              {isEditMode ? '' : '★ falta'}
+            </Text>
           </View>
+        </TouchableOpacity>
+      );
+    }
 
-          <Text style={[styles.prefix, { color: textColor, opacity: 0.7 }]}>{prefix}</Text>
-          <Text style={[styles.number, { color: textColor }]}>{num}</Text>
-          <Text style={[styles.statusLabel, { color: textColor, opacity: 0.8 }]}>
-            LENDÁRIA
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    );
-  }
+    // ── Regular owned card ────────────────────────────────────────────────────
+    if (isOwned) {
+      return (
+        <TouchableOpacity
+          onPress={handlePress}
+          onLongPress={handleLongPress}
+          delayLongPress={400}
+          activeOpacity={0.75}
+          style={wrapperStyle}
+        >
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.ownedBg,
+                borderColor: colors.ownedBorder,
+                borderWidth: 1.5,
+                shadowColor: colors.primary,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 3,
+              },
+            ]}
+          >
+            {isRepeated && (
+              <View style={[styles.badge, { backgroundColor: colors.badge }]}>
+                <Text style={[styles.badgeText, { color: colors.badgeText }]}>
+                  +{quantity - 1}
+                </Text>
+              </View>
+            )}
+            {isWide && !isEditMode && (
+              <View style={styles.formationTag}>
+                <Text
+                  style={[
+                    styles.formationTagText,
+                    { color: colors.ownedText },
+                  ]}
+                >
+                  ⚽ FORMAÇÃO
+                </Text>
+              </View>
+            )}
+            {editIndicator}
+            <Text
+              style={[styles.prefix, { color: colors.ownedText, opacity: 0.65 }]}
+            >
+              {prefix}
+            </Text>
+            <Text style={[styles.number, { color: colors.ownedText }]}>{num}</Text>
+            <Text
+              style={[
+                styles.statusLabel,
+                { color: colors.ownedText, opacity: 0.7 },
+              ]}
+            >
+              {isEditMode ? '' : '✓ tenho'}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
 
-  // ── Legendary missing card ────────────────────────────────────────────────
-  if (isSpecial && !isOwned) {
+    // ── Regular missing card ──────────────────────────────────────────────────
     return (
       <TouchableOpacity
         onPress={handlePress}
         onLongPress={handleLongPress}
         delayLongPress={400}
-        activeOpacity={0.6}
+        activeOpacity={0.5}
         style={wrapperStyle}
       >
         <View
           style={[
             styles.card,
             {
-              backgroundColor: colors.specialMissingBg,
-              borderColor: colors.specialMissingBorder,
+              backgroundColor: colors.missing,
+              borderColor: colors.missingBorder,
               borderWidth: 1.5,
               borderStyle: 'dashed',
             },
           ]}
         >
-          <Text style={[styles.prefix, { color: colors.specialMissingText, opacity: 0.6 }]}>
-            {prefix}
-          </Text>
-          <Text style={[styles.number, { color: colors.specialMissingText, opacity: 0.5 }]}>
-            {num}
-          </Text>
-          <Text style={[styles.statusLabel, { color: colors.specialMissingText, opacity: 0.6 }]}>
-            ★ falta
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // ── Regular owned card ────────────────────────────────────────────────────
-  if (isOwned) {
-    return (
-      <TouchableOpacity
-        onPress={handlePress}
-        onLongPress={handleLongPress}
-        delayLongPress={400}
-        activeOpacity={0.75}
-        style={wrapperStyle}
-      >
-        <View
-          style={[
-            styles.card,
-            {
-              backgroundColor: colors.ownedBg,
-              borderColor: colors.ownedBorder,
-              borderWidth: 1.5,
-              shadowColor: colors.primary,
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 3,
-            },
-          ]}
-        >
-          {isRepeated && (
-            <View style={[styles.badge, { backgroundColor: colors.badge }]}>
-              <Text style={[styles.badgeText, { color: colors.badgeText }]}>
-                +{quantity - 1}
+          {isWide && !isEditMode && (
+            <View style={styles.formationTag}>
+              <Text
+                style={[
+                  styles.formationTagText,
+                  { color: colors.missingText },
+                ]}
+              >
+                ⚽ FORMAÇÃO
               </Text>
             </View>
           )}
-          {isWide && (
-            <View style={styles.formationTag}>
-              <Text style={[styles.formationTagText, { color: colors.ownedText }]}>⚽ FORMAÇÃO</Text>
-            </View>
-          )}
-          <Text style={[styles.prefix, { color: colors.ownedText, opacity: 0.65 }]}>
+          {editIndicator}
+          <Text
+            style={[styles.prefix, { color: colors.missingText, opacity: 0.5 }]}
+          >
             {prefix}
           </Text>
-          <Text style={[styles.number, { color: colors.ownedText }]}>{num}</Text>
-          <Text style={[styles.statusLabel, { color: colors.ownedText, opacity: 0.7 }]}>
-            ✓ tenho
+          <Text style={[styles.number, { color: colors.missingText }]}>{num}</Text>
+          <Text
+            style={[
+              styles.statusLabel,
+              { color: colors.missingText, opacity: 0.6 },
+            ]}
+          >
+            {isEditMode ? '' : 'falta'}
           </Text>
         </View>
       </TouchableOpacity>
     );
-  }
-
-  // ── Regular missing card ──────────────────────────────────────────────────
-  return (
-    <TouchableOpacity
-      onPress={handlePress}
-      onLongPress={handleLongPress}
-      delayLongPress={400}
-      activeOpacity={0.5}
-      style={wrapperStyle}
-    >
-      <View
-        style={[
-          styles.card,
-          {
-            backgroundColor: colors.missing,
-            borderColor: colors.missingBorder,
-            borderWidth: 1.5,
-            borderStyle: 'dashed',
-          },
-        ]}
-      >
-        {isWide && (
-          <View style={styles.formationTag}>
-            <Text style={[styles.formationTagText, { color: colors.missingText }]}>⚽ FORMAÇÃO</Text>
-          </View>
-        )}
-        <Text style={[styles.prefix, { color: colors.missingText, opacity: 0.5 }]}>
-          {prefix}
-        </Text>
-        <Text style={[styles.number, { color: colors.missingText }]}>{num}</Text>
-        <Text style={[styles.statusLabel, { color: colors.missingText, opacity: 0.6 }]}>
-          falta
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-}, areEqual);
+  },
+  areEqual,
+);
 
 StickerCard.displayName = 'StickerCard';
 export default StickerCard;
@@ -353,5 +446,25 @@ const styles = StyleSheet.create({
     width: 22,
     backgroundColor: 'rgba(255,255,255,0.38)',
     zIndex: 2,
+  },
+
+  // Edit mode indicator (top-left toggle dot)
+  editDot: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 3,
+  },
+  editDotCheck: {
+    fontSize: 8,
+    fontWeight: '900',
+    color: '#fff',
+    lineHeight: 10,
   },
 });

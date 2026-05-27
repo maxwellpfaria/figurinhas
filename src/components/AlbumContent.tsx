@@ -17,7 +17,8 @@ interface Props {
   isDark: boolean;
   colors: ColorsType;
   readOnly?: boolean;
-  onPress?: (id: string) => void;
+  /** Receives the full Sticker object so handlers can inspect quantity */
+  onPress?: (sticker: Sticker) => void;
   onLongPress?: (sticker: Sticker) => void;
   /** Optional header rendered above the tabs */
   ListHeaderComponent?: React.ReactElement | null;
@@ -98,7 +99,8 @@ export default function AlbumContent({
     [sections],
   );
 
-  const noOp = useCallback(() => {}, []);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const noOp = useCallback((_sticker: Sticker) => {}, []);
 
   // ── Animated section transition ───────────────────────────────────────────────
   // newGroupId is set when crossing a group boundary (swipe past last/first section).
@@ -249,9 +251,7 @@ export default function AlbumContent({
                     colors={colors}
                     isWide={row.hasFormation && idx === 0}
                     onPress={readOnly ? noOp : (onPress ?? noOp)}
-                    onLongPress={
-                      readOnly ? (noOp as any) : (onLongPress ?? (noOp as any))
-                    }
+                    onLongPress={readOnly ? noOp : (onLongPress ?? noOp)}
                   />
                 ))}
               </View>
