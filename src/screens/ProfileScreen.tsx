@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Spacing, Radius, Typography, ColorsType } from '../theme';
+import { useFaq } from '../hooks/useFaq';
 
 // ── Static content ─────────────────────────────────────────────────────────────
 
@@ -331,48 +332,7 @@ Para dúvidas, sugestões ou reclamações sobre estes termos, utilize o canal d
 
 // ── FAQ data ──────────────────────────────────────────────────────────────────
 
-const FAQ_ITEMS = [
-  {
-    id: '1',
-    q: 'Como adicionar uma figurinha?',
-    a: 'Toque 1× no card da figurinha. Cada toque adiciona 1 cópia. O progresso é salvo automaticamente na nuvem.',
-  },
-  {
-    id: '2',
-    q: 'Como editar ou remover uma figurinha?',
-    a: 'Pressione e segure o card por cerca de 0,4 segundos para abrir o editor de quantidade. Lá você define o número exato de cópias ou pode zerar.',
-  },
-  {
-    id: '3',
-    q: 'Como navegar entre as seleções?',
-    a: 'Use as abas de grupo (FWC, A–L, CC) para saltar direto ao grupo. Dentro do grupo, toque na aba da seleção ou deslize horizontalmente. O swipe também avança entre grupos automaticamente.',
-  },
-  {
-    id: '4',
-    q: 'O que são figurinhas especiais?',
-    a: 'São as 20 figurinhas holográficas da seção FWC e os 48 escudos (figurinha nº 1 de cada seleção). Total: 68 figurinhas especiais no álbum.',
-  },
-  {
-    id: '5',
-    q: 'Como funciona a contagem de repetidas?',
-    a: 'Conta o total de cópias extras. Exemplo: 3 cópias da mesma figurinha = 2 repetidas. Figurinhas com muitas cópias são somadas corretamente.',
-  },
-  {
-    id: '6',
-    q: 'Como adicionar amigos?',
-    a: 'Na aba Amigos, informe o código de convite do seu amigo. O seu próprio código está aqui na tela de Perfil, abaixo do seu nome.',
-  },
-  {
-    id: '7',
-    q: 'O álbum é salvo automaticamente?',
-    a: 'Sim. As alterações são sincronizadas com a nuvem automaticamente alguns segundos após cada mudança. Um indicador aparece no cabeçalho enquanto o salvamento ocorre.',
-  },
-  {
-    id: '8',
-    q: 'Como funciona a troca via QR Code?',
-    a: 'Na aba Troca, gere o seu QR Code e peça ao amigo para escanear com o app. O aplicativo calcula automaticamente quais figurinhas vocês podem trocar entre si.',
-  },
-];
+// FAQ_ITEMS foi movido para src/hooks/useFaq.ts (fallback) e src/services/faq.ts (Firestore).
 
 // ── Policy sub-view ───────────────────────────────────────────────────────────
 
@@ -693,6 +653,7 @@ type PolicyPage = 'privacy' | 'terms';
 export default function ProfileScreen() {
   const { user, profile, signOut, updateName, deleteAccount } = useAuth();
   const { colors, isDark, toggleTheme } = useTheme();
+  const { items: faqItems } = useFaq();
 
   const [policyPage, setPolicyPage] = useState<PolicyPage | null>(null);
   const [editingName, setEditingName] = useState(false);
@@ -824,12 +785,12 @@ export default function ProfileScreen() {
 
         {/* ── Perguntas frequentes ── */}
         <SectionGroup label="PERGUNTAS FREQUENTES" colors={colors}>
-          {FAQ_ITEMS.map((item, i) => (
+          {faqItems.map((item, i) => (
             <FaqItem
               key={item.id}
               q={item.q}
               a={item.a}
-              isLast={i === FAQ_ITEMS.length - 1}
+              isLast={i === faqItems.length - 1}
               colors={colors}
             />
           ))}
