@@ -1,18 +1,27 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   StatusBar,
   Animated,
   Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AlbumIndex from '../components/AlbumIndex';
+import AlbumIndex, { SortMode } from '../components/AlbumIndex';
 import TeamDetail from '../components/TeamDetail';
 import BottomSheetEditor from '../components/BottomSheetEditor';
+import WelcomeWizard from '../components/WelcomeWizard';
 import { useAlbumContext } from '../contexts/AlbumContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Sticker } from '../types';
+import { Radius } from '../theme';
+
+/** AsyncStorage key — bump the suffix to force re-show after major UI changes */
+const WIZARD_KEY = '@album_wizard_v1';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -22,10 +31,31 @@ export default function AlbumScreen() {
   const { sections, increment, setQuantity, syncing } = useAlbumContext();
   const { colors, isDark } = useTheme();
 
+  // ── Wizard ────────────────────────────────────────────────────────────────
+  const [showWizard, setShowWizard] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem(WIZARD_KEY).then(seen => {
+      if (!seen) setShowWizard(true);
+    });
+  }, []);
+
+  const handleDismissWizard = useCallback(() => {
+    setShowWizard(false);
+    AsyncStorage.setItem(WIZARD_KEY, '1');
+  }, []);
+
   // ── View state ────────────────────────────────────────────────────────────
   const [view, setView] = useState<AlbumView>('index');
   const [sectionIndex, setSectionIndex] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  /**
+   * Sort mode lives here (not inside AlbumIndex) so it survives the
+   * unmount/remount cycle that happens when the user navigates to a team
+   * and comes back.
+   */
+  const [sort, setSort] = useState<SortMode>('album');
 
   // ── Bottom sheet editor ───────────────────────────────────────────────────
   const [editingSticker, setEditingSticker] = useState<Sticker | null>(null);
@@ -44,7 +74,6 @@ export default function AlbumScreen() {
       const idx = sections.findIndex(s => s.id === sectionId);
       if (idx < 0) return;
       setSectionIndex(idx);
-      // Slide in from the right
       slideX.setValue(SCREEN_WIDTH * 0.35);
       setView('team');
       Animated.spring(slideX, {
@@ -76,7 +105,7 @@ export default function AlbumScreen() {
    * Contextual press handler:
    *  - Edit mode  → toggle owned / missing (batch mark)
    *  - Missing    → add 1 immediately
-   *  - Owned      → open BottomSheetEditor so the user can remove or adjust
+   *  - Owned      → open BottomSheetEditor so the user can adjust or remove
    */
   const handleStickerPress = useCallback(
     (sticker: Sticker) => {
@@ -93,17 +122,33 @@ export default function AlbumScreen() {
     [isEditMode, increment, setQuantity],
   );
 
-  /** Long press always opens the full editor (useful outside edit mode too) */
+  /** Long press always opens the full editor */
   const handleStickerLongPress = useCallback((sticker: Sticker) => {
     setEditingSticker(sticker);
   }, []);
 
   const handleCloseEditor = useCallback(() => setEditingSticker(null), []);
+  const handleToggleEditMode = useCallback(() => setIsEditMode(v => !v), []);
 
-  const handleToggleEditMode = useCallback(
-    () => setIsEditMode(v => !v),
-    [],
-  );
+  // ── Header data ───────────────────────────────────────────────────────────
+
+  const { totalOwned, totalStickers, globalPct } = useMemo(() => {
+    let owned = 0;
+    let total = 0;
+    for (const s of sections) {
+      owned += s.stickers.filter(st => st.quantity > 0).length;
+      total += s.stickers.length;
+    }
+    const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
+    return { totalOwned: owned, totalStickers: total, globalPct: pct };
+  }, [sections]);
+
+  const currentSection = view === 'team' ? (sections[sectionIndex] ?? null) : null;
+
+  const teamOwned = currentSection
+    ? currentSection.stickers.filter(s => s.quantity > 0).length
+    : 0;
+  const teamTotal = currentSection?.stickers.length ?? 0;
 
   // ── render ────────────────────────────────────────────────────────────────
   return (
@@ -112,17 +157,95 @@ export default function AlbumScreen() {
     >
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
 
+      {/* ══ Persistent dark header — always visible ══════════════════════════ */}
+      <View style={[styles.header, { backgroundColor: colors.header }]}>
+
+        {view === 'index' ? (
+          /* ── Index header content ── */
+          <>
+            <View style={styles.headerLeft}>
+              <Text style={styles.headerTitle}>Meu Álbum</Text>
+              <Text style={styles.headerSub}>Copa do Mundo 2026</Text>
+            </View>
+            <View style={styles.headerRight}>
+              {syncing && (
+                <ActivityIndicator size="small" color="rgba(255,255,255,0.5)" />
+              )}
+              <View style={styles.globalProgress}>
+                <Text style={styles.globalPct}>{globalPct}%</Text>
+                <Text style={styles.globalCount}>
+                  {totalOwned}/{totalStickers}
+                </Text>
+              </View>
+            </View>
+          </>
+        ) : (
+          /* ── Team header content ── */
+          <>
+            {/* Back button */}
+            <TouchableOpacity
+              onPress={goBack}
+              style={styles.backBtn}
+              hitSlop={{ top: 14, bottom: 14, left: 4, right: 12 }}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.backArrow, { color: colors.primary }]}>‹</Text>
+            </TouchableOpacity>
+
+            {/* Team identity */}
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>Meu Álbum</Text>
+              {currentSection && (
+                <Text style={styles.headerSub} numberOfLines={1}>
+                  {currentSection.flag}  {currentSection.name}
+                  {'  ·  '}{teamOwned}/{teamTotal}
+                </Text>
+              )}
+            </View>
+
+            {/* Edit toggle + syncing */}
+            <View style={styles.headerRight}>
+              {syncing && (
+                <ActivityIndicator size="small" color="rgba(255,255,255,0.5)" />
+              )}
+              <TouchableOpacity
+                onPress={handleToggleEditMode}
+                style={[
+                  styles.editBtn,
+                  isEditMode && { backgroundColor: colors.primary },
+                ]}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                activeOpacity={0.75}
+              >
+                <Text
+                  style={[
+                    styles.editBtnText,
+                    {
+                      color: isEditMode
+                        ? isDark ? '#0F172A' : '#fff'
+                        : 'rgba(255,255,255,0.7)',
+                    },
+                  ]}
+                >
+                  {isEditMode ? '✓ Pronto' : '✏️'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </View>
+
+      {/* ══ Content area ════════════════════════════════════════════════════ */}
       {view === 'index' ? (
-        // ── Team index ──────────────────────────────────────────────────────
         <AlbumIndex
           sections={sections}
           colors={colors}
           isDark={isDark}
-          syncing={syncing}
+          sort={sort}
+          onSortChange={setSort}
           onSelectSection={goToTeam}
         />
       ) : (
-        // ── Team detail (slides in from right) ──────────────────────────────
         <Animated.View
           style={[styles.detail, { transform: [{ translateX: slideX }] }]}
         >
@@ -132,8 +255,6 @@ export default function AlbumScreen() {
             isDark={isDark}
             colors={colors}
             isEditMode={isEditMode}
-            onToggleEditMode={handleToggleEditMode}
-            onBack={goBack}
             onSectionChange={setSectionIndex}
             onStickerPress={handleStickerPress}
             onStickerLongPress={handleStickerLongPress}
@@ -147,11 +268,94 @@ export default function AlbumScreen() {
         onClose={handleCloseEditor}
         onQuantityChange={setQuantity}
       />
+
+      {/* ── First-time onboarding wizard ── */}
+      {showWizard && (
+        <WelcomeWizard
+          colors={colors}
+          isDark={isDark}
+          onDismiss={handleDismissWizard}
+        />
+      )}
     </SafeAreaView>
   );
 }
 
+// ── styles ────────────────────────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
   root: { flex: 1 },
+
+  // Shared persistent header
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+
+  // Index layout: left title block + right progress
+  headerLeft: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.2,
+  },
+  headerSub: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.55)',
+    marginTop: 1,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flexShrink: 0,
+  },
+  globalProgress: {
+    alignItems: 'flex-end',
+  },
+  globalPct: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    lineHeight: 22,
+  },
+  globalCount: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.55)',
+    fontWeight: '600',
+  },
+
+  // Team layout: back + center block + right actions
+  backBtn: {
+    paddingRight: 4,
+    flexShrink: 0,
+  },
+  backArrow: {
+    fontSize: 32,
+    fontWeight: '300',
+    lineHeight: 36,
+  },
+  headerCenter: {
+    flex: 1,
+    minWidth: 0, // allows text truncation
+  },
+
+  // Edit button (inside team header right)
+  editBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: Radius.full,
+  },
+  editBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+
   detail: { flex: 1 },
 });

@@ -4,14 +4,13 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
   Animated,
   Dimensions,
 } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import StickerCard, { NUM_COLUMNS } from './StickerCard';
 import { Section, Sticker } from '../types';
-import { ColorsType, Spacing, Radius } from '../theme';
+import { ColorsType, Spacing } from '../theme';
 
 type StickerRow = { id: string; stickers: Sticker[]; hasFormation: boolean };
 
@@ -27,8 +26,6 @@ interface Props {
   isDark: boolean;
   colors: ColorsType;
   isEditMode: boolean;
-  onToggleEditMode: () => void;
-  onBack: () => void;
   /** Called when swipe navigates to a different section */
   onSectionChange: (newIndex: number) => void;
   /** Contextual press: missing → add · owned → open editor · edit mode → toggle */
@@ -43,8 +40,6 @@ export default function TeamDetail({
   isDark,
   colors,
   isEditMode,
-  onToggleEditMode,
-  onBack,
   onSectionChange,
   onStickerPress,
   onStickerLongPress,
@@ -53,7 +48,7 @@ export default function TeamDetail({
 
   const currentSection = sections[sectionIndex] ?? null;
 
-  // ── sticker rows (same formation logic as before) ─────────────────────────
+  // ── sticker rows (formation logic preserved) ──────────────────────────────
   const stickerRows = useMemo<StickerRow[]>(() => {
     if (!currentSection) return [];
     const stickers = currentSection.stickers;
@@ -76,14 +71,6 @@ export default function TeamDetail({
       }
     }
     return result;
-  }, [currentSection]);
-
-  // ── progress ──────────────────────────────────────────────────────────────
-  const { owned, total, pct } = useMemo(() => {
-    if (!currentSection) return { owned: 0, total: 0, pct: 0 };
-    const o = currentSection.stickers.filter(s => s.quantity > 0).length;
-    const t = currentSection.stickers.length;
-    return { owned: o, total: t, pct: t > 0 ? Math.round((o / t) * 100) : 0 };
   }, [currentSection]);
 
   // ── section navigation (swipe) ────────────────────────────────────────────
@@ -136,68 +123,13 @@ export default function TeamDetail({
 
   if (!currentSection) return null;
 
+  const owned = currentSection.stickers.filter(s => s.quantity > 0).length;
+  const total = currentSection.stickers.length;
+  const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
   const isComplete = owned === total && total > 0;
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-
-      {/* ── Header ── */}
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: colors.surface, borderBottomColor: colors.navBorder },
-        ]}
-      >
-        {/* Back */}
-        <TouchableOpacity
-          onPress={onBack}
-          style={styles.backBtn}
-          hitSlop={{ top: 14, bottom: 14, left: 8, right: 12 }}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.backArrow, { color: colors.primary }]}>‹</Text>
-          <Text style={[styles.backLabel, { color: colors.primary }]}>
-            Seleções
-          </Text>
-        </TouchableOpacity>
-
-        {/* Team identity */}
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerFlag}>{currentSection.flag}</Text>
-          <Text
-            style={[styles.headerName, { color: colors.textPrimary }]}
-            numberOfLines={1}
-          >
-            {currentSection.name}
-          </Text>
-        </View>
-
-        {/* Edit mode toggle */}
-        <TouchableOpacity
-          onPress={onToggleEditMode}
-          style={[
-            styles.editBtn,
-            isEditMode
-              ? { backgroundColor: colors.primary }
-              : { backgroundColor: colors.surfaceAlt },
-          ]}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          activeOpacity={0.75}
-        >
-          <Text
-            style={[
-              styles.editBtnText,
-              {
-                color: isEditMode
-                  ? isDark ? '#0F172A' : '#fff'
-                  : colors.textMuted,
-              },
-            ]}
-          >
-            {isEditMode ? '✓  Pronto' : '✏️'}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
       {/* ── Progress bar ── */}
       <View
@@ -276,8 +208,10 @@ export default function TeamDetail({
             ListFooterComponent={
               sections.length > 1 ? (
                 <View style={styles.swipeHint}>
-                  <Text style={[styles.swipeHintText, { color: colors.textMuted }]}>
-                    ← Deslize para navegar entre seleções →
+                  <Text
+                    style={[styles.swipeHintText, { color: colors.textMuted }]}
+                  >
+                    ← Deslize para ir à próxima seleção →
                   </Text>
                 </View>
               ) : null
@@ -309,54 +243,6 @@ export default function TeamDetail({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    gap: 8,
-  },
-  backBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 1,
-  },
-  backArrow: {
-    fontSize: 28,
-    fontWeight: '300',
-    lineHeight: 32,
-  },
-  backLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  headerCenter: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-  },
-  headerFlag: {
-    fontSize: 20,
-  },
-  headerName: {
-    fontSize: 16,
-    fontWeight: '800',
-    flexShrink: 1,
-  },
-  editBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: Radius.full,
-  },
-  editBtnText: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
 
   // Progress
   progressContainer: {

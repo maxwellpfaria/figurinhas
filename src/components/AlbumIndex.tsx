@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Keyboard,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import { Section } from '../types';
 import { ColorsType, Spacing, Radius } from '../theme';
@@ -36,7 +35,8 @@ function parseSearch(text: string): { query: string; stickerNumber?: number } {
   return { query: trimmed };
 }
 
-type SortMode = 'album' | 'az';
+/** Exported so AlbumScreen can manage the state and keep it across view changes */
+export type SortMode = 'album' | 'az';
 
 type GroupHeader = { type: 'header'; id: string; label: string };
 type TeamRow = {
@@ -53,7 +53,9 @@ interface Props {
   sections: Section[];
   colors: ColorsType;
   isDark: boolean;
-  syncing?: boolean;
+  /** Controlled by AlbumScreen so it persists when navigating away and back */
+  sort: SortMode;
+  onSortChange: (mode: SortMode) => void;
   onSelectSection: (sectionId: string, stickerNumber?: number) => void;
 }
 
@@ -61,11 +63,11 @@ export default function AlbumIndex({
   sections,
   colors,
   isDark,
-  syncing,
+  sort,
+  onSortChange,
   onSelectSection,
 }: Props) {
   const [search, setSearch] = useState('');
-  const [sort, setSort] = useState<SortMode>('album');
 
   const { query, stickerNumber } = useMemo(() => parseSearch(search), [search]);
 
@@ -115,20 +117,6 @@ export default function AlbumIndex({
     }
     return result;
   }, [sections, filteredSections, query, sort]);
-
-  // Global progress totals
-  const { totalOwned, totalStickers } = useMemo(() => {
-    let owned = 0;
-    let total = 0;
-    for (const s of sections) {
-      owned += s.stickers.filter(st => st.quantity > 0).length;
-      total += s.stickers.length;
-    }
-    return { totalOwned: owned, totalStickers: total };
-  }, [sections]);
-
-  const globalPct =
-    totalStickers > 0 ? Math.round((totalOwned / totalStickers) * 100) : 0;
 
   // ── render helpers ─────────────────────────────────────────────────────────
 
@@ -219,27 +207,14 @@ export default function AlbumIndex({
     [colors, onSelectSection, stickerNumber],
   );
 
+  // Completed sections count (for the sort-row label)
+  const completedCount = useMemo(
+    () => sections.filter(s => s.stickers.every(st => st.quantity > 0)).length,
+    [sections],
+  );
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-
-      {/* ── Header bar ── */}
-      <View style={[styles.headerBar, { backgroundColor: colors.header }]}>
-        <View>
-          <Text style={styles.headerTitle}>Meu Álbum</Text>
-          <Text style={styles.headerSub}>Copa do Mundo 2026</Text>
-        </View>
-        <View style={styles.headerRight}>
-          {syncing && (
-            <ActivityIndicator size="small" color="rgba(255,255,255,0.6)" />
-          )}
-          <View style={styles.globalProgress}>
-            <Text style={styles.globalPct}>{globalPct}%</Text>
-            <Text style={styles.globalCount}>
-              {totalOwned}/{totalStickers}
-            </Text>
-          </View>
-        </View>
-      </View>
 
       {/* ── Search bar ── */}
       <View
@@ -292,7 +267,7 @@ export default function AlbumIndex({
                 styles.sortOption,
                 sort === 'album' && { backgroundColor: colors.primary },
               ]}
-              onPress={() => setSort('album')}
+              onPress={() => onSortChange('album')}
             >
               <Text
                 style={[
@@ -314,7 +289,7 @@ export default function AlbumIndex({
                 styles.sortOption,
                 sort === 'az' && { backgroundColor: colors.primary },
               ]}
-              onPress={() => setSort('az')}
+              onPress={() => onSortChange('az')}
             >
               <Text
                 style={[
@@ -332,20 +307,22 @@ export default function AlbumIndex({
             </TouchableOpacity>
           </View>
 
-          {/* Completion section count */}
+          {/* Completed sections count */}
           <Text style={[styles.sectionCount, { color: colors.textMuted }]}>
-            {sections.filter(s => s.stickers.every(st => st.quantity > 0)).length}
-            /{sections.length} completas
+            {completedCount}/{sections.length} completas
           </Text>
         </View>
       )}
 
-      {/* ── Search hint when number detected ── */}
+      {/* ── Search hint when sticker number detected ── */}
       {!!stickerNumber && (
         <View
           style={[
             styles.hintBar,
-            { backgroundColor: colors.primary + '22', borderBottomColor: colors.primary + '55' },
+            {
+              backgroundColor: colors.primary + '22',
+              borderBottomColor: colors.primary + '55',
+            },
           ]}
         >
           <Text style={[styles.hintText, { color: colors.primary }]}>
@@ -392,46 +369,6 @@ export default function AlbumIndex({
 const styles = StyleSheet.create({
   root: { flex: 1 },
 
-  // Header
-  headerBar: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.md,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.2,
-  },
-  headerSub: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.55)',
-    marginTop: 1,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  globalProgress: {
-    alignItems: 'flex-end',
-  },
-  globalPct: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    lineHeight: 22,
-  },
-  globalCount: {
-    fontSize: 10,
-    color: 'rgba(255,255,255,0.55)',
-    fontWeight: '600',
-  },
-
   // Search
   searchContainer: {
     paddingHorizontal: Spacing.md,
@@ -469,7 +406,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: Radius.full,
     overflow: 'hidden',
-    gap: 0,
   },
   sortOption: {
     paddingHorizontal: 14,
