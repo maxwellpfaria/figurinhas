@@ -7,7 +7,6 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  Alert,
   Platform,
   ScrollView,
 } from 'react-native';
@@ -26,6 +25,7 @@ import { INITIAL_SECTIONS } from '../data/mockData';
 import { useAlbumContext } from '../contexts/AlbumContext';
 import AlbumContent from '../components/AlbumContent';
 import { Section } from '../types';
+import AppDialog from '../components/AppDialog';
 
 // ─── Trade Suggestion Header ──────────────────────────────────────────────────
 
@@ -177,6 +177,7 @@ export default function FriendsScreen() {
   const [listLoading, setListLoading] = useState(true);
   const [viewingFriend, setViewingFriend] = useState<UserProfile | null>(null);
   const { quantities: myQty } = useAlbumContext();
+  const [dialog, setDialog] = useState<{ title: string; message?: string } | null>(null);
 
   useEffect(() => {
     if (!profile) return;
@@ -192,24 +193,24 @@ export default function FriendsScreen() {
     try {
       const found = await findUserByInviteCode(codeInput);
       if (!found) {
-        Alert.alert('Código não encontrado', 'Verifique o código e tente novamente.');
+        setDialog({ title: 'Código não encontrado', message: 'Verifique o código e tente novamente.' });
         return;
       }
       if (found.uid === user.uid) {
-        Alert.alert('Ops!', 'Esse é o seu próprio código 😄');
+        setDialog({ title: 'Ops!', message: 'Esse é o seu próprio código 😄' });
         return;
       }
       if (profile.friends.includes(found.uid)) {
-        Alert.alert('Já são amigos!', `${found.displayName} já está na sua lista.`);
+        setDialog({ title: 'Já são amigos!', message: `${found.displayName} já está na sua lista.` });
         return;
       }
       await addFriend(user.uid, found.uid);
       await refreshProfile();
       setFriends(prev => [...prev, found]);
       setCodeInput('');
-      Alert.alert('✅ Amigo adicionado!', `${found.displayName} foi adicionado à sua lista.`);
+      setDialog({ title: '✅ Amigo adicionado!', message: `${found.displayName} foi adicionado à sua lista.` });
     } catch {
-      Alert.alert('Erro', 'Não foi possível adicionar o amigo. Tente novamente.');
+      setDialog({ title: 'Erro', message: 'Não foi possível adicionar o amigo. Tente novamente.' });
     } finally {
       setAddLoading(false);
     }
@@ -228,7 +229,7 @@ export default function FriendsScreen() {
         RNClipboard?.setString(profile.inviteCode);
       }
     } catch {}
-    Alert.alert('Copiado!', `Código ${profile.inviteCode} copiado.`);
+    setDialog({ title: 'Copiado! 📋', message: `Código ${profile.inviteCode} copiado para a área de transferência.` });
   }, [profile]);
 
   // If viewing a friend's album
@@ -362,6 +363,13 @@ export default function FriendsScreen() {
           ))
         )}
       </ScrollView>
+
+      <AppDialog
+        visible={!!dialog}
+        title={dialog?.title ?? ''}
+        message={dialog?.message}
+        onClose={() => setDialog(null)}
+      />
     </SafeAreaView>
   );
 }
