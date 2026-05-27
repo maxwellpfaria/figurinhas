@@ -142,9 +142,9 @@ figurinhas/
   - Layout por formação (3-4-3) nas seleções com 20 figurinhas
   - Swipe horizontal para navegar entre seleções do mesmo grupo
   - Toque simples: adiciona 1 cópia (card cinza → verde)
-  - Long press: abre editor de quantidade exata
-  - Modo edição (✏️): toggle rápido de 0 ↔ 1 cópia em lote
-- **Onboarding**: wizard de 4 passos exibido uma única vez na primeira abertura
+  - Toque em card já coletado: abre editor de quantidade
+  - Long press: atalho direto para o editor de quantidade
+- **Onboarding**: wizard de 3 passos exibido uma única vez na primeira abertura
 - **Sync**: salva automaticamente no Firestore 1,5s após a última alteração
 
 ### 👥 Amigos

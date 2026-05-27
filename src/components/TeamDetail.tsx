@@ -25,10 +25,9 @@ interface Props {
   sectionIndex: number;
   isDark: boolean;
   colors: ColorsType;
-  isEditMode: boolean;
   /** Called when swipe navigates to a different section */
   onSectionChange: (newIndex: number) => void;
-  /** Contextual press: missing → add · owned → open editor · edit mode → toggle */
+  /** Contextual press: missing → add · owned → open editor */
   onStickerPress: (sticker: Sticker) => void;
   /** Always opens the quantity editor */
   onStickerLongPress: (sticker: Sticker) => void;
@@ -39,7 +38,6 @@ export default function TeamDetail({
   sectionIndex,
   isDark,
   colors,
-  isEditMode,
   onSectionChange,
   onStickerPress,
   onStickerLongPress,
@@ -169,23 +167,6 @@ export default function TeamDetail({
         </View>
       </View>
 
-      {/* ── Edit mode banner ── */}
-      {isEditMode && (
-        <View
-          style={[
-            styles.editBanner,
-            {
-              backgroundColor: colors.primary + '1A',
-              borderBottomColor: colors.primary + '44',
-            },
-          ]}
-        >
-          <Text style={[styles.editBannerText, { color: colors.primary }]}>
-            ✏️  Toque para marcar · toque novamente para desmarcar
-          </Text>
-        </View>
-      )}
-
       {/* ── Sticker grid with swipe navigation ── */}
       <GestureDetector gesture={swipeGesture}>
         <Animated.View
@@ -225,7 +206,6 @@ export default function TeamDetail({
                     isDark={isDark}
                     colors={colors}
                     isWide={row.hasFormation && idx === 0}
-                    isEditMode={isEditMode}
                     onPress={onStickerPress}
                     onLongPress={onStickerLongPress}
                   />
@@ -272,19 +252,6 @@ const styles = StyleSheet.create({
   progressFill: {
     height: 6,
     borderRadius: 3,
-  },
-
-  // Edit banner
-  editBanner: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 9,
-    borderBottomWidth: 1,
-    alignItems: 'center',
-  },
-  editBannerText: {
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
   },
 
   // Grid

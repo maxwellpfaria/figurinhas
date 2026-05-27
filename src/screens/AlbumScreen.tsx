@@ -48,7 +48,6 @@ export default function AlbumScreen() {
   // ── View state ────────────────────────────────────────────────────────────
   const [view, setView] = useState<AlbumView>('index');
   const [sectionIndex, setSectionIndex] = useState(0);
-  const [isEditMode, setIsEditMode] = useState(false);
 
   /**
    * Sort mode lives here (not inside AlbumIndex) so it survives the
@@ -70,7 +69,7 @@ export default function AlbumScreen() {
   const slideX = useRef(new Animated.Value(0)).current;
 
   const goToTeam = useCallback(
-    (sectionId: string, _stickerNumber?: number) => {
+    (sectionId: string) => {
       const idx = sections.findIndex(s => s.id === sectionId);
       if (idx < 0) return;
       setSectionIndex(idx);
@@ -94,7 +93,6 @@ export default function AlbumScreen() {
       useNativeDriver: true,
     }).start(() => {
       setView('index');
-      setIsEditMode(false);
       slideX.setValue(0);
     });
   }, [slideX]);
@@ -103,23 +101,18 @@ export default function AlbumScreen() {
 
   /**
    * Contextual press handler:
-   *  - Edit mode  → toggle owned / missing (batch mark)
-   *  - Missing    → add 1 immediately
-   *  - Owned      → open BottomSheetEditor so the user can adjust or remove
+   *  - Missing → add 1 immediately
+   *  - Owned   → open BottomSheetEditor so the user can adjust or remove
    */
   const handleStickerPress = useCallback(
     (sticker: Sticker) => {
-      if (isEditMode) {
-        setQuantity(sticker.id, sticker.quantity > 0 ? 0 : 1);
-        return;
-      }
       if (sticker.quantity === 0) {
         increment(sticker.id);
       } else {
         setEditingSticker(sticker);
       }
     },
-    [isEditMode, increment, setQuantity],
+    [increment],
   );
 
   /** Long press always opens the full editor */
@@ -128,7 +121,6 @@ export default function AlbumScreen() {
   }, []);
 
   const handleCloseEditor = useCallback(() => setEditingSticker(null), []);
-  const handleToggleEditMode = useCallback(() => setIsEditMode(v => !v), []);
 
   // ── Header data ───────────────────────────────────────────────────────────
 
@@ -203,33 +195,11 @@ export default function AlbumScreen() {
               )}
             </View>
 
-            {/* Edit toggle + syncing */}
+            {/* Syncing indicator */}
             <View style={styles.headerRight}>
               {syncing && (
                 <ActivityIndicator size="small" color="rgba(255,255,255,0.5)" />
               )}
-              <TouchableOpacity
-                onPress={handleToggleEditMode}
-                style={[
-                  styles.editBtn,
-                  isEditMode && { backgroundColor: colors.primary },
-                ]}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                activeOpacity={0.75}
-              >
-                <Text
-                  style={[
-                    styles.editBtnText,
-                    {
-                      color: isEditMode
-                        ? isDark ? '#0F172A' : '#fff'
-                        : 'rgba(255,255,255,0.7)',
-                    },
-                  ]}
-                >
-                  {isEditMode ? '✓ Pronto' : '✏️'}
-                </Text>
-              </TouchableOpacity>
             </View>
           </>
         )}
@@ -254,7 +224,6 @@ export default function AlbumScreen() {
             sectionIndex={sectionIndex}
             isDark={isDark}
             colors={colors}
-            isEditMode={isEditMode}
             onSectionChange={setSectionIndex}
             onStickerPress={handleStickerPress}
             onStickerLongPress={handleStickerLongPress}
@@ -344,17 +313,6 @@ const styles = StyleSheet.create({
   headerCenter: {
     flex: 1,
     minWidth: 0, // allows text truncation
-  },
-
-  // Edit button (inside team header right)
-  editBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: Radius.full,
-  },
-  editBtnText: {
-    fontSize: 13,
-    fontWeight: '700',
   },
 
   detail: { flex: 1 },

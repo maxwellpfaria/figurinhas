@@ -18,23 +18,6 @@ import { GROUPS } from '../data/copaData';
 const normalize = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-/**
- * Parse search text.
- * "brasil 7"  → { query: "brasil", stickerNumber: 7 }
- * "arg"       → { query: "arg",    stickerNumber: undefined }
- */
-function parseSearch(text: string): { query: string; stickerNumber?: number } {
-  const trimmed = text.trim();
-  const match = trimmed.match(/^(.+?)\s+(\d{1,2})$/);
-  if (match) {
-    const num = parseInt(match[2], 10);
-    if (num >= 1 && num <= 20) {
-      return { query: match[1], stickerNumber: num };
-    }
-  }
-  return { query: trimmed };
-}
-
 /** Exported so AlbumScreen can manage the state and keep it across view changes */
 export type SortMode = 'album' | 'az';
 
@@ -56,7 +39,7 @@ interface Props {
   /** Controlled by AlbumScreen so it persists when navigating away and back */
   sort: SortMode;
   onSortChange: (mode: SortMode) => void;
-  onSelectSection: (sectionId: string, stickerNumber?: number) => void;
+  onSelectSection: (sectionId: string) => void;
 }
 
 export default function AlbumIndex({
@@ -69,7 +52,7 @@ export default function AlbumIndex({
 }: Props) {
   const [search, setSearch] = useState('');
 
-  const { query, stickerNumber } = useMemo(() => parseSearch(search), [search]);
+  const query = search.trim();
 
   // Sections matching the search query
   const filteredSections = useMemo(() => {
@@ -145,7 +128,7 @@ export default function AlbumIndex({
           style={[styles.teamRow, { backgroundColor: colors.surface }]}
           onPress={() => {
             Keyboard.dismiss();
-            onSelectSection(section.id, stickerNumber);
+            onSelectSection(section.id);
           }}
           activeOpacity={0.7}
         >
@@ -204,7 +187,7 @@ export default function AlbumIndex({
         </TouchableOpacity>
       );
     },
-    [colors, onSelectSection, stickerNumber],
+    [colors, onSelectSection],
   );
 
   // Completed sections count (for the sort-row label)
@@ -232,7 +215,7 @@ export default function AlbumIndex({
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={[styles.searchInput, { color: colors.textPrimary }]}
-            placeholder="Buscar seleção... (ex: brasil, arg 7)"
+            placeholder="Buscar seleção..."
             placeholderTextColor={colors.textMuted}
             value={search}
             onChangeText={setSearch}
@@ -310,23 +293,6 @@ export default function AlbumIndex({
           {/* Completed sections count */}
           <Text style={[styles.sectionCount, { color: colors.textMuted }]}>
             {completedCount}/{sections.length} completas
-          </Text>
-        </View>
-      )}
-
-      {/* ── Search hint when sticker number detected ── */}
-      {!!stickerNumber && (
-        <View
-          style={[
-            styles.hintBar,
-            {
-              backgroundColor: colors.primary + '22',
-              borderBottomColor: colors.primary + '55',
-            },
-          ]}
-        >
-          <Text style={[styles.hintText, { color: colors.primary }]}>
-            🔢  Figurinha nº {stickerNumber} — selecione a seleção para abri-la
           </Text>
         </View>
       )}
@@ -419,18 +385,6 @@ const styles = StyleSheet.create({
   },
   sectionCount: {
     fontSize: 11,
-    fontWeight: '600',
-  },
-
-  // Hint bar
-  hintBar: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    alignItems: 'center',
-  },
-  hintText: {
-    fontSize: 12,
     fontWeight: '600',
   },
 

@@ -38,11 +38,6 @@ interface Props {
   isDark: boolean;
   colors: ColorsType;
   isWide?: boolean;
-  /**
-   * When true the card shows a toggle indicator and a single tap
-   * marks/unmarks the sticker (batch edit mode).
-   */
-  isEditMode?: boolean;
   /** Receives the full Sticker so the handler can check quantity contextually */
   onPress: (sticker: Sticker) => void;
   onLongPress: (sticker: Sticker) => void;
@@ -54,7 +49,6 @@ function areEqual(prev: Props, next: Props) {
     prev.sticker.id === next.sticker.id &&
     prev.isDark === next.isDark &&
     prev.isWide === next.isWide &&
-    prev.isEditMode === next.isEditMode &&
     prev.onPress === next.onPress &&
     prev.onLongPress === next.onLongPress
   );
@@ -66,7 +60,6 @@ const StickerCard = memo(
     isDark,
     colors,
     isWide = false,
-    isEditMode = false,
     onPress,
     onLongPress,
   }: Props) => {
@@ -112,23 +105,6 @@ const StickerCard = memo(
       ? [styles.cardWrapper, { width: WIDE_CARD_WIDTH }]
       : styles.cardWrapper;
 
-    // ── Edit mode toggle indicator ────────────────────────────────────────────
-    const editIndicator = isEditMode ? (
-      <View
-        style={[
-          styles.editDot,
-          {
-            backgroundColor: isOwned ? colors.primary : 'transparent',
-            borderColor: isOwned ? colors.primary : colors.textMuted,
-          },
-        ]}
-      >
-        {isOwned && (
-          <Text style={styles.editDotCheck}>✓</Text>
-        )}
-      </View>
-    ) : null;
-
     // ── Legendary owned card ──────────────────────────────────────────────────
     if (isSpecialOwned) {
       const gradColors = isDark ? LEGEND_GRADIENT_DARK : LEGEND_GRADIENT_LIGHT;
@@ -163,15 +139,10 @@ const StickerCard = memo(
               </View>
             )}
 
-            {/* Edit indicator */}
-            {editIndicator}
-
-            {/* LENDÁRIA tag (hidden in edit mode to avoid clutter) */}
-            {!isEditMode && (
-              <View style={styles.legendTag}>
-                <Text style={[styles.legendTagText, { color: textColor }]}>★</Text>
-              </View>
-            )}
+            {/* LENDÁRIA tag */}
+            <View style={styles.legendTag}>
+              <Text style={[styles.legendTagText, { color: textColor }]}>★</Text>
+            </View>
 
             <Text style={[styles.prefix, { color: textColor, opacity: 0.7 }]}>
               {prefix}
@@ -180,7 +151,7 @@ const StickerCard = memo(
             <Text
               style={[styles.statusLabel, { color: textColor, opacity: 0.8 }]}
             >
-              {isEditMode ? '' : 'LENDÁRIA'}
+              LENDÁRIA
             </Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -208,7 +179,6 @@ const StickerCard = memo(
               },
             ]}
           >
-            {editIndicator}
             <Text
               style={[
                 styles.prefix,
@@ -231,7 +201,7 @@ const StickerCard = memo(
                 { color: colors.specialMissingText, opacity: 0.6 },
               ]}
             >
-              {isEditMode ? '' : '★ falta'}
+              ★ falta
             </Text>
           </View>
         </TouchableOpacity>
@@ -270,7 +240,7 @@ const StickerCard = memo(
                 </Text>
               </View>
             )}
-            {isWide && !isEditMode && (
+            {isWide && (
               <View style={styles.formationTag}>
                 <Text
                   style={[
@@ -282,7 +252,6 @@ const StickerCard = memo(
                 </Text>
               </View>
             )}
-            {editIndicator}
             <Text
               style={[styles.prefix, { color: colors.ownedText, opacity: 0.65 }]}
             >
@@ -295,7 +264,7 @@ const StickerCard = memo(
                 { color: colors.ownedText, opacity: 0.7 },
               ]}
             >
-              {isEditMode ? '' : '✓ tenho'}
+              ✓ tenho
             </Text>
           </View>
         </TouchableOpacity>
@@ -322,7 +291,7 @@ const StickerCard = memo(
             },
           ]}
         >
-          {isWide && !isEditMode && (
+          {isWide && (
             <View style={styles.formationTag}>
               <Text
                 style={[
@@ -334,7 +303,6 @@ const StickerCard = memo(
               </Text>
             </View>
           )}
-          {editIndicator}
           <Text
             style={[styles.prefix, { color: colors.missingText, opacity: 0.5 }]}
           >
@@ -347,7 +315,7 @@ const StickerCard = memo(
               { color: colors.missingText, opacity: 0.6 },
             ]}
           >
-            {isEditMode ? '' : 'falta'}
+            falta
           </Text>
         </View>
       </TouchableOpacity>
@@ -448,23 +416,4 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  // Edit mode indicator (top-left toggle dot)
-  editDot: {
-    position: 'absolute',
-    top: 4,
-    left: 4,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 3,
-  },
-  editDotCheck: {
-    fontSize: 8,
-    fontWeight: '900',
-    color: '#fff',
-    lineHeight: 10,
-  },
 });

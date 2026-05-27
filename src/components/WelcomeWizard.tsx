@@ -4,11 +4,10 @@
  * First-time onboarding overlay for the Album screen.
  * Shown once via AsyncStorage; never shown again after dismissal.
  *
- * Four steps:
+ * Three steps:
  *   1. Buscar seleção  — index with search bar
  *   2. Adicionar       — tap a grey card to mark as owned
- *   3. Editar/Remover  — tap a GREEN card to open the editor (key insight)
- *   4. Modo edição     — batch-toggle with ✏️ button
+ *   3. Editar/Remover  — tap an owned card to open the BottomSheetEditor
  */
 
 import React, { useState, useRef, useCallback } from 'react';
@@ -107,89 +106,55 @@ function AddDemo({ accent, colors }: { accent: string; colors: ColorsType }) {
   );
 }
 
-/** Step 3 — green card → tap → bottom sheet options */
+/** Step 3 — owned card + tap → BottomSheetEditor real */
 function EditDemo({ accent, colors }: { accent: string; colors: ColorsType }) {
   return (
     <View style={demo.editRoot}>
-      {/* Green card with tap indicator */}
+      {/* Green owned card + tap hint */}
       <View style={demo.editCardWrap}>
         <View style={[demo.stickerCardLg, { backgroundColor: colors.ownedBg, borderColor: colors.ownedBorder }]}>
           <Text style={[demo.stickerNumLg, { color: colors.ownedText }]}>7</Text>
           <Text style={[demo.stickerLabel, { color: colors.ownedText }]}>✓ tenho</Text>
         </View>
-        {/* Tap ripple hint */}
         <View style={[demo.tapRipple, { borderColor: accent }]} />
-        <Text style={[demo.tapLabel, { color: accent }]}>toque</Text>
+        <Text style={[demo.tapLabel, { color: accent }]}>toque longo</Text>
       </View>
 
       {/* Down arrow */}
       <Text style={[demo.downArrow, { color: accent }]}>↓</Text>
 
-      {/* Mini bottom sheet */}
-      <View style={[demo.miniSheet, { backgroundColor: colors.surface, borderColor: colors.navBorder }]}>
+      {/* BottomSheetEditor fiel ao componente real */}
+      <View style={[demo.sheet, { backgroundColor: colors.surface, borderColor: colors.navBorder }]}>
+        {/* Handle */}
         <View style={[demo.sheetHandle, { backgroundColor: colors.handle }]} />
-        <Text style={[demo.sheetCode, { color: colors.textPrimary }]}>BRA 7</Text>
-        {[
-          { icon: '➕', label: 'Adicionar outra' },
-          { icon: '➖', label: 'Remover da coleção', red: true },
-          { icon: '🔢', label: 'Editar quantidade' },
-        ].map(opt => (
-          <View key={opt.label} style={[demo.sheetOption, { borderTopColor: colors.navBorder }]}>
-            <Text style={demo.sheetOptionIcon}>{opt.icon}</Text>
-            <Text style={[demo.sheetOptionText, { color: opt.red ? '#F43F5E' : colors.textPrimary }]}>
-              {opt.label}
-            </Text>
+
+        {/* Identity row */}
+        <View style={demo.sheetIdentity}>
+          <View>
+            <Text style={[demo.sheetCode, { color: colors.textPrimary }]}>BRA 7</Text>
+            <Text style={[demo.sheetStatus, { color: colors.textSecondary }]}>1 repetida</Text>
           </View>
-        ))}
-      </View>
-    </View>
-  );
-}
+        </View>
 
-/** Step 4 — header ✏️ button + cards with toggle dots */
-function BatchDemo({ accent, colors }: { accent: string; colors: ColorsType }) {
-  const cards: Array<{ num: number; owned: boolean }> = [
-    { num: 1, owned: true },
-    { num: 2, owned: false },
-    { num: 3, owned: true },
-    { num: 4, owned: false },
-    { num: 5, owned: true },
-    { num: 6, owned: false },
-  ];
+        {/* ± controls */}
+        <View style={demo.sheetControls}>
+          <View style={[demo.sheetCtrlBtn, { backgroundColor: colors.surfaceAlt }]}>
+            <Text style={[demo.sheetCtrlText, { color: colors.textMuted }]}>−</Text>
+          </View>
+          <Text style={[demo.sheetQty, { color: colors.textPrimary }]}>2</Text>
+          <View style={[demo.sheetCtrlBtn, { backgroundColor: accent }]}>
+            <Text style={[demo.sheetCtrlText, { color: '#fff' }]}>+</Text>
+          </View>
+        </View>
 
-  return (
-    <View style={demo.batchRoot}>
-      {/* Fake header bar */}
-      <View style={[demo.batchHeader, { backgroundColor: colors.header }]}>
-        <Text style={demo.batchHeaderTitle}>Meu Álbum</Text>
-        <View style={[demo.editPill, { backgroundColor: accent }]}>
-          <Text style={[demo.editPillText, { color: '#0F172A' }]}>✏️  Modo edição</Text>
+        {/* Remove link */}
+        <Text style={demo.sheetRemove}>Remover da Coleção</Text>
+
+        {/* Done button */}
+        <View style={[demo.sheetDoneBtn, { backgroundColor: accent }]}>
+          <Text style={[demo.sheetDoneText, { color: '#0F172A' }]}>Pronto</Text>
         </View>
       </View>
-
-      {/* Mini grid */}
-      <View style={demo.batchGrid}>
-        {cards.map(c => (
-          <View key={c.num} style={[
-            demo.batchCard,
-            { backgroundColor: c.owned ? colors.ownedBg : colors.missing,
-              borderColor: c.owned ? colors.ownedBorder : colors.missingBorder },
-          ]}>
-            {/* Toggle dot */}
-            <View style={[
-              demo.toggleDot,
-              { backgroundColor: c.owned ? accent : 'transparent', borderColor: c.owned ? accent : colors.textMuted },
-            ]}>
-              {c.owned && <Text style={demo.toggleCheck}>✓</Text>}
-            </View>
-            <Text style={[demo.batchNum, { color: c.owned ? colors.ownedText : colors.missingText }]}>{c.num}</Text>
-          </View>
-        ))}
-      </View>
-
-      <Text style={[demo.batchHint, { color: colors.textMuted }]}>
-        Toque em cada figurinha para marcar ou desmarcar
-      </Text>
     </View>
   );
 }
@@ -202,7 +167,7 @@ function buildSteps(): Step[] {
       accentColor: '#3B82F6',
       title: 'Encontre sua seleção',
       description:
-        'Use a busca para encontrar qualquer seleção pelo nome — ou ordene de A a Z. Você também pode digitar "brasil 7" para ir direto à figurinha 7.',
+        'Use a busca para encontrar qualquer seleção pelo nome, ou ordene de A a Z. Toque na seleção para abrir a grade de figurinhas.',
       Demo: SearchDemo,
     },
     {
@@ -214,17 +179,10 @@ function buildSteps(): Step[] {
     },
     {
       accentColor: '#F59E0B',
-      title: 'Toque na verde para editar',
+      title: 'Pressione para editar',
       description:
-        'Figurinha verde = você já tem. Ao tocá-la, abre o menu de edição: remover da coleção, registrar repetidas ou ajustar a quantidade.',
+        'Figurinha verde = você já tem. Pressione e segure para abrir o editor: ajuste a quantidade exata, registre repetidas ou remova da coleção.',
       Demo: EditDemo,
-    },
-    {
-      accentColor: '#8B5CF6',
-      title: 'Marque várias de uma vez',
-      description:
-        'Com o botão ✏️ no canto superior você ativa o modo edição em lote. Toque em várias figurinhas seguidas para marcar ou desmarcar rapidamente.',
-      Demo: BatchDemo,
     },
   ];
 }
@@ -520,99 +478,80 @@ const demo = StyleSheet.create({
   tapHint: { fontSize: 9, fontWeight: '600' },
   arrow: { fontSize: 28, fontWeight: '300' },
 
-  // ── Step 3 – Edit/Remove ──────────────────────────────────────────────────────
-  editRoot: { alignItems: 'center', gap: 8, paddingVertical: 4 },
+  // ── Step 3 – Edit (BottomSheetEditor) ────────────────────────────────────────
+  editRoot: { alignItems: 'center', gap: 6, paddingVertical: 2 },
   editCardWrap: { alignItems: 'center' },
   stickerCardLg: {
-    width: 68,
-    height: 86,
+    width: 60,
+    height: 76,
     borderRadius: 10,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
   },
-  stickerNumLg: { fontSize: 26, fontWeight: '900' },
+  stickerNumLg: { fontSize: 22, fontWeight: '900' },
   tapRipple: {
     position: 'absolute',
-    width: 80,
-    height: 98,
-    borderRadius: 14,
+    width: 72,
+    height: 88,
+    borderRadius: 13,
     borderWidth: 2,
     opacity: 0.5,
   },
   tapLabel: { fontSize: 10, fontWeight: '700', marginTop: 4 },
-  downArrow: { fontSize: 22, fontWeight: '300' },
-  miniSheet: {
+  downArrow: { fontSize: 20, fontWeight: '300' },
+
+  // BottomSheet fiel
+  sheet: {
     width: '100%',
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
-    paddingTop: 8,
-    paddingBottom: 4,
-    overflow: 'hidden',
+    paddingHorizontal: 14,
+    paddingBottom: 10,
+    paddingTop: 6,
+    gap: 8,
   },
   sheetHandle: {
     alignSelf: 'center',
-    width: 30,
+    width: 32,
     height: 3,
     borderRadius: 2,
-    marginBottom: 6,
+    marginBottom: 2,
   },
-  sheetCode: { fontSize: 13, fontWeight: '900', paddingHorizontal: 12, marginBottom: 4 },
-  sheetOption: {
+  sheetIdentity: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderTopWidth: 1,
-  },
-  sheetOptionIcon: { fontSize: 14, width: 20, textAlign: 'center' },
-  sheetOptionText: { fontSize: 12, fontWeight: '600' },
-
-  // ── Step 4 – Batch edit ───────────────────────────────────────────────────────
-  batchRoot: { gap: 10 },
-  batchHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10,
-    borderRadius: 10,
+    alignItems: 'center',
   },
-  batchHeaderTitle: { fontSize: 13, fontWeight: '800', color: '#FFFFFF' },
-  editPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-  },
-  editPillText: { fontSize: 11, fontWeight: '700' },
-  batchGrid: {
+  sheetCode: { fontSize: 14, fontWeight: '900' },
+  sheetStatus: { fontSize: 11, marginTop: 1 },
+  sheetControls: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    justifyContent: 'center',
-  },
-  batchCard: {
-    width: 48,
-    height: 58,
-    borderRadius: 8,
-    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    gap: 12,
   },
-  toggleDot: {
-    position: 'absolute',
-    top: 3,
-    left: 3,
-    width: 13,
-    height: 13,
-    borderRadius: 7,
-    borderWidth: 1.5,
+  sheetCtrlBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  toggleCheck: { fontSize: 7, fontWeight: '900', color: '#fff', lineHeight: 9 },
-  batchNum: { fontSize: 16, fontWeight: '900' },
-  batchHint: { fontSize: 10, fontWeight: '500', textAlign: 'center' },
+  sheetCtrlText: { fontSize: 22, fontWeight: '300', lineHeight: 26, marginTop: -2 },
+  sheetQty: { fontSize: 28, fontWeight: '900', width: 36, textAlign: 'center' },
+  sheetRemove: {
+    textAlign: 'center',
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#F43F5E',
+    textDecorationLine: 'underline',
+  },
+  sheetDoneBtn: {
+    borderRadius: 10,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  sheetDoneText: { fontSize: 13, fontWeight: '800' },
 });

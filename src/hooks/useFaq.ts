@@ -16,13 +16,13 @@ const FALLBACK_FAQ: FaqItem[] = [
     id: '2',
     order: 2,
     q: 'Como editar ou remover uma figurinha?',
-    a: 'Pressione e segure (long press) um card para abrir o editor de quantidade — defina o número exato de cópias ou zere para remover. Para edições rápidas em lote, use o botão ✏️ no cabeçalho: em modo edição cada toque alterna a figurinha entre ter 0 e 1 cópia.',
+    a: 'Pressione e segure (long press) um card para abrir o editor de quantidade — defina o número exato de cópias ou zere para remover da coleção.',
   },
   {
     id: '3',
     order: 3,
     q: 'Como navegar entre as seleções?',
-    a: 'Na tela Meu Álbum, use os filtros de grupo (FWC, A–L, CC) ou a busca para localizar uma seleção rapidamente. Toque na seleção para abrir sua grade de figurinhas. Dentro da grade, deslize horizontalmente para avançar ou voltar à seleção seguinte ou anterior.',
+    a: 'Na tela Meu Álbum, use a busca ou os filtros de grupo (FWC, A–L, CC) para localizar uma seleção. Toque nela para abrir sua grade de figurinhas. Dentro da grade, deslize horizontalmente para ir à seleção seguinte ou anterior.',
   },
   {
     id: '4',
