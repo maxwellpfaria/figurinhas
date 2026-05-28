@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidade — Meu Álbum Completo</title>
+  <style>
+    :root {
+      --bg:        #0B0F19;
+      --surface:   #151B2E;
+      --border:    #1E2A45;
+      --accent:    #3B82F6;
+      --accent-dim:#1D4ED8;
+      --text:      #F1F5F9;
+      --muted:     #94A3B8;
+      --warning:   #F59E0B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    header .emoji { font-size: 3rem; display: block; margin-bottom: .5rem; }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    header .subtitle {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-top: .25rem;
+    }
+
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .updated-badge {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .3rem .9rem;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    section h2 .ico { font-style: normal; }
+
+    p { margin-bottom: .85rem; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: .5rem 0 .85rem;
+    }
+
+    ul li {
+      padding: .35rem 0 .35rem 1.4rem;
+      position: relative;
+      color: var(--text);
+    }
+
+    ul li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: .85rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: .75rem 0;
+      font-size: .9rem;
+    }
+
+    th {
+      text-align: left;
+      padding: .6rem .75rem;
+      background: var(--bg);
+      color: var(--muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: .6rem .75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .highlight {
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.25);
+      border-radius: 8px;
+      padding: .9rem 1rem;
+      margin: .85rem 0;
+      font-size: .92rem;
+    }
+
+    .highlight strong { color: var(--accent); }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .9rem 1rem;
+      margin-top: .75rem;
+    }
+
+    .contact-card .icon { font-size: 1.4rem; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem 3rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 520px) {
+      header h1 { font-size: 1.4rem; }
+      section { padding: 1.25rem; }
+      table { font-size: .82rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Cabeçalho ──────────────────────────────────────────────────────────── -->
+<header>
+  <span class="emoji">📚</span>
+  <h1>Política de Privacidade</h1>
+  <p class="subtitle">Meu Álbum Completo — Copa do Mundo FIFA 2026</p>
+</header>
+
+<!-- ─── Conteúdo principal ────────────────────────────────────────────────── -->
+<main>
+
+  <div class="updated-badge">⏱ Última atualização: 27 de maio de 2026</div>
+
+  <!-- 1. Introdução -->
+  <section>
+    <h2><span class="ico">👋</span> 1. Bem-vindo</h2>
+    <p>
+      O <strong>Meu Álbum Completo</strong> é um aplicativo para gerenciar seu
+      álbum digital de figurinhas da Copa do Mundo FIFA 2026. Esta Política de
+      Privacidade explica quais dados coletamos, como os usamos e quais são seus
+      direitos.
+    </p>
+    <p>
+      Ao criar uma conta e usar o aplicativo, você concorda com esta política.
+      Se tiver dúvidas, entre em contato conosco antes de continuar.
+    </p>
+  </section>
+
+  <!-- 2. Dados coletados -->
+  <section>
+    <h2><span class="ico">🗂️</span> 2. Dados que Coletamos</h2>
+    <p>Coletamos apenas o necessário para o funcionamento do app:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Dado</th>
+          <th>Finalidade</th>
+          <th>Armazenamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Endereço de e-mail</strong></td>
+          <td>Criação e acesso à conta</td>
+          <td>Firebase Auth</td>
+        </tr>
+        <tr>
+          <td><strong>Nome de exibição</strong></td>
+          <td>Identificação para os amigos</td>
+          <td>Firebase Firestore</td>
+        </tr>
+        <tr>
+          <td><strong>Progresso do álbum</strong></td>
+          <td>Salvar quais figurinhas você possui</td>
+          <td>Firebase Firestore</td>
+        </tr>
+        <tr>
+          <td><strong>Código de convite</strong></td>
+          <td>Adicionar amigos ao app</td>
+          <td>Firebase Firestore</td>
+        </tr>
+        <tr>
+          <td><strong>Lista de amigos</strong></td>
+          <td>Comparar coleções e sugerir trocas</td>
+          <td>Firebase Firestore</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight">
+      <strong>Não coletamos</strong> localização, dados de saúde, informações
+      financeiras, contatos do dispositivo nem qualquer dado fora do que está
+      listado acima.
+    </div>
+  </section>
+
+  <!-- 3. Como usamos -->
+  <section>
+    <h2><span class="ico">⚙️</span> 3. Como Usamos os Dados</h2>
+    <p>Seus dados são usados exclusivamente para:</p>
+    <ul>
+      <li>Autenticar sua identidade e manter sua sessão ativa;</li>
+      <li>Salvar e sincronizar o progresso do seu álbum entre dispositivos;</li>
+      <li>Permitir que você adicione amigos e compare coleções;</li>
+      <li>Gerar sugestões de trocas entre você e seus amigos.</li>
+    </ul>
+    <p>
+      Não usamos seus dados para fins publicitários, criação de perfis
+      comportamentais ou qualquer finalidade além das descritas acima.
+    </p>
+  </section>
+
+  <!-- 4. Compartilhamento -->
+  <section>
+    <h2><span class="ico">🤝</span> 4. Compartilhamento de Dados</h2>
+    <p>
+      <strong>Não vendemos, alugamos nem comercializamos seus dados</strong> com
+      terceiros.
+    </p>
+    <p>Os únicos casos em que dados são compartilhados são:</p>
+    <ul>
+      <li>
+        <strong>Google Firebase (Alphabet Inc.)</strong> — infraestrutura de
+        autenticação e banco de dados. Os dados ficam armazenados nos servidores
+        do Firebase sujeitos à
+        <a href="https://firebase.google.com/support/privacy" target="_blank"
+           rel="noopener">Política de Privacidade do Firebase</a>.
+      </li>
+      <li>
+        <strong>Seus amigos no app</strong> — quando dois usuários se adicionam
+        mutuamente, cada um pode ver o nome de exibição e as figurinhas do outro
+        para fins de troca.
+      </li>
+    </ul>
+  </section>
+
+  <!-- 5. Câmera -->
+  <section>
+    <h2><span class="ico">📷</span> 5. Permissão de Câmera</h2>
+    <p>
+      O aplicativo solicita permissão de acesso à câmera exclusivamente para
+      escanear o QR Code de troca de figurinhas com amigos. A câmera
+      <strong>não é acessada em segundo plano</strong> e não é utilizada para
+      capturar ou armazenar imagens.
+    </p>
+    <p>
+      Você pode negar esta permissão a qualquer momento nas configurações do
+      seu dispositivo sem prejuízo às demais funcionalidades do app.
+    </p>
+  </section>
+
+  <!-- 6. Segurança -->
+  <section>
+    <h2><span class="ico">🔒</span> 6. Segurança</h2>
+    <p>
+      Todos os dados são transmitidos com criptografia TLS e armazenados no
+      Firebase, que adota práticas de segurança certificadas pela ISO 27001.
+    </p>
+    <p>
+      As senhas <strong>nunca são armazenadas</strong> pelo aplicativo — o
+      processo de autenticação é gerenciado integralmente pelo Firebase
+      Authentication.
+    </p>
+  </section>
+
+  <!-- 7. Retenção -->
+  <section>
+    <h2><span class="ico">🗃️</span> 7. Retenção e Exclusão de Dados</h2>
+    <p>
+      Seus dados ficam armazenados enquanto você mantiver uma conta ativa.
+      Você tem o direito de solicitar a exclusão completa da sua conta e de
+      todos os dados associados a qualquer momento.
+    </p>
+    <p>Para isso, envie um e-mail com o assunto <em>"Exclusão de dados"</em>
+    para o endereço listado na seção de contato abaixo. Processaremos a
+    solicitação em até <strong>15 dias úteis</strong>.</p>
+  </section>
+
+  <!-- 8. Menores -->
+  <section>
+    <h2><span class="ico">👦</span> 8. Uso por Menores de Idade</h2>
+    <p>
+      O aplicativo é classificado como <strong>Livre (L)</strong> e pode ser
+      usado por crianças de todas as idades. Não coletamos intencionalmente
+      dados de crianças menores de 13 anos sem o consentimento dos responsáveis.
+    </p>
+    <p>
+      Se você é responsável por uma criança e acredita que dados foram coletados
+      sem seu consentimento, entre em contato conosco para que possamos excluí-los.
+    </p>
+  </section>
+
+  <!-- 9. Direitos LGPD -->
+  <section>
+    <h2><span class="ico">⚖️</span> 9. Seus Direitos (LGPD)</h2>
+    <p>
+      Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018),
+      você tem os seguintes direitos:
+    </p>
+    <ul>
+      <li>Confirmar a existência de tratamento de dados;</li>
+      <li>Acessar os dados que temos sobre você;</li>
+      <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
+      <li>Solicitar a exclusão dos seus dados;</li>
+      <li>Revogar o consentimento a qualquer momento;</li>
+      <li>Apresentar reclamação à ANPD (Autoridade Nacional de Proteção de Dados).</li>
+    </ul>
+  </section>
+
+  <!-- 10. Alterações -->
+  <section>
+    <h2><span class="ico">📝</span> 10. Alterações nesta Política</h2>
+    <p>
+      Podemos atualizar esta política ocasionalmente. Quando houver mudanças
+      relevantes, a data de "Última atualização" no topo desta página será
+      alterada. Recomendamos revisá-la periodicamente.
+    </p>
+    <p>
+      O uso continuado do aplicativo após a publicação de alterações constitui
+      aceitação da nova política.
+    </p>
+  </section>
+
+  <!-- 11. Contato -->
+  <section>
+    <h2><span class="ico">📬</span> 11. Contato</h2>
+    <p>
+      Em caso de dúvidas, solicitações ou exercício dos seus direitos, entre em
+      contato:
+    </p>
+    <div class="contact-card">
+      <span class="icon">✉️</span>
+      <div>
+        <strong>E-mail</strong><br />
+        <a href="mailto:kamilaocavalcante@gmail.com">kamilaocavalcante@gmail.com</a>
+      </div>
+    </div>
+    <div class="contact-card" style="margin-top:.75rem">
+      <span class="icon">📱</span>
+      <div>
+        <strong>Aplicativo</strong><br />
+        Meu Álbum Completo — Copa do Mundo FIFA 2026<br />
+        <span style="color:var(--muted); font-size:.85rem">
+          Package: com.figurinha.copa2026
+        </span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── Rodapé ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <p>© 2026 Meu Álbum Completo. Todos os direitos reservados.</p>
+  <p style="margin-top:.4rem">
+    Esta política foi elaborada em conformidade com a
+    <strong>LGPD (Lei nº 13.709/2018)</strong> e as diretrizes da
+    <strong>Google Play Store</strong>.
+  </p>
+</footer>
+
+</body>
+</html>
