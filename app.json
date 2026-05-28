@@ -24,7 +24,8 @@
         "backgroundColor": "#0B0F19"
       },
       "package": "com.figurinha.copa2026",
-      "permissions": ["android.permission.CAMERA"]
+      "permissions": ["android.permission.CAMERA"],
+      "targetSdkVersion": 35
     },
     "plugins": [
       [
