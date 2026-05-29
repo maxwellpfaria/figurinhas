@@ -1,6 +1,20 @@
-const { loadProjectEnv } = require('@expo/env');
+const path = require('path');
+const fs = require('fs');
 
-loadProjectEnv(process.cwd(), { silent: true });
+// Load .env manually so it works in all build contexts (local EAS, cloud EAS, expo start)
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq < 0) continue;
+    const key = trimmed.slice(0, eq).trim();
+    const value = trimmed.slice(eq + 1).trim();
+    if (!process.env[key]) process.env[key] = value;
+  }
+}
 
 /** @type {import('expo/config').ExpoConfig} */
 module.exports = {
@@ -57,6 +71,12 @@ module.exports = {
     output: "single",
   },
   extra: {
+    firebaseApiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+    firebaseAuthDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    firebaseProjectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+    firebaseStorageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    firebaseMessagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    firebaseAppId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
     eas: {
       projectId: "dbba3105-e1cd-4067-83be-2aaa5f4e646e",
     },
