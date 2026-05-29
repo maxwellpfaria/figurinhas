@@ -2,7 +2,7 @@
   "expo": {
     "name": "Meu Álbum Completo",
     "slug": "figurinha",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -20,7 +20,7 @@
       },
       "package": "com.figurinha.copa2026",
       "permissions": ["android.permission.CAMERA"],
-      "versionCode": 4
+      "versionCode": 5
     },
     "plugins": [
       [
