@@ -348,7 +348,7 @@ function PolicyView({
   onBack: () => void;
 }) {
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
       <View style={[styles.header, styles.headerRow, { backgroundColor: colors.header }]}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn} hitSlop={HIT_SLOP}>
@@ -717,7 +717,7 @@ export default function ProfileScreen() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
 
       {/* Header */}

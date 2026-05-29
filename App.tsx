@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { Component, ReactNode, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
@@ -52,6 +52,7 @@ function TabIcon({ icon, active, color }: { icon: IoniconsName; active: boolean;
 
 function MainTabs() {
   const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <AlbumProvider>
@@ -63,8 +64,8 @@ function MainTabs() {
             backgroundColor: colors.nav,
             borderTopColor: colors.navBorder,
             borderTopWidth: 1,
-            height: 60,
-            paddingBottom: 8,
+            height: 60 + bottom,
+            paddingBottom: 8 + bottom,
             paddingTop: 4,
           },
           tabBarActiveTintColor: colors.tabActiveTint,
