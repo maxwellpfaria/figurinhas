@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Excluir Conta — Meu Álbum Completo</title>
+  <style>
+    :root {
+      --bg:        #0B0F19;
+      --surface:   #151B2E;
+      --border:    #1E2A45;
+      --accent:    #3B82F6;
+      --accent-dim:#1D4ED8;
+      --text:      #F1F5F9;
+      --muted:     #94A3B8;
+      --warning:   #F59E0B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    header .emoji { font-size: 3rem; display: block; margin-bottom: .5rem; }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: .4rem;
+      font-size: .95rem;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section { margin-bottom: 2.5rem; }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    p { color: var(--muted); margin-bottom: .8rem; }
+
+    ol, ul {
+      padding-left: 1.4rem;
+      color: var(--muted);
+    }
+
+    ol li, ul li { margin-bottom: .5rem; }
+
+    ol li strong, ul li strong { color: var(--text); }
+
+    .warning {
+      background: #2a1f00;
+      border-left: 4px solid var(--warning);
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      color: #fde68a;
+      margin-top: 1.2rem;
+      font-size: .95rem;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      background: var(--accent-dim);
+      color: #fff;
+      border-radius: 50%;
+      font-size: .8rem;
+      font-weight: 700;
+      margin-right: .5rem;
+      flex-shrink: 0;
+    }
+
+    ol.steps { list-style: none; padding-left: 0; }
+    ol.steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      margin-bottom: .9rem;
+      color: var(--text);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: .85rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="emoji">🗑️</span>
+    <h1>Excluir Conta</h1>
+    <p>Meu Álbum Completo — Copa do Mundo 2026</p>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>Como excluir sua conta</h2>
+      <p>
+        O app <strong>Meu Álbum Completo</strong> permite que você exclua sua conta e todos os seus dados
+        diretamente pelo aplicativo, a qualquer momento, sem necessidade de entrar em contato com o suporte.
+      </p>
+      <ol class="steps">
+        <li><span class="step-num">1</span>Abra o app <strong>Meu Álbum Completo</strong> no seu dispositivo.</li>
+        <li><span class="step-num">2</span>Faça login com sua conta, se ainda não estiver conectado.</li>
+        <li><span class="step-num">3</span>Toque na aba <strong>Perfil</strong> (ícone no canto inferior direito da tela).</li>
+        <li><span class="step-num">4</span>Role até o final da tela e toque em <strong>Excluir conta</strong>.</li>
+        <li><span class="step-num">5</span>Leia o aviso de confirmação e toque em <strong>Excluir permanentemente</strong>.</li>
+      </ol>
+      <div class="warning">
+        ⚠️ A exclusão é <strong>permanente e imediata</strong>. Não é possível recuperar sua conta ou dados após a confirmação.
+      </div>
+    </section>
+
+    <section>
+      <h2>Dados excluídos</h2>
+      <p>Ao confirmar a exclusão, os seguintes dados são removidos permanentemente e de forma imediata dos nossos servidores:</p>
+      <ul>
+        <li><strong>E-mail e nome</strong> cadastrados na conta</li>
+        <li><strong>Álbum de figurinhas</strong> (todas as quantidades registradas)</li>
+        <li><strong>Lista de amigos</strong> e código de convite</li>
+        <li><strong>Credenciais de autenticação</strong> (Firebase Auth)</li>
+      </ul>
+      <p style="margin-top: 1rem;">
+        Nenhum dado pessoal é retido após a exclusão. Dados armazenados localmente no dispositivo
+        podem ser removidos desinstalando o aplicativo.
+      </p>
+    </section>
+
+    <section>
+      <h2>Precisa de ajuda?</h2>
+      <p>
+        Se tiver dificuldades para excluir sua conta pelo app, entre em contato:
+        <a href="mailto:kamilaocavalcante@gmail.com">kamilaocavalcante@gmail.com</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    Meu Álbum Completo &mdash; desenvolvido por Maxwell Faria
+  </footer>
+
+</body>
+</html>
