@@ -1,0 +1,65 @@
+const { loadProjectEnv } = require('@expo/env');
+
+loadProjectEnv(process.cwd(), { silent: true });
+
+/** @type {import('expo/config').ExpoConfig} */
+module.exports = {
+  name: "Meu Álbum Completo",
+  slug: "figurinha",
+  version: "1.0.1",
+  orientation: "portrait",
+  icon: "./assets/icon.png",
+  userInterfaceStyle: "automatic",
+  ios: {
+    supportsTablet: false,
+    icon: "./assets/icon.png",
+    infoPlist: {
+      NSCameraUsageDescription: "Necessário para escanear o QR Code de troca de figurinhas do seu amigo.",
+    },
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: "./assets/adaptive-icon.png",
+      backgroundColor: "#0B0F19",
+    },
+    package: "com.figurinha.copa2026",
+    permissions: ["android.permission.CAMERA"],
+    versionCode: 5,
+  },
+  plugins: [
+    [
+      "expo-splash-screen",
+      {
+        backgroundColor: "#F1F5F9",
+        image: "./assets/splash.png",
+        imageWidth: 200,
+        resizeMode: "contain",
+      },
+    ],
+    [
+      "expo-camera",
+      {
+        cameraPermission: "Necessário para escanear o QR Code de troca de figurinhas do seu amigo.",
+      },
+    ],
+    [
+      "expo-build-properties",
+      {
+        android: {
+          compileSdkVersion: 36,
+          targetSdkVersion: 35,
+        },
+      },
+    ],
+  ],
+  web: {
+    bundler: "metro",
+    output: "single",
+  },
+  extra: {
+    eas: {
+      projectId: "dbba3105-e1cd-4067-83be-2aaa5f4e646e",
+    },
+  },
+  owner: "maxwellfaria",
+};
