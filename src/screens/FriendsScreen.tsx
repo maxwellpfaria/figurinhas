@@ -11,6 +11,7 @@ import {
   ScrollView,
   Animated,
   Dimensions,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
@@ -266,6 +267,7 @@ export default function FriendsScreen() {
 
   const handleAddFriend = useCallback(async () => {
     if (!codeInput.trim() || !user || !profile) return;
+    Keyboard.dismiss();
     setAddLoading(true);
     try {
       const found = await findUserByInviteCode(codeInput);

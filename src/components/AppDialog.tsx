@@ -104,7 +104,8 @@ export default function AppDialog({
   if (!visible) return null;
 
   return (
-    <Modal visible transparent animationType="none" onRequestClose={handleClose}>
+    <Modal visible transparent animationType="none" onRequestClose={handleClose} statusBarTranslucent>
+      <View style={styles.fullScreen}>
       {/* Backdrop */}
       <TouchableWithoutFeedback onPress={handleClose}>
         <Animated.View
@@ -197,6 +198,7 @@ export default function AppDialog({
           </View>
         </Animated.View>
       </View>
+      </View>
     </Modal>
   );
 }
@@ -204,11 +206,22 @@ export default function AppDialog({
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+  },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   centeredWrapper: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
