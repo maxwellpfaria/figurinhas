@@ -176,7 +176,7 @@ function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
   const teamTotal = currentSection?.stickers.length ?? 0;
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.header }]} edges={['top']}>
       {/* ── Header ── */}
       <View style={[styles.friendHeader, { backgroundColor: colors.header }]}>
         <TouchableOpacity
@@ -323,7 +323,7 @@ export default function FriendsScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.header }]} edges={['top']}>
       <View style={[styles.header, { backgroundColor: colors.header }]}>
         <Text style={styles.headerTitle}>👥 Amigos</Text>
         <Text style={styles.headerSub}>Conecte, compare e troque figurinhas</Text>

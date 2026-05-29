@@ -145,7 +145,7 @@ export default function AlbumScreen() {
   // ── render ────────────────────────────────────────────────────────────────
   return (
     <SafeAreaView
-      style={[styles.root, { backgroundColor: colors.background }]}
+      style={[styles.root, { backgroundColor: colors.header }]}
       edges={['top']}
     >
       <StatusBar barStyle="light-content" backgroundColor={colors.header} />
