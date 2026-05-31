@@ -23,6 +23,7 @@ export interface UserProfile {
   inviteCode: string;
   friends: string[];       // array of friend UIDs
   createdAt: Date | null;
+  emailVerified?: boolean; // undefined = existing user (grandfathered as verified)
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ export async function createUserProfile(
     inviteCode,
     friends: [],
     createdAt: serverTimestamp(),
+    emailVerified: false,
   });
 }
 
@@ -75,6 +77,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     inviteCode: d.inviteCode,
     friends: d.friends ?? [],
     createdAt: d.createdAt?.toDate() ?? null,
+    emailVerified: d.emailVerified, // undefined for existing users (grandfathered)
   };
 }
 

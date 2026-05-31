@@ -14,6 +14,7 @@ import {
   UserProfile,
 } from '../services/firestore';
 import { signIn, signUp, signOut, resetPassword, updateDisplayName, deleteAccount as authDeleteAccount } from '../services/auth';
+import { callSendVerificationToken, callVerifyEmailToken } from '../services/functions';
 import { updateUserDisplayName, deleteUserData } from '../services/firestore';
 
 interface AuthContextValue {
@@ -21,6 +22,7 @@ interface AuthContextValue {
   profile: UserProfile | null;
   loading: boolean;
   authError: string | null;
+  emailVerified: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -29,6 +31,8 @@ interface AuthContextValue {
   refreshProfile: () => Promise<void>;
   updateName: (name: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
+  verifyEmailToken: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -36,6 +40,7 @@ const AuthContext = createContext<AuthContextValue>({
   profile: null,
   loading: true,
   authError: null,
+  emailVerified: false,
   signIn: async () => {},
   signUp: async () => {},
   signOut: async () => {},
@@ -44,6 +49,8 @@ const AuthContext = createContext<AuthContextValue>({
   refreshProfile: async () => {},
   updateName: async () => {},
   deleteAccount: async () => {},
+  resendVerificationEmail: async () => {},
+  verifyEmailToken: async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -54,10 +61,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [emailVerified, setEmailVerified] = useState(false);
 
   const loadProfile = useCallback(async (uid: string) => {
     const p = await getUserProfile(uid);
     setProfile(p);
+    // undefined = existing user → grandfathered as verified; false = pending; true = verified
+    setEmailVerified(p?.emailVerified !== false);
   }, []);
 
   useEffect(() => {
@@ -93,8 +103,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         setAuthError(null);
         await signUp(email, password, displayName);
+        await callSendVerificationToken();
       } catch (e: any) {
-        setAuthError(friendlyError(e.code));
+        setAuthError(friendlyError(e.code ?? e.message));
         throw e;
       }
     },
@@ -129,11 +140,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleDeleteAccount = useCallback(async () => {
     if (!user) return;
-    // Delete Firestore data first while still authenticated
     await deleteUserData(user.uid);
-    // Then delete the Firebase Auth user (may throw auth/requires-recent-login)
     await authDeleteAccount();
   }, [user]);
+
+  const handleResendVerificationEmail = useCallback(async () => {
+    try {
+      setAuthError(null);
+      await callSendVerificationToken();
+    } catch (e: unknown) {
+      const msg = (e as any)?.message ?? '';
+      setAuthError(msg || 'Não foi possível reenviar o código. Tente novamente.');
+      throw e;
+    }
+  }, []);
+
+  const handleVerifyEmailToken = useCallback(async (token: string) => {
+    try {
+      setAuthError(null);
+      await callVerifyEmailToken(token);
+      if (user) await loadProfile(user.uid);
+    } catch (e: unknown) {
+      const msg = (e as any)?.message ?? '';
+      setAuthError(msg || 'Código inválido. Tente novamente.');
+      throw e;
+    }
+  }, [user, loadProfile]);
 
   return (
     <AuthContext.Provider
@@ -142,6 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile,
         loading,
         authError,
+        emailVerified,
         signIn: handleSignIn,
         signUp: handleSignUp,
         signOut: handleSignOut,
@@ -150,6 +183,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshProfile,
         updateName: handleUpdateName,
         deleteAccount: handleDeleteAccount,
+        resendVerificationEmail: handleResendVerificationEmail,
+        verifyEmailToken: handleVerifyEmailToken,
       }}
     >
       {children}

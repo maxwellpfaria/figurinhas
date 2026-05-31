@@ -16,6 +16,7 @@ import ShareScreen from './src/screens/ShareScreen';
 import FriendsScreen from './src/screens/FriendsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import AuthScreen from './src/screens/AuthScreen';
+import EmailVerificationScreen from './src/screens/EmailVerificationScreen';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import { AlbumProvider } from './src/contexts/AlbumContext';
@@ -134,7 +135,7 @@ function MainTabs() {
 const SPLASH_MIN_MS = 2000;
 
 function AppGate() {
-  const { user, loading } = useAuth();
+  const { user, loading, emailVerified } = useAuth();
   const [minElapsed, setMinElapsed] = useState(false);
 
   useEffect(() => {
@@ -156,6 +157,7 @@ function AppGate() {
   }
 
   if (!user) return <AuthScreen />;
+  if (!emailVerified) return <EmailVerificationScreen />;
   return <MainTabs />;
 }
 

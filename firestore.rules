@@ -2,6 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Tokens de verificação de e-mail — acesso exclusivo do admin SDK (Cloud Functions)
+    match /emailVerifications/{userId} {
+      allow read, write: if false;
+    }
+
     match /users/{userId} {
       // Qualquer usuário autenticado pode ler perfis
       // (necessário para busca por código de convite e ver progresso de amigos)
