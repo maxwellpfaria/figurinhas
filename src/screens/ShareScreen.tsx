@@ -30,7 +30,7 @@ export default function ShareScreen() {
   );
 
   const [copied, setCopied] = useState(false);
-  const copiedTimer = useRef<ReturnType<typeof setTimeout>>();
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(copiedTimer.current), []);
 
   const openWhatsApp = useCallback(async () => {

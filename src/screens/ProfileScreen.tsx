@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { Spacing, Radius, Typography, ColorsType } from '../theme';
@@ -397,7 +398,7 @@ function ConfirmModal({
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <TouchableOpacity
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
           onPress={onClose}
           activeOpacity={1}
         />
@@ -488,7 +489,7 @@ function EditNameModal({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableOpacity
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
           onPress={onClose}
           activeOpacity={1}
         />
@@ -836,6 +837,11 @@ export default function ProfileScreen() {
           <Ionicons name="log-out-outline" size={18} color="#F43F5E" style={styles.signOutIcon} />
           <Text style={styles.signOutText}>Sair do aplicativo</Text>
         </TouchableOpacity>
+
+        {/* ── Versão ── */}
+        <Text style={[styles.versionText, { color: colors.textMuted }]}>
+          Versão {Constants.expoConfig?.version ?? '—'}
+        </Text>
       </ScrollView>
 
       {/* Edit name modal */}
@@ -1012,6 +1018,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.sm,
     lineHeight: 20,
+  },
+
+  // ── Version ──
+  versionText: {
+    ...Typography.bodySmall,
+    textAlign: 'center',
+    marginTop: Spacing.md,
   },
 
   // ── Sign out button ──

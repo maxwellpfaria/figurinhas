@@ -8,7 +8,7 @@ export function useAlbum(userId?: string | null) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [syncing, setSyncing] = useState(false);
 
-  const saveTimer = useRef<ReturnType<typeof setTimeout>>();
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // Always-current refs — safe to read inside AppState/unmount callbacks
   const latestQuantities = useRef<Record<string, number>>({});
   const latestUserId = useRef<string | null | undefined>(userId);

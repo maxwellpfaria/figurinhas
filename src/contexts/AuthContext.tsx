@@ -104,8 +104,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAuthError(null);
         await signUp(email, password, displayName);
         await callSendVerificationToken();
-      } catch (e: any) {
-        setAuthError(friendlyError(e.code ?? e.message));
+      } catch (e: unknown) {
+        const code = e instanceof FirebaseError ? e.code : (e as { message?: string })?.message ?? '';
+        setAuthError(friendlyError(code));
         throw e;
       }
     },
@@ -149,7 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthError(null);
       await callSendVerificationToken();
     } catch (e: unknown) {
-      const msg = (e as any)?.message ?? '';
+      const msg = e instanceof Error ? e.message : '';
       setAuthError(msg || 'Não foi possível reenviar o código. Tente novamente.');
       throw e;
     }
@@ -161,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await callVerifyEmailToken(token);
       if (user) await loadProfile(user.uid);
     } catch (e: unknown) {
-      const msg = (e as any)?.message ?? '';
+      const msg = e instanceof Error ? e.message : '';
       setAuthError(msg || 'Código inválido. Tente novamente.');
       throw e;
     }

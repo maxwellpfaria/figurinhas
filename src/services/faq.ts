@@ -18,7 +18,7 @@
  * (e.g., from a one-off admin screen or the Firebase Console).
  */
 
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from './firebase';
 
@@ -97,25 +97,3 @@ export async function fetchFaqItems(): Promise<FaqItem[] | null> {
   }
 }
 
-/**
- * Writes the FAQ items to Firestore.
- * Call this once to seed the initial content, or whenever you want to
- * programmatically update the remote FAQ.
- *
- * Requires the calling user to have write access to /config/faq in
- * your Firestore security rules.
- */
-export async function seedFaqItems(items: FaqItem[]): Promise<void> {
-  await setDoc(doc(db, FIRESTORE_DOC.collection, FIRESTORE_DOC.id), { items });
-  await writeCache(items);
-}
-
-/**
- * Forces a cache invalidation so the next fetchFaqItems() call hits Firestore.
- * Useful after calling seedFaqItems() in the same session.
- */
-export async function invalidateFaqCache(): Promise<void> {
-  try {
-    await AsyncStorage.removeItem(CACHE_KEY);
-  } catch {}
-}

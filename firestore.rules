@@ -7,6 +7,12 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // FAQ e configurações remotas — leitura pública para autenticados
+    match /config/{document} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
     match /users/{userId} {
       // Qualquer usuário autenticado pode ler perfis
       // (necessário para busca por código de convite e ver progresso de amigos)

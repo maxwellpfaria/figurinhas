@@ -64,19 +64,8 @@ const FALLBACK_FAQ: FaqItem[] = [
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-interface UseFaqResult {
-  items: FaqItem[];
-  /** True only during the initial remote fetch (fallback is already shown). */
-  loading: boolean;
-}
-
-/**
- * Returns FAQ items from Firestore (cached) with instant fallback to
- * hardcoded content while the network request is in progress.
- */
-export function useFaq(): UseFaqResult {
+export function useFaq(): { items: FaqItem[] } {
   const [items, setItems] = useState<FaqItem[]>(FALLBACK_FAQ);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -89,13 +78,10 @@ export function useFaq(): UseFaqResult {
       })
       .catch(() => {
         // Silently fall back to FALLBACK_FAQ already in state
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
       });
 
     return () => { cancelled = true; };
   }, []);
 
-  return { items, loading };
+  return { items };
 }
