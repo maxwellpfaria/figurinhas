@@ -18,8 +18,21 @@ service cloud.firestore {
       // (necessário para busca por código de convite e ver progresso de amigos)
       allow read: if request.auth != null;
 
-      // Apenas o próprio usuário pode escrever no seu perfil
-      allow write: if request.auth != null && request.auth.uid == userId;
+      // Criação e exclusão: apenas o próprio usuário
+      allow create, delete: if request.auth != null && request.auth.uid == userId;
+
+      // Atualização: o próprio usuário pode alterar qualquer campo; qualquer
+      // usuário autenticado pode adicionar exatamente o próprio UID ao array
+      // friends (necessário para o addFriend bidirecional no cliente).
+      allow update: if request.auth != null && (
+        request.auth.uid == userId ||
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['friends']) &&
+          request.resource.data.friends.hasAll(resource.data.friends) &&
+          request.resource.data.friends.size() <= resource.data.friends.size() + 1 &&
+          request.resource.data.friends.hasAll([request.auth.uid])
+        )
+      );
 
       // Album subcollection — apenas o próprio usuário lê/escreve
       // Amigos leem via getFriendQuantities (read liberado abaixo)

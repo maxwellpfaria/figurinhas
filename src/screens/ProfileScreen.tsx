@@ -13,7 +13,7 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { useAuth } from '../contexts/AuthContext';
@@ -391,6 +391,7 @@ function ConfirmModal({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const { bottom: bottomInset } = useSafeAreaInsets();
   const confirmBg = danger ? '#F43F5E' : colors.primary;
   const confirmText = '#FFFFFF';
 
@@ -402,7 +403,7 @@ function ConfirmModal({
           onPress={onClose}
           activeOpacity={1}
         />
-        <View style={[styles.modalSheet, { backgroundColor: colors.surface }]}>
+        <View style={[styles.modalSheet, { backgroundColor: colors.surface, paddingBottom: Spacing.xl + bottomInset }]}>
           <View style={[styles.modalHandle, { backgroundColor: colors.handle }]} />
 
           <View style={styles.modalIconRow}>
@@ -467,6 +468,7 @@ function EditNameModal({
   onClose: () => void;
   onSave: (name: string) => Promise<void>;
 }) {
+  const { bottom: bottomInset } = useSafeAreaInsets();
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
 
@@ -493,7 +495,7 @@ function EditNameModal({
           onPress={onClose}
           activeOpacity={1}
         />
-        <View style={[styles.modalSheet, { backgroundColor: colors.surface }]}>
+        <View style={[styles.modalSheet, { backgroundColor: colors.surface, paddingBottom: Spacing.xl + bottomInset }]}>
           <View style={[styles.modalHandle, { backgroundColor: colors.handle }]} />
           <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Alterar nome</Text>
           <TextInput

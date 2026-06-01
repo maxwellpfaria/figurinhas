@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import QRCode from 'react-native-qrcode-svg';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 
+import { useIsFocused } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbumContext } from '../contexts/AlbumContext';
@@ -32,6 +33,7 @@ export default function TradeScreen() {
   const { user, profile } = useAuth();
   const { quantities } = useAlbumContext();
 
+  const isFocused = useIsFocused();
   const [activeTab, setActiveTab] = useState<Tab>('generate');
   const [scanned, setScanned] = useState(false);
   const [matchResult, setMatchResult] = useState<TradeMatch | null>(null);
@@ -119,6 +121,7 @@ export default function TradeScreen() {
           scanned={scanned}
           onScanned={handleBarCodeScanned}
           onRetry={() => setScanned(false)}
+          isFocused={isFocused}
           colors={colors}
         />
       )}
@@ -200,6 +203,7 @@ function ScanTab({
   scanned,
   onScanned,
   onRetry,
+  isFocused,
   colors,
 }: {
   cameraPermission: ReturnType<typeof useCameraPermissions>[0];
@@ -207,6 +211,7 @@ function ScanTab({
   scanned: boolean;
   onScanned: (event: { data: string }) => void;
   onRetry: () => void;
+  isFocused: boolean;
   colors: ReturnType<typeof useTheme>['colors'];
 }) {
   if (!cameraPermission) {
@@ -240,12 +245,14 @@ function ScanTab({
 
   return (
     <View style={styles.cameraContainer}>
-      <CameraView
-        style={StyleSheet.absoluteFill}
-        facing="back"
-        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-        onBarcodeScanned={scanned ? undefined : onScanned}
-      />
+      {isFocused && (
+        <CameraView
+          style={StyleSheet.absoluteFill}
+          facing="back"
+          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+          onBarcodeScanned={scanned ? undefined : onScanned}
+        />
+      )}
 
       {/* Overlay com moldura */}
       <View style={styles.overlay}>
@@ -411,7 +418,6 @@ const styles = StyleSheet.create({
   // ── Camera ──
   cameraContainer: {
     flex: 1,
-    overflow: 'hidden',
   },
   overlay: {
     position: 'absolute',

@@ -66,8 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loadProfile = useCallback(async (uid: string) => {
     const p = await getUserProfile(uid);
     setProfile(p);
-    // undefined = existing user → grandfathered as verified; false = pending; true = verified
-    setEmailVerified(p?.emailVerified !== false);
+    // null profile (doc not found yet) → not verified; undefined = grandfathered → verified
+    setEmailVerified(p !== null && p.emailVerified !== false);
   }, []);
 
   useEffect(() => {
@@ -104,13 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAuthError(null);
         await signUp(email, password, displayName);
         await callSendVerificationToken();
+        // onAuthStateChanged fires before createUserProfile writes to Firestore,
+        // so the first loadProfile returns null. Force a reload now that the doc exists.
+        if (auth.currentUser) await loadProfile(auth.currentUser.uid);
       } catch (e: unknown) {
         const code = e instanceof FirebaseError ? e.code : (e as { message?: string })?.message ?? '';
         setAuthError(friendlyError(code));
         throw e;
       }
     },
-    [],
+    [loadProfile],
   );
 
   const handleSignOut = useCallback(async () => {

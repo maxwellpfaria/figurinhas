@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sticker } from '../types';
 import { Spacing, Radius, Typography } from '../theme';
 import { useTheme } from '../theme/ThemeContext';
@@ -24,6 +25,7 @@ interface Props {
 
 const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) => {
   const { colors, isDark } = useTheme();
+  const { bottom: bottomInset } = useSafeAreaInsets();
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
@@ -102,6 +104,8 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
             backgroundColor: colors.surface,
             transform: [{ translateY }],
             shadowColor: '#000',
+            height: SHEET_HEIGHT + bottomInset,
+            paddingBottom: Spacing.lg + bottomInset,
           },
           Platform.OS === 'android' && styles.sheetAndroid,
         ]}

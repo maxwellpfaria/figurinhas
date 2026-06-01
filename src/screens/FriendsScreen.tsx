@@ -252,13 +252,19 @@ export default function FriendsScreen() {
   const [codeInput, setCodeInput] = useState('');
   const [addLoading, setAddLoading] = useState(false);
   const [friends, setFriends] = useState<UserProfile[]>([]);
-  const [listLoading, setListLoading] = useState(true);
+  // Inicia true apenas se o perfil ainda não carregou; caso já esteja disponível
+  // na montagem (fluxo normal pós-verificação de e-mail), evita spinner desnecessário.
+  const [listLoading, setListLoading] = useState(!profile);
   const [viewingFriend, setViewingFriend] = useState<UserProfile | null>(null);
   const { quantities: myQty } = useAlbumContext();
   const [dialog, setDialog] = useState<{ title: string; message?: string } | null>(null);
 
   useEffect(() => {
-    if (!profile) return;
+    if (!profile) {
+      setListLoading(false);
+      return;
+    }
+    setListLoading(true);
     getFriendsProfiles(profile.friends)
       .then(setFriends)
       .catch(console.error)
