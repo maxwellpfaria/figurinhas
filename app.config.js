@@ -22,6 +22,7 @@ module.exports = {
   slug: "figurinha",
   version: "1.0.2",
   orientation: "portrait",
+  backgroundColor: "#0B0F19",
   icon: "./assets/icon.png",
   userInterfaceStyle: "automatic",
   ios: {

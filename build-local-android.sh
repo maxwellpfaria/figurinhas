@@ -1,30 +1,30 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Build de produção LOCAL — Google Play Store
-# Gera um .aab (Android App Bundle) assinado na sua máquina (sem EAS Cloud)
+# Build local Android — APK (para instalar direto no dispositivo)
+# Perfil EAS: preview
 #
 # Pré-requisitos:
-#   npm install -g eas-cli     (instalar EAS CLI, se ainda não tiver)
-#   eas login                  (fazer login uma vez para baixar o keystore)
+#   npm install -g eas-cli     (instalar EAS CLI)
+#   eas login                  (fazer login uma vez)
 #   ANDROID_HOME configurado   (Android SDK instalado)
 #   Java 17+                   (JDK instalado)
 #
 # Como usar:
-#   chmod +x build-production.sh   (somente na primeira vez)
-#   ./build-production.sh
+#   chmod +x build-local-android.sh   (somente na primeira vez)
+#   ./build-local-android.sh
 # ─────────────────────────────────────────────────────────────────────────────
 
-set -e  # interrompe se qualquer comando falhar
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║   Meu Álbum Completo — Build Local Google Play       ║"
+echo "║   Meu Álbum Completo — Build Local Android (APK)     ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
 # ── 1. Carrega variáveis do .env ──────────────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
 if [ -f "$SCRIPT_DIR/.env" ]; then
   set -a && source "$SCRIPT_DIR/.env" && set +a
   echo "✅  .env carregado"
@@ -59,52 +59,52 @@ if [ -z "$ANDROID_HOME" ]; then
 fi
 echo "   ANDROID  : $ANDROID_HOME"
 
-# ── 3. Verifica login no EAS (necessário para baixar o keystore) ──────────────
+# ── 3. Exibe versão atual ─────────────────────────────────────────────────────
+echo ""
+echo "📋  Versão atual:"
+VERSION=$(node -e "const c=require('./app.config.js'); console.log(c.version)")
+VCODE=$(node -e "const c=require('./app.config.js'); console.log(c.android.versionCode)")
+echo "    version      : $VERSION"
+echo "    versionCode  : $VCODE"
+
+# ── 4. Conta EAS ─────────────────────────────────────────────────────────────
 echo ""
 echo "👤  Conta EAS:"
 eas whoami
 
-# ── 4. Dispara o build local ──────────────────────────────────────────────────
+# ── 5. Dispara o build local ──────────────────────────────────────────────────
 echo ""
-echo "🏗️   Iniciando build LOCAL de produção..."
-echo "    Perfil  : production"
-echo "    Saída   : .aab (Android App Bundle para o Google Play)"
-echo "    Keystore: EAS Managed Credentials (baixado automaticamente)"
+echo "🏗️   Iniciando build LOCAL de desenvolvimento..."
+echo "    Perfil  : preview"
+echo "    Saída   : .apk (instalar direto no dispositivo)"
 echo "    Obs     : o processo roda inteiro na sua máquina (~10–20 min)"
 echo ""
 
 eas build \
   --platform android \
-  --profile production \
+  --profile preview \
   --local \
   --non-interactive
 
-# ── 5. Localiza o .aab gerado ─────────────────────────────────────────────────
+# ── 6. Localiza o .apk gerado ─────────────────────────────────────────────────
 echo ""
-AAB_PATH=$(find "$SCRIPT_DIR" -maxdepth 2 -name "*.aab" -newer "$SCRIPT_DIR/package.json" 2>/dev/null | sort -t_ -k1 | tail -1)
+APK_PATH=$(find "$SCRIPT_DIR" -maxdepth 2 -name "*.apk" -newer "$SCRIPT_DIR/package.json" 2>/dev/null | sort | tail -1)
 
 echo "════════════════════════════════════════════════════════"
 echo "✅  Build concluído!"
 echo ""
 
-if [ -n "$AAB_PATH" ]; then
+if [ -n "$APK_PATH" ]; then
   echo "📦  Arquivo gerado:"
-  echo "    $AAB_PATH"
+  echo "    $APK_PATH"
+  echo "    Tamanho: $(du -sh "$APK_PATH" | cut -f1)"
   echo ""
-  echo "    Tamanho: $(du -sh "$AAB_PATH" | cut -f1)"
+  echo "    Para instalar via ADB:"
+  echo "    adb install \"$APK_PATH\""
 else
-  echo "📦  Arquivo .aab gerado na pasta do projeto."
-  echo "    (procure por *.aab na raiz do projeto)"
+  echo "📦  Arquivo .apk gerado na pasta do projeto."
+  echo "    (procure por *.apk na raiz do projeto)"
 fi
 
-# ── 6. Próximos passos ────────────────────────────────────────────────────────
-echo ""
-echo "Próximos passos para publicar na Google Play:"
-echo ""
-echo "  1. Acesse: https://play.google.com/console"
-echo "  2. Selecione o app  →  Produção  →  Criar nova versão"
-echo "  3. Faça upload do arquivo .aab acima"
-echo "  4. Preencha as Notas da versão"
-echo "  5. Envie para revisão"
 echo ""
 echo "════════════════════════════════════════════════════════"

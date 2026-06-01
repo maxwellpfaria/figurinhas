@@ -72,15 +72,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      // Garante loading=true durante toda a transição (evita flash de telas
+      // intermediárias quando o Firebase dispara null antes de restaurar o usuário)
+      setLoading(true);
       setUser(firebaseUser);
       try {
         if (firebaseUser) {
           await loadProfile(firebaseUser.uid);
         } else {
           setProfile(null);
+          setEmailVerified(false);
         }
       } catch {
         setProfile(null);
+        setEmailVerified(false);
       } finally {
         setLoading(false);
       }
