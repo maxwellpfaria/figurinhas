@@ -20,7 +20,7 @@ if (fs.existsSync(envPath)) {
 module.exports = {
   name: "Meu Álbum Completo",
   slug: "figurinha",
-  version: "1.0.2",
+  version: "1.0.3",
   orientation: "portrait",
   backgroundColor: "#0B0F19",
   icon: "./assets/icon.png",
@@ -39,7 +39,7 @@ module.exports = {
     },
     package: "com.figurinha.copa2026",
     permissions: ["android.permission.CAMERA"],
-    versionCode: 6,
+    versionCode: 7,
   },
   plugins: [
     [
