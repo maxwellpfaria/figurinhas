@@ -33,15 +33,38 @@ import AppDialog from '../components/AppDialog';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
+// Module-level lookup tables built once from section data
+const STICKER_CODE: Record<string, string> = {};
+const STICKER_ALBUM_IDX: Record<string, number> = {};
+let _albumIdx = 0;
+for (const section of INITIAL_SECTIONS) {
+  for (const sticker of section.stickers) {
+    STICKER_CODE[sticker.id] = sticker.code;
+    STICKER_ALBUM_IDX[sticker.id] = _albumIdx++;
+  }
+}
+
+function sortedStickerIds(ids: string[], sort: SortMode): string[] {
+  if (sort === 'az') {
+    return [...ids].sort((a, b) =>
+      (STICKER_CODE[a] ?? a).localeCompare(STICKER_CODE[b] ?? b),
+    );
+  }
+  return [...ids].sort(
+    (a, b) => (STICKER_ALBUM_IDX[a] ?? 0) - (STICKER_ALBUM_IDX[b] ?? 0),
+  );
+}
+
 // ─── Trade Suggestion Header ──────────────────────────────────────────────────
 
 interface TradeSuggestionsProps {
   myQty: Record<string, number>;
   friendQty: Record<string, number>;
   friendName: string;
+  sort: SortMode;
 }
 
-function TradeSuggestions({ myQty, friendQty, friendName }: TradeSuggestionsProps) {
+function TradeSuggestions({ myQty, friendQty, friendName, sort }: TradeSuggestionsProps) {
   const { colors } = useTheme();
 
   const canGet: string[] = [];
@@ -64,28 +87,31 @@ function TradeSuggestions({ myQty, friendQty, friendName }: TradeSuggestionsProp
     );
   }
 
+  const sortedGet = sortedStickerIds(canGet, sort);
+  const sortedGive = sortedStickerIds(canGive, sort);
+
   return (
     <View style={[styles.tradeBox, { backgroundColor: colors.surface, borderColor: colors.navBorder }]}>
       <Text style={[styles.tradeTitle, { color: colors.textPrimary }]}>
         🤝 Possíveis trocas com {friendName}
       </Text>
-      {canGet.length > 0 && (
+      {sortedGet.length > 0 && (
         <View style={styles.tradeSection}>
           <Text style={[styles.tradeLabel, { color: colors.primary }]}>
-            Ele tem repetida, você falta ({canGet.length}):
+            Ele tem repetida, você falta ({sortedGet.length}):
           </Text>
-          <Text style={[styles.tradeList, { color: colors.textSecondary }]} numberOfLines={3}>
-            {canGet.slice(0, 12).join(' · ')}{canGet.length > 12 ? ` +${canGet.length - 12}` : ''}
+          <Text style={[styles.tradeList, { color: colors.textSecondary }]}>
+            {sortedGet.map(id => STICKER_CODE[id] ?? id).join(' · ')}
           </Text>
         </View>
       )}
-      {canGive.length > 0 && (
+      {sortedGive.length > 0 && (
         <View style={styles.tradeSection}>
           <Text style={[styles.tradeLabel, { color: '#F43F5E' }]}>
-            Você tem repetida, ele falta ({canGive.length}):
+            Você tem repetida, ele falta ({sortedGive.length}):
           </Text>
-          <Text style={[styles.tradeList, { color: colors.textSecondary }]} numberOfLines={3}>
-            {canGive.slice(0, 12).join(' · ')}{canGive.length > 12 ? ` +${canGive.length - 12}` : ''}
+          <Text style={[styles.tradeList, { color: colors.textSecondary }]}>
+            {sortedGive.map(id => STICKER_CODE[id] ?? id).join(' · ')}
           </Text>
         </View>
       )}
@@ -222,6 +248,7 @@ function FriendAlbumView({ friend, myQty, onBack }: FriendAlbumViewProps) {
               myQty={myQty}
               friendQty={friendQty}
               friendName={friend.displayName}
+              sort={sort}
             />
           }
         />
