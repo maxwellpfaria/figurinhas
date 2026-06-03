@@ -158,8 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthError(null);
       await callSendVerificationToken();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : '';
-      setAuthError(msg || 'Não foi possível reenviar o código. Tente novamente.');
+      setAuthError(friendlyFunctionsError(e));
       throw e;
     }
   }, []);
@@ -170,8 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await callVerifyEmailToken(token);
       if (user) await loadProfile(user.uid);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : '';
-      setAuthError(msg || 'Código inválido. Tente novamente.');
+      setAuthError(friendlyFunctionsError(e));
       throw e;
     }
   }, [user, loadProfile]);
@@ -224,4 +222,25 @@ function friendlyError(code: string): string {
     default:
       return 'Ocorreu um erro. Tente novamente.';
   }
+}
+
+function friendlyFunctionsError(e: unknown): string {
+  if (e instanceof FirebaseError) {
+    switch (e.code) {
+      case 'functions/not-found':
+        return 'Serviço temporariamente indisponível. Tente novamente mais tarde.';
+      case 'functions/unauthenticated':
+        return 'Sessão expirada. Faça login novamente.';
+      case 'functions/deadline-exceeded':
+        return 'Código expirado. Solicite um novo.';
+      case 'functions/resource-exhausted':
+        return 'Muitas tentativas incorretas. Solicite um novo código.';
+      case 'functions/invalid-argument':
+        return e.message || 'Código inválido. Tente novamente.';
+      case 'functions/unavailable':
+      case 'functions/internal':
+        return 'Erro ao enviar e-mail. Tente novamente.';
+    }
+  }
+  return 'Ocorreu um erro. Tente novamente.';
 }
