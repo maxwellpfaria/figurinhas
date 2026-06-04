@@ -28,7 +28,7 @@ const FALLBACK_FAQ: FaqItem[] = [
     id: '4',
     order: 4,
     q: 'O que são figurinhas especiais?',
-    a: 'São as 20 figurinhas holográficas da seção FWC e os 48 escudos (figurinha nº 1 de cada seleção). Total: 68 figurinhas especiais — identificadas pela borda dourada no álbum.',
+    a: 'São as 19 figurinhas holográficas da seção FWC e os 48 escudos (figurinha nº 1 de cada seleção). Total: 67 figurinhas especiais — identificadas pela borda dourada no álbum.',
   },
   {
     id: '5',

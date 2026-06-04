@@ -85,8 +85,8 @@ figurinhas/
 
 **Arquivo:** `src/data/copaData.ts`
 
-- **994 figurinhas** no total: 20 (FWC) + 48 seleções × 20 + 14 (CC Coca-Cola)
-- **68 especiais**: 20 FWC (todas holográficas) + 48 escudos (figurinha 1 de cada seleção)
+- **993 figurinhas** no total: 19 (FWC) + 48 seleções × 20 + 14 (CC Coca-Cola)
+- **67 especiais**: 19 FWC (todas holográficas) + 48 escudos (figurinha 1 de cada seleção)
 - **50 seções**: 1 FWC + 48 seleções + 1 CC
 - Ordem segue o álbum oficial: FWC → Grupos A ao L → CC
 

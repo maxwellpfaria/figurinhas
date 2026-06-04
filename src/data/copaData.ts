@@ -29,11 +29,11 @@ interface SectionDef {
 }
 
 // Copa do Mundo 2026 — ordem do álbum oficial
-// FWC (20) + 48 seleções × 20 + CC (14) = 994 total
-// Especiais: 20 (FWC abertura) + 48 (escudos, fig. 1 de cada seleção) = 68
+// FWC (19) + 48 seleções × 20 + CC (14) = 993 total
+// Especiais: 19 (FWC abertura) + 48 (escudos, fig. 1 de cada seleção) = 67
 const SECTION_DEFS: SectionDef[] = [
   // ── FWC — Abertura (todas holográficas) ──────────────────────────────────────
-  { id: 'fwc', name: 'Copa 2026', flag: '🏆', color: '#D97706', prefix: 'FWC', count: 20, isSpecial: true },
+  { id: 'fwc', name: 'Copa 2026', flag: '🏆', color: '#D97706', prefix: 'FWC', count: 19, isSpecial: true },
 
   // ── Grupo A ──────────────────────────────────────────────────────────────────
   { id: 'mex', name: 'México',          flag: '🇲🇽', color: '#006847', prefix: 'MEX', count: 20, specialIndices: [0] },
@@ -122,13 +122,13 @@ export const INITIAL_SECTIONS: Section[] = SECTION_DEFS.map(
   }),
 );
 
-// Seções: 50 | Total figurinhas: 20 (FWC) + 48×20 (seleções) + 14 (CC) = 994
-// Especiais: 20 (FWC holográficas) + 48 (escudos) = 68
+// Seções: 50 | Total figurinhas: 19 (FWC) + 48×20 (seleções) + 14 (CC) = 993
+// Especiais: 19 (FWC holográficas) + 48 (escudos) = 67
 export const TOTAL_STICKERS = SECTION_DEFS.reduce((sum, s) => sum + s.count, 0);
 
 export const ALBUM_CONFIG = {
   name: 'Copa do Mundo 2026',
-  subtitle: '994 figurinhas',
+  subtitle: '993 figurinhas',
 };
 
 // ── Grupos da Copa 2026 ──────────────────────────────────────────────────────
