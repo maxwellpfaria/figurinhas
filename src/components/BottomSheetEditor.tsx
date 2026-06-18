@@ -1,4 +1,4 @@
-import React, { memo, useRef, useEffect, useCallback } from 'react';
+import React, { memo, useRef, useEffect, useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,9 @@ import { Spacing, Radius, Typography } from '../theme';
 import { useTheme } from '../theme/ThemeContext';
 
 const SHEET_HEIGHT = 300;
-const ANIM_DURATION = 220;
+const ANIM_DURATION = 200;
+const HOLD_DELAY_MS = 400;
+const HOLD_INTERVAL_MS = 120;
 
 interface Props {
   sticker: Sticker | null;
@@ -29,14 +31,28 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
   const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
+  // Local quantity for instant feedback — avoids waiting for prop round-trip
+  const [localQty, setLocalQty] = useState(sticker?.quantity ?? 0);
+
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const continuousActiveRef = useRef(false);
+
+  const clearTimers = useCallback(() => {
+    if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+  }, []);
+
+  // Sync local qty and open animation when a sticker is opened
   useEffect(() => {
     if (sticker) {
+      setLocalQty(sticker.quantity);
       Animated.parallel([
-        Animated.spring(translateY, {
+        // useNativeDriver: false so hit-testing follows the visual position during slide-up
+        Animated.timing(translateY, {
           toValue: 0,
-          tension: 75,
-          friction: 12,
-          useNativeDriver: true,
+          duration: ANIM_DURATION,
+          useNativeDriver: false,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 1,
@@ -45,14 +61,17 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
         }),
       ]).start();
     }
-  }, [sticker?.id]);
+  }, [sticker?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => () => clearTimers(), [clearTimers]);
 
   const handleClose = useCallback(() => {
+    clearTimers();
     Animated.parallel([
       Animated.timing(translateY, {
         toValue: SHEET_HEIGHT,
         duration: ANIM_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(backdropOpacity, {
         toValue: 0,
@@ -63,11 +82,39 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
       translateY.setValue(SHEET_HEIGHT);
       onClose();
     });
-  }, [onClose, translateY, backdropOpacity]);
+  }, [onClose, translateY, backdropOpacity, clearTimers]);
+
+  // Applies delta to local state and notifies parent
+  const applyDelta = useCallback((id: string, delta: number) => {
+    setLocalQty(prev => {
+      const next = Math.max(0, prev + delta);
+      onQuantityChange(id, next);
+      return next;
+    });
+  }, [onQuantityChange]);
+
+  // Hold to repeat: starts interval after HOLD_DELAY_MS
+  const handlePressIn = useCallback((id: string, delta: number) => {
+    continuousActiveRef.current = false;
+    holdTimerRef.current = setTimeout(() => {
+      continuousActiveRef.current = true;
+      intervalRef.current = setInterval(() => applyDelta(id, delta), HOLD_INTERVAL_MS);
+    }, HOLD_DELAY_MS);
+  }, [applyDelta]);
+
+  const handlePressOut = useCallback(() => {
+    clearTimers();
+  }, [clearTimers]);
+
+  // Single tap: skip if continuous mode already handled the change
+  const handlePress = useCallback((id: string, delta: number) => {
+    if (continuousActiveRef.current) return;
+    applyDelta(id, delta);
+  }, [applyDelta]);
 
   if (!sticker) return null;
 
-  const qty = sticker.quantity;
+  const qty = localQty;
   const isSpecial = !!sticker.isSpecial;
   const statusLabel =
     qty === 0
@@ -132,7 +179,9 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
         <View style={styles.controls}>
           <TouchableOpacity
             style={[styles.ctrlBtn, decreaseDisabled ? ctrlBtnDisabled : ctrlBtnActive]}
-            onPress={() => onQuantityChange(sticker.id, qty - 1)}
+            onPress={() => handlePress(sticker.id, -1)}
+            onPressIn={() => { if (!decreaseDisabled) handlePressIn(sticker.id, -1); }}
+            onPressOut={handlePressOut}
             disabled={decreaseDisabled}
             activeOpacity={0.7}
           >
@@ -145,7 +194,9 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
 
           <TouchableOpacity
             style={[styles.ctrlBtn, ctrlBtnActive]}
-            onPress={() => onQuantityChange(sticker.id, qty + 1)}
+            onPress={() => handlePress(sticker.id, 1)}
+            onPressIn={() => handlePressIn(sticker.id, 1)}
+            onPressOut={handlePressOut}
             activeOpacity={0.7}
           >
             <Text style={[styles.ctrlBtnText, { color: '#FFFFFF' }]}>+</Text>
@@ -156,6 +207,7 @@ const BottomSheetEditor = memo(({ sticker, onClose, onQuantityChange }: Props) =
           <TouchableOpacity
             style={styles.removeBtn}
             onPress={() => {
+              setLocalQty(0);
               onQuantityChange(sticker.id, 0);
               handleClose();
             }}
