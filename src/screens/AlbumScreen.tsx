@@ -8,9 +8,11 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
+  BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import AlbumIndex, { SortMode } from '../components/AlbumIndex';
 import TeamDetail from '../components/TeamDetail';
 import BottomSheetEditor from '../components/BottomSheetEditor';
@@ -96,6 +98,21 @@ export default function AlbumScreen() {
       slideX.setValue(0);
     });
   }, [slideX]);
+
+  // Intercept Android back gesture/button when inside a team view
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (view === 'team') {
+          goBack();
+          return true;
+        }
+        return false;
+      };
+      const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => sub.remove();
+    }, [view, goBack]),
+  );
 
   // ── Sticker interactions ──────────────────────────────────────────────────
 

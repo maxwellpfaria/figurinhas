@@ -4,10 +4,10 @@
 # Gera um .aab (Android App Bundle) e incrementa version + versionCode
 #
 # Pré-requisitos:
-#   npm install -g eas-cli     (instalar EAS CLI)
-#   eas login                  (fazer login uma vez para baixar o keystore)
 #   ANDROID_HOME configurado   (Android SDK instalado)
 #   Java 17+                   (JDK instalado)
+#   android/app/release.keystore existente
+#   android/gradle.properties com MYAPP_RELEASE_* preenchidos
 #
 # Como usar:
 #   chmod +x build-production-android.sh   (somente na primeira vez)
@@ -17,6 +17,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ANDROID_DIR="$SCRIPT_DIR/android"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
@@ -24,31 +25,8 @@ echo "║   Meu Álbum Completo — Build Produção Android (AAB)  ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
-# ── 1. Carrega variáveis do .env ──────────────────────────────────────────────
-if [ -f "$SCRIPT_DIR/.env" ]; then
-  set -a && source "$SCRIPT_DIR/.env" && set +a
-  echo "✅  .env carregado"
-else
-  echo "⚠️   Arquivo .env não encontrado — as variáveis EXPO_PUBLIC_* precisam"
-  echo "     estar no ambiente para o build funcionar corretamente."
-fi
-
-# ── 2. Verifica dependências ──────────────────────────────────────────────────
-echo ""
+# ── 1. Verifica dependências ──────────────────────────────────────────────────
 echo "🔍  Verificando dependências..."
-
-if ! command -v eas &> /dev/null; then
-  echo "❌  EAS CLI não encontrado. Instale com:"
-  echo "      npm install -g eas-cli"
-  exit 1
-fi
-echo "   EAS CLI  : $(eas --version 2>/dev/null | head -1)"
-
-if ! command -v node &> /dev/null; then
-  echo "❌  Node.js não encontrado."
-  exit 1
-fi
-echo "   Node.js  : $(node --version)"
 
 if ! command -v java &> /dev/null; then
   echo "❌  Java não encontrado. Instale o JDK 17."
@@ -65,12 +43,14 @@ if [ -z "$ANDROID_HOME" ]; then
 fi
 echo "   ANDROID  : $ANDROID_HOME"
 
-# ── 3. Conta EAS ─────────────────────────────────────────────────────────────
-echo ""
-echo "👤  Conta EAS:"
-eas whoami
+if [ ! -f "$ANDROID_DIR/app/release.keystore" ]; then
+  echo "❌  Keystore não encontrado: android/app/release.keystore"
+  echo "    Execute o script de geração de keystore ou copie o arquivo."
+  exit 1
+fi
+echo "   Keystore : OK"
 
-# ── 4. Incrementa version (patch +1) e versionCode (+1) ──────────────────────
+# ── 2. Incrementa version (patch +1) e versionCode (+1) ──────────────────────
 echo ""
 echo "🔖  Incrementando versão..."
 
@@ -106,46 +86,50 @@ NEW_CODE=$(echo "$VERSION_INFO" | cut -d'|' -f4)
 echo "    version      : $OLD_VERSION  →  $NEW_VERSION"
 echo "    versionCode  : $OLD_CODE  →  $NEW_CODE"
 
-# ── 5. Dispara o build local ──────────────────────────────────────────────────
+# ── 3. Sincroniza versão no build.gradle ──────────────────────────────────────
 echo ""
-echo "🏗️   Iniciando build LOCAL de produção..."
-echo "    Perfil  : production"
+echo "🔄  Sincronizando versão no build.gradle..."
+
+sed -i "s/versionCode [0-9]*/versionCode $NEW_CODE/" "$ANDROID_DIR/app/build.gradle"
+sed -i "s/versionName \"[^\"]*\"/versionName \"$NEW_VERSION\"/" "$ANDROID_DIR/app/build.gradle"
+
+echo "    OK"
+
+# ── 4. Build com Gradle ───────────────────────────────────────────────────────
+echo ""
+echo "🏗️   Iniciando build via Gradle..."
 echo "    Saída   : .aab (Android App Bundle para o Google Play)"
-echo "    Keystore: EAS Managed Credentials (baixado automaticamente)"
-echo "    Obs     : o processo roda inteiro na sua máquina (~10–20 min)"
 echo ""
 
-eas build \
-  --platform android \
-  --profile production \
-  --local \
-  --non-interactive
+cd "$ANDROID_DIR"
+./gradlew bundleRelease --no-daemon
 
-# ── 6. Localiza o .aab gerado ─────────────────────────────────────────────────
+# ── 5. Localiza e renomeia o .aab gerado ─────────────────────────────────────
+cd "$SCRIPT_DIR"
+AAB_SRC="$ANDROID_DIR/app/build/outputs/bundle/release/app-release.aab"
+AAB_DEST="$SCRIPT_DIR/app-release-$NEW_VERSION.aab"
+
 echo ""
-AAB_PATH=$(find "$SCRIPT_DIR" -maxdepth 2 -name "*.aab" -newer "$SCRIPT_DIR/package.json" 2>/dev/null | sort | tail -1)
-
 echo "════════════════════════════════════════════════════════"
 echo "✅  Build concluído!"
 echo "    Versão publicada: $NEW_VERSION (versionCode $NEW_CODE)"
 echo ""
 
-if [ -n "$AAB_PATH" ]; then
-  RENAMED_AAB="$SCRIPT_DIR/app-release - $NEW_VERSION.aab"
-  mv "$AAB_PATH" "$RENAMED_AAB"
+if [ -f "$AAB_SRC" ]; then
+  cp "$AAB_SRC" "$AAB_DEST"
   echo "📦  Arquivo gerado:"
-  echo "    $RENAMED_AAB"
-  echo "    Tamanho: $(du -sh "$RENAMED_AAB" | cut -f1)"
+  echo "    $AAB_DEST"
+  echo "    Tamanho: $(du -sh "$AAB_DEST" | cut -f1)"
 else
-  echo "📦  Arquivo .aab gerado na pasta do projeto."
-  echo "    (procure por *.aab na raiz do projeto)"
+  echo "⚠️   AAB não encontrado no caminho esperado:"
+  echo "    $AAB_SRC"
 fi
 
 echo ""
 echo "Próximos passos:"
 echo ""
 echo "  1. Commit do bump de versão:"
-echo "       git add app.config.js"
+echo "       git add app.config.js android/app/build.gradle"
 echo "       git commit -m \"chore: bump version to $NEW_VERSION (versionCode $NEW_CODE)\""
 echo ""
 echo "  2. Acesse: https://play.google.com/console"

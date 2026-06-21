@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Build local Android — APK (para instalar direto no dispositivo)
-# Perfil EAS: preview
+# Build local Android — APK assinado (para instalar direto no dispositivo)
 #
 # Pré-requisitos:
-#   npm install -g eas-cli     (instalar EAS CLI)
-#   eas login                  (fazer login uma vez)
 #   ANDROID_HOME configurado   (Android SDK instalado)
 #   Java 17+                   (JDK instalado)
+#   android/app/release.keystore existente
+#   android/gradle.properties com MYAPP_RELEASE_* preenchidos
 #
 # Como usar:
 #   chmod +x build-local-android.sh   (somente na primeira vez)
@@ -17,6 +16,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ANDROID_DIR="$SCRIPT_DIR/android"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
@@ -24,25 +24,8 @@ echo "║   Meu Álbum Completo — Build Local Android (APK)     ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
-# ── 1. Carrega variáveis do .env ──────────────────────────────────────────────
-if [ -f "$SCRIPT_DIR/.env" ]; then
-  set -a && source "$SCRIPT_DIR/.env" && set +a
-  echo "✅  .env carregado"
-else
-  echo "⚠️   Arquivo .env não encontrado — as variáveis EXPO_PUBLIC_* precisam"
-  echo "     estar no ambiente para o build funcionar corretamente."
-fi
-
-# ── 2. Verifica dependências ──────────────────────────────────────────────────
-echo ""
+# ── 1. Verifica dependências ──────────────────────────────────────────────────
 echo "🔍  Verificando dependências..."
-
-if ! command -v eas &> /dev/null; then
-  echo "❌  EAS CLI não encontrado. Instale com:"
-  echo "      npm install -g eas-cli"
-  exit 1
-fi
-echo "   EAS CLI  : $(eas --version 2>/dev/null | head -1)"
 
 if ! command -v java &> /dev/null; then
   echo "❌  Java não encontrado. Instale o JDK 17."
@@ -59,7 +42,14 @@ if [ -z "$ANDROID_HOME" ]; then
 fi
 echo "   ANDROID  : $ANDROID_HOME"
 
-# ── 3. Exibe versão atual ─────────────────────────────────────────────────────
+if [ ! -f "$ANDROID_DIR/app/release.keystore" ]; then
+  echo "❌  Keystore não encontrado: android/app/release.keystore"
+  echo "    Execute o script de geração de keystore ou copie o arquivo."
+  exit 1
+fi
+echo "   Keystore : OK"
+
+# ── 2. Exibe versão atual ─────────────────────────────────────────────────────
 echo ""
 echo "📋  Versão atual:"
 VERSION=$(node -e "const c=require('./app.config.js'); console.log(c.version)")
@@ -67,45 +57,36 @@ VCODE=$(node -e "const c=require('./app.config.js'); console.log(c.android.versi
 echo "    version      : $VERSION"
 echo "    versionCode  : $VCODE"
 
-# ── 4. Conta EAS ─────────────────────────────────────────────────────────────
+# ── 3. Build com Gradle ───────────────────────────────────────────────────────
 echo ""
-echo "👤  Conta EAS:"
-eas whoami
-
-# ── 5. Dispara o build local ──────────────────────────────────────────────────
-echo ""
-echo "🏗️   Iniciando build LOCAL de desenvolvimento..."
-echo "    Perfil  : preview"
+echo "🏗️   Iniciando build via Gradle..."
 echo "    Saída   : .apk (instalar direto no dispositivo)"
-echo "    Obs     : o processo roda inteiro na sua máquina (~10–20 min)"
 echo ""
 
-eas build \
-  --platform android \
-  --profile preview \
-  --local \
-  --non-interactive
+cd "$ANDROID_DIR"
+./gradlew assembleRelease --no-daemon
 
-# ── 6. Localiza o .apk gerado ─────────────────────────────────────────────────
+# ── 4. Localiza e renomeia o .apk gerado ─────────────────────────────────────
+cd "$SCRIPT_DIR"
+APK_SRC="$ANDROID_DIR/app/build/outputs/apk/release/app-release.apk"
+APK_DEST="$SCRIPT_DIR/app-release-$VERSION.apk"
+
 echo ""
-APK_PATH=$(find "$SCRIPT_DIR" -maxdepth 2 -name "*.apk" -newer "$SCRIPT_DIR/package.json" 2>/dev/null | sort | tail -1)
-
 echo "════════════════════════════════════════════════════════"
 echo "✅  Build concluído!"
 echo ""
 
-if [ -n "$APK_PATH" ]; then
-  RENAMED_APK="$SCRIPT_DIR/app-release - $VERSION.apk"
-  mv "$APK_PATH" "$RENAMED_APK"
+if [ -f "$APK_SRC" ]; then
+  cp "$APK_SRC" "$APK_DEST"
   echo "📦  Arquivo gerado:"
-  echo "    $RENAMED_APK"
-  echo "    Tamanho: $(du -sh "$RENAMED_APK" | cut -f1)"
+  echo "    $APK_DEST"
+  echo "    Tamanho: $(du -sh "$APK_DEST" | cut -f1)"
   echo ""
   echo "    Para instalar via ADB:"
-  echo "    adb install \"$RENAMED_APK\""
+  echo "    adb install \"$APK_DEST\""
 else
-  echo "📦  Arquivo .apk gerado na pasta do projeto."
-  echo "    (procure por *.apk na raiz do projeto)"
+  echo "⚠️   APK não encontrado no caminho esperado:"
+  echo "    $APK_SRC"
 fi
 
 echo ""

@@ -34,7 +34,7 @@ module.exports = {
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptative-icon_v2.png",
+      foregroundImage: "./assets/adaptative-icon-android.png",
       backgroundColor: "#0B0F19",
     },
     package: "com.figurinha.copa2026",

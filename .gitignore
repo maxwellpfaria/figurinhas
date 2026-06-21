@@ -39,6 +39,17 @@ GoogleService-Info.plist
 *.cer
 *.mobileprovision
 
+# ── Android — build outputs e arquivos locais ────────────────────────────────
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/signing.properties
+
+# ── APK / AAB gerados na raiz ────────────────────────────────────────────────
+*.apk
+*.aab
+
 # ── Claude Code ───────────────────────────────────────────────────────────────
 .claude/
 memory/
