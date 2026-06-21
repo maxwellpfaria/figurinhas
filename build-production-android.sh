@@ -131,9 +131,11 @@ echo "    Versão publicada: $NEW_VERSION (versionCode $NEW_CODE)"
 echo ""
 
 if [ -n "$AAB_PATH" ]; then
+  RENAMED_AAB="$SCRIPT_DIR/app-release - $NEW_VERSION.aab"
+  mv "$AAB_PATH" "$RENAMED_AAB"
   echo "📦  Arquivo gerado:"
-  echo "    $AAB_PATH"
-  echo "    Tamanho: $(du -sh "$AAB_PATH" | cut -f1)"
+  echo "    $RENAMED_AAB"
+  echo "    Tamanho: $(du -sh "$RENAMED_AAB" | cut -f1)"
 else
   echo "📦  Arquivo .aab gerado na pasta do projeto."
   echo "    (procure por *.aab na raiz do projeto)"

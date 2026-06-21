@@ -95,12 +95,14 @@ echo "✅  Build concluído!"
 echo ""
 
 if [ -n "$APK_PATH" ]; then
+  RENAMED_APK="$SCRIPT_DIR/app-release - $VERSION.apk"
+  mv "$APK_PATH" "$RENAMED_APK"
   echo "📦  Arquivo gerado:"
-  echo "    $APK_PATH"
-  echo "    Tamanho: $(du -sh "$APK_PATH" | cut -f1)"
+  echo "    $RENAMED_APK"
+  echo "    Tamanho: $(du -sh "$RENAMED_APK" | cut -f1)"
   echo ""
   echo "    Para instalar via ADB:"
-  echo "    adb install \"$APK_PATH\""
+  echo "    adb install \"$RENAMED_APK\""
 else
   echo "📦  Arquivo .apk gerado na pasta do projeto."
   echo "    (procure por *.apk na raiz do projeto)"

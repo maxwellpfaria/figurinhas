@@ -78,7 +78,7 @@ export default function AuthScreen() {
         {/* Logo / branding */}
         <View style={styles.logoArea}>
           <AppLogo size={110} />
-          <Text style={[styles.appName, { color: colors.textPrimary }]}>Meu Álbum Completo</Text>
+          <Text style={[styles.appName, { color: colors.textPrimary }]}>Meu Álbum</Text>
           <Text style={[styles.appTagline, { color: colors.textMuted }]}>
             Seu álbum inteligente da Copa
           </Text>

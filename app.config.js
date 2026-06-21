@@ -18,23 +18,23 @@ if (fs.existsSync(envPath)) {
 
 /** @type {import('expo/config').ExpoConfig} */
 module.exports = {
-  name: "Meu Álbum Completo",
+  name: "Meu Álbum",
   slug: "figurinha",
   version: "1.0.6",
   orientation: "portrait",
   backgroundColor: "#0B0F19",
-  icon: "./assets/icon.png",
+  icon: "./assets/icon_v2.png",
   userInterfaceStyle: "automatic",
   ios: {
     supportsTablet: false,
-    icon: "./assets/icon.png",
+    icon: "./assets/icon_v2.png",
     infoPlist: {
       NSCameraUsageDescription: "Necessário para escanear o QR Code de troca de figurinhas do seu amigo.",
     },
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
+      foregroundImage: "./assets/adaptative-icon_v2.png",
       backgroundColor: "#0B0F19",
     },
     package: "com.figurinha.copa2026",
@@ -46,8 +46,8 @@ module.exports = {
       "expo-splash-screen",
       {
         backgroundColor: "#0B0F19",
-        image: "./assets/splash.png",
-        imageWidth: 200,
+        image: "./assets/adaptative-icon_v2.png",
+        imageWidth: 240,
         resizeMode: "contain",
       },
     ],

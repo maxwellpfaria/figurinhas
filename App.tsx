@@ -1,14 +1,14 @@
 import 'react-native-gesture-handler';
-import React, { Component, ReactNode, useState, useEffect } from 'react';
+import React, { Component, ReactNode, useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import AppLogo from './src/components/AppLogo';
+import SplashScreen from './src/components/SplashScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import AlbumScreen from './src/screens/AlbumScreen';
 import TradeScreen from './src/screens/TradeScreen';
@@ -134,31 +134,35 @@ function MainTabs() {
 
 const SPLASH_MIN_MS = 2000;
 
+type Screen = 'auth' | 'verify' | 'main';
+
 function AppGate() {
   const { user, loading, emailVerified } = useAuth();
   const [minElapsed, setMinElapsed] = useState(false);
+  const initialLoadDone = useRef(false);
+  const lastScreen = useRef<Screen>('auth');
 
   useEffect(() => {
     const t = setTimeout(() => setMinElapsed(true), SPLASH_MIN_MS);
     return () => clearTimeout(t);
   }, []);
 
-  if (loading || !minElapsed) {
-    return (
-      <View style={styles.splash}>
-        <View style={styles.splashContent}>
-          <AppLogo size={130} />
-          <Text style={styles.splashTitle}>Meu Álbum Completo</Text>
-          <Text style={styles.splashTagline}>Organize. Troque. Zere.</Text>
-        </View>
-        <ActivityIndicator color="#10B981" size="large" style={styles.splashSpinner} />
-      </View>
-    );
+  const showSplash = !initialLoadDone.current && (loading || !minElapsed);
+  if (!showSplash) initialLoadDone.current = true;
+
+  if (showSplash) return <SplashScreen />;
+
+  // Só atualiza a tela destino quando o auth está estável (loading=false),
+  // evitando telas intermediárias durante transições (ex: token antes do home)
+  if (!loading) {
+    if (!user)           lastScreen.current = 'auth';
+    else if (!emailVerified) lastScreen.current = 'verify';
+    else                 lastScreen.current = 'main';
   }
 
-  if (!user) return <AuthScreen />;
-  if (!emailVerified) return <EmailVerificationScreen />;
-  return <MainTabs />;
+  if (lastScreen.current === 'verify') return <EmailVerificationScreen />;
+  if (lastScreen.current === 'main')   return <MainTabs />;
+  return <AuthScreen />;
 }
 
 export default function App() {
@@ -180,30 +184,4 @@ export default function App() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  splash: {
-    flex: 1,
-    backgroundColor: '#0B0F19',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  splashContent: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  splashTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#F8FAFC',
-    letterSpacing: 0.3,
-    marginTop: 4,
-  },
-  splashTagline: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#64748B',
-    letterSpacing: 0.5,
-  },
-  splashSpinner: {
-    marginTop: 48,
-  },
 });
