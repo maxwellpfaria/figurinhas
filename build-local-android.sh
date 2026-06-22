@@ -52,8 +52,13 @@ echo "   Keystore : OK"
 # ── 2. Exibe versão atual ─────────────────────────────────────────────────────
 echo ""
 echo "📋  Versão atual:"
-VERSION=$(node -e "const c=require('./app.config.js'); console.log(c.version)")
-VCODE=$(node -e "const c=require('./app.config.js'); console.log(c.android.versionCode)")
+PROPS="$SCRIPT_DIR/version.properties"
+if [ ! -f "$PROPS" ]; then
+  echo "❌  version.properties não encontrado em $SCRIPT_DIR"
+  exit 1
+fi
+VERSION=$(grep '^VERSION_NAME=' "$PROPS" | cut -d'=' -f2 | tr -d '[:space:]')
+VCODE=$(grep '^VERSION_CODE=' "$PROPS" | cut -d'=' -f2 | tr -d '[:space:]')
 echo "    version      : $VERSION"
 echo "    versionCode  : $VCODE"
 
