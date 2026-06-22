@@ -54,34 +54,29 @@ echo "   Keystore : OK"
 echo ""
 echo "🔖  Incrementando versão..."
 
-VERSION_INFO=$(node -e "
-const fs = require('fs');
-const filePath = '$SCRIPT_DIR/app.config.js';
-const content = fs.readFileSync(filePath, 'utf8');
+PROPS="$SCRIPT_DIR/version.properties"
+if [ ! -f "$PROPS" ]; then
+  echo "❌  version.properties não encontrado em $SCRIPT_DIR"
+  exit 1
+fi
 
-const vMatch = content.match(/version:\s*\"(\d+)\.(\d+)\.(\d+)\"/);
-if (!vMatch) { process.stderr.write('ERRO: version não encontrado em app.config.js\n'); process.exit(1); }
-const [, major, minor, patch] = vMatch;
-const oldVersion = major + '.' + minor + '.' + patch;
-const newVersion = major + '.' + minor + '.' + (parseInt(patch) + 1);
+OLD_VERSION=$(grep '^VERSION_NAME=' "$PROPS" | cut -d'=' -f2 | tr -d '[:space:]')
+OLD_CODE=$(grep '^VERSION_CODE=' "$PROPS" | cut -d'=' -f2 | tr -d '[:space:]')
 
-const vcMatch = content.match(/versionCode:\s*(\d+)/);
-if (!vcMatch) { process.stderr.write('ERRO: versionCode não encontrado em app.config.js\n'); process.exit(1); }
-const oldCode = parseInt(vcMatch[1]);
-const newCode = oldCode + 1;
+if [ -z "$OLD_VERSION" ] || [ -z "$OLD_CODE" ]; then
+  echo "❌  VERSION_NAME ou VERSION_CODE não encontrado em version.properties"
+  exit 1
+fi
 
-const updated = content
-  .replace(/version:\s*\"[\d.]+\"/, 'version: \"' + newVersion + '\"')
-  .replace(/versionCode:\s*\d+/, 'versionCode: ' + newCode);
+MAJOR=$(echo "$OLD_VERSION" | cut -d'.' -f1)
+MINOR=$(echo "$OLD_VERSION" | cut -d'.' -f2)
+PATCH=$(echo "$OLD_VERSION" | cut -d'.' -f3)
 
-fs.writeFileSync(filePath, updated);
-console.log(oldVersion + '|' + newVersion + '|' + oldCode + '|' + newCode);
-")
+NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+NEW_CODE=$((OLD_CODE + 1))
 
-OLD_VERSION=$(echo "$VERSION_INFO" | cut -d'|' -f1)
-NEW_VERSION=$(echo "$VERSION_INFO" | cut -d'|' -f2)
-OLD_CODE=$(echo "$VERSION_INFO" | cut -d'|' -f3)
-NEW_CODE=$(echo "$VERSION_INFO" | cut -d'|' -f4)
+sed -i "s/^VERSION_NAME=.*/VERSION_NAME=$NEW_VERSION/" "$PROPS"
+sed -i "s/^VERSION_CODE=.*/VERSION_CODE=$NEW_CODE/" "$PROPS"
 
 echo "    version      : $OLD_VERSION  →  $NEW_VERSION"
 echo "    versionCode  : $OLD_CODE  →  $NEW_CODE"
@@ -129,7 +124,7 @@ echo ""
 echo "Próximos passos:"
 echo ""
 echo "  1. Commit do bump de versão:"
-echo "       git add app.config.js android/app/build.gradle"
+echo "       git add version.properties android/app/build.gradle"
 echo "       git commit -m \"chore: bump version to $NEW_VERSION (versionCode $NEW_CODE)\""
 echo ""
 echo "  2. Acesse: https://play.google.com/console"
