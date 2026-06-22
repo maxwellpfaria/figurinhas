@@ -4,6 +4,8 @@ import { INITIAL_SECTIONS } from '../data/copaData';
 import { Section } from '../types';
 import { loadAlbumQuantities, saveAlbumQuantities } from '../services/firestore';
 
+const SAVE_DEBOUNCE_MS = 1500;
+
 export function useAlbum(userId?: string | null) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [syncing, setSyncing] = useState(false);
@@ -50,14 +52,14 @@ export function useAlbum(userId?: string | null) {
       .finally(() => setSyncing(false));
   }, []);
 
-  // ── Debounced save — 1.5 s after last user change ─────────────────────────
+  // ── Debounced save ───────────────────────────────────────────────────────
   useEffect(() => {
     if (!userId || !needsSave.current) return;
 
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
       persistNow(userId, quantities);
-    }, 1500);
+    }, SAVE_DEBOUNCE_MS);
 
     return () => clearTimeout(saveTimer.current);
   }, [quantities, userId, persistNow]);

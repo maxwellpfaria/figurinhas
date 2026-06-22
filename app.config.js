@@ -1,7 +1,19 @@
 const path = require('path');
 const fs = require('fs');
 
-// Load .env manually so it works in all build contexts (local EAS, cloud EAS, expo start)
+// ── Versão — fonte única de verdade: version.properties ───────────────────────
+function readVersionProperties() {
+  const vPath = path.join(__dirname, 'version.properties');
+  const raw = fs.readFileSync(vPath, 'utf8');
+  const get = (key) => {
+    const match = raw.match(new RegExp(`^${key}=(.+)$`, 'm'));
+    return match ? match[1].trim() : null;
+  };
+  return { versionName: get('VERSION_NAME'), versionCode: parseInt(get('VERSION_CODE'), 10) };
+}
+const { versionName, versionCode } = readVersionProperties();
+
+// ── Credenciais Firebase — lidas do .env (dev local e EAS cloud) ──────────────
 const envPath = path.join(__dirname, '.env');
 if (fs.existsSync(envPath)) {
   const lines = fs.readFileSync(envPath, 'utf8').split('\n');
@@ -20,7 +32,7 @@ if (fs.existsSync(envPath)) {
 module.exports = {
   name: "Meu Álbum",
   slug: "figurinha",
-  version: "1.0.8",
+  version: versionName,
   orientation: "portrait",
   backgroundColor: "#0B0F19",
   icon: "./assets/icon_v2.png",
@@ -39,7 +51,7 @@ module.exports = {
     },
     package: "com.figurinha.copa2026",
     permissions: ["android.permission.CAMERA"],
-    versionCode: 12,
+    versionCode: versionCode,
   },
   plugins: [
     [
