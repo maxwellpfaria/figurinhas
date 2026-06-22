@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
-import { INITIAL_SECTIONS } from '../data/mockData';
+import { INITIAL_SECTIONS } from '../data/copaData';
 import { Section } from '../types';
 import { loadAlbumQuantities, saveAlbumQuantities } from '../services/firestore';
 

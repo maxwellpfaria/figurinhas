@@ -24,7 +24,7 @@ import {
   getFriendsProfiles,
   getFriendQuantities,
 } from '../services/firestore';
-import { INITIAL_SECTIONS } from '../data/mockData';
+import { INITIAL_SECTIONS } from '../data/copaData';
 import { useAlbumContext } from '../contexts/AlbumContext';
 import AlbumIndex, { SortMode } from '../components/AlbumIndex';
 import TeamDetail from '../components/TeamDetail';

@@ -13,7 +13,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbumContext } from '../contexts/AlbumContext';
 import { Spacing, Radius, Typography } from '../theme';
-import { INITIAL_SECTIONS, TOTAL_STICKERS } from '../data/mockData';
+import { INITIAL_SECTIONS, TOTAL_STICKERS } from '../data/copaData';
 import { getFriendsProfiles, getFriendQuantities, UserProfile } from '../services/firestore';
 import { getAlbumStats } from '../utils/tradeQR';
 

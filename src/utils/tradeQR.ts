@@ -1,4 +1,4 @@
-import { INITIAL_SECTIONS } from '../data/mockData';
+import { INITIAL_SECTIONS } from '../data/copaData';
 
 // Canonical ordered list built once at module load
 const ALL_STICKERS = INITIAL_SECTIONS.flatMap(s =>

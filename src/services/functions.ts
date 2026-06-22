@@ -3,6 +3,9 @@ import { getApp } from 'firebase/app';
 import { doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 
+// Cloud Functions region — deve coincidir com o deploy em functions/src/index.ts
+const FUNCTIONS_REGION = 'us-central1';
+
 // ─── Dev bypass ──────────────────────────────────────────────────────────────
 // true  → token "123456" verifica o e-mail sem envio real (dev / testes)
 // false → fluxo real via Cloud Function
@@ -10,7 +13,7 @@ import { auth, db } from './firebase';
 const DEV_SKIP_EMAIL_VERIFICATION: boolean = __DEV__;
 
 function fns() {
-  return getFunctions(getApp(), 'us-central1');
+  return getFunctions(getApp(), FUNCTIONS_REGION);
 }
 
 export async function callSendVerificationToken(): Promise<void> {
